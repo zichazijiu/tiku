@@ -1,0 +1,76 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myLogBackupLabel" jhiTranslate="tikuApp.logBackup.home.createOrEditLabel">Create or edit a Log Backup</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!logBackup.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="logBackup.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.createdTime" for="field_createdTime">Created Time</label>
+            <div class="d-flex">
+                <input id="field_createdTime" type="datetime-local" class="form-control" name="createdTime" [(ngModel)]="logBackup.createdTime"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.createdTime?.dirty && editForm.controls.createdTime?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.createdTime?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.createdTime?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.createdBy" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                [(ngModel)]="logBackup.createdBy" required/>
+            <div [hidden]="!(editForm.controls.createdBy?.dirty && editForm.controls.createdBy?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.createdBy?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.description" for="field_description">Description</label>
+            <input type="text" class="form-control" name="description" id="field_description"
+                [(ngModel)]="logBackup.description" required/>
+            <div [hidden]="!(editForm.controls.description?.dirty && editForm.controls.description?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.description?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.size" for="field_size">Size</label>
+            <input type="number" class="form-control" name="size" id="field_size"
+                [(ngModel)]="logBackup.size" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.level" for="field_level">Level</label>
+            <select class="form-control" name="level" [(ngModel)]="logBackup.level" id="field_level" >
+                <option value="INFO">{{'tikuApp.Level.INFO' | translate}}</option>
+                <option value="ERROR">{{'tikuApp.Level.ERROR' | translate}}</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

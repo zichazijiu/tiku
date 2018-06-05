@@ -1,0 +1,42 @@
+
+<div *ngIf="logBackup">
+    <h2><span jhiTranslate="tikuApp.logBackup.detail.title">Log Backup</span> {{logBackup.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.logBackup.createdTime">Created Time</span></dt>
+        <dd>
+            <span>{{logBackup.createdTime | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.logBackup.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{logBackup.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.logBackup.description">Description</span></dt>
+        <dd>
+            <span>{{logBackup.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.logBackup.size">Size</span></dt>
+        <dd>
+            <span>{{logBackup.size}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.logBackup.level">Level</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.Level.' + logBackup.level}}">{{logBackup.level}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'log-backup/'+ logBackup.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

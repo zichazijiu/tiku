@@ -1,0 +1,42 @@
+
+<div *ngIf="project">
+    <h2><span jhiTranslate="tikuApp.project.detail.title">Project</span> {{project.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.project.name">Name</span></dt>
+        <dd>
+            <span>{{project.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.project.description">Description</span></dt>
+        <dd>
+            <span>{{project.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.project.delFlag">Del Flag</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.DeleteFlag.' + project.delFlag}}">{{project.delFlag}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.project.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.Status.' + project.status}}">{{project.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.project.type">Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.Type.' + project.type}}">{{project.type}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'project/'+ project.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,78 @@
+<div>
+    <h2>
+        <span jhiTranslate="tikuApp.subject.home.title">Subjects</span>
+        <button class="btn btn-primary float-right jh-create-entity create-subject" [routerLink]="['/', { outlets: { popup: ['subject-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span  jhiTranslate="tikuApp.subject.home.createLabel">
+            Create new Subject
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="subjects">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="name"><span jhiTranslate="tikuApp.subject.name">Name</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="title"><span jhiTranslate="tikuApp.subject.title">Title</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="description"><span jhiTranslate="tikuApp.subject.description">Description</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="status"><span jhiTranslate="tikuApp.subject.status">Status</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="type"><span jhiTranslate="tikuApp.subject.type">Type</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="right"><span jhiTranslate="tikuApp.subject.right">Right</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="delFlag"><span jhiTranslate="tikuApp.subject.delFlag">Del Flag</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let subject of subjects ;trackBy: trackId">
+                <td><a [routerLink]="['../subject', subject.id ]">{{subject.id}}</a></td>
+                <td>{{subject.name}}</td>
+                <td>{{subject.title}}</td>
+                <td>{{subject.description}}</td>
+                <td>{{subject.status}}</td>
+                <td>{{subject.type}}</td>
+                <td>{{subject.right}}</td>
+                <td>{{subject.delFlag}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../subject', subject.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'subject/'+ subject.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'subject/'+ subject.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="subjects && subjects.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

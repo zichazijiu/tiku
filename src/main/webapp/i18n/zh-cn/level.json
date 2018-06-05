@@ -1,0 +1,9 @@
+{
+    "tikuApp": {
+        "Level" : {
+            "null": "",
+            "INFO": "INFO",
+            "ERROR": "ERROR"
+        }
+    }
+}

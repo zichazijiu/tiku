@@ -1,0 +1,26 @@
+
+{
+    "tikuApp": {
+        "logBackup" : {
+            "home": {
+                "title": "Log Backups",
+                "createLabel": "创建新 Log Backup",
+                "createOrEditLabel": "创建或编辑 Log Backup"
+            },
+            "created": "Log Backup {{ param }} 创建成功",
+            "updated": "Log Backup {{ param }} 更新成功",
+            "deleted": "Log Backup {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Log Backup {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Log Backup"
+            },
+            "createdTime": "Created Time",
+            "createdBy": "Created By",
+            "description": "Description",
+            "size": "Size",
+            "level": "Level"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+
+{
+    "tikuApp": {
+        "statistics" : {
+            "home": {
+                "title": "Statistics",
+                "createLabel": "创建新 Statistics",
+                "createOrEditLabel": "创建或编辑 Statistics"
+            },
+            "created": "Statistics {{ param }} 创建成功",
+            "updated": "Statistics {{ param }} 更新成功",
+            "deleted": "Statistics {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Statistics {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Statistics"
+            },
+            "type": "Type",
+            "statisticsDate": "Statistics Date",
+            "updateDate": "Update Date",
+            "count": "Count",
+            "name": "Name"
+        }
+    }
+}

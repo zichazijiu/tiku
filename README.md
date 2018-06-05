@@ -165,3 +165,84 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [Protractor]: https://angular.github.io/protractor/
 [Leaflet]: http://leafletjs.com/
 [DefinitelyTyped]: http://definitelytyped.org/
+
+
+## Database
+
+#### Project extend AbstractAuditingEntity
+- id
+- name
+- description
+- del_flag
+- status
+- type
+
+#### subject extend AbstractAuditingEntity
+-id
+-name
+-title
+-description
+-status
+-type
+-right
+-del_flag
+
+#### project_subject
+-project_id
+-subject_id
+
+#### examine extend AbstractAuditingEntity
+- id
+- name
+- status
+- del_flag
+- department_id
+- duration
+- score
+- project_id
+
+
+#### department
+-id
+-name
+-code
+-parent_id
+-status
+-type
+-del_flag
+
+
+#### examiner extend AbstractAuditingEntity
+-id
+-name
+-department_id
+-user_id
+-time  自查次数
+
+
+#### statistics
+-id
+-type
+-statistics_date
+-update_date
+-count
+-name
+
+#### log_backup
+- id
+- created_date
+- created_by
+- description
+- size
+- level
+- 
+
+
+
+## QA
+
+1. 项目管理 examiner 和 project 关系
+
+
+
+

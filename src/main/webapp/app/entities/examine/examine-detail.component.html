@@ -1,0 +1,50 @@
+
+<div *ngIf="examine">
+    <h2><span jhiTranslate="tikuApp.examine.detail.title">Examine</span> {{examine.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.examine.name">Name</span></dt>
+        <dd>
+            <span>{{examine.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.status">Status</span></dt>
+        <dd>
+            <span>{{examine.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.delFlag">Del Flag</span></dt>
+        <dd>
+            <span>{{examine.delFlag}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.departmentId">Department Id</span></dt>
+        <dd>
+            <span>{{examine.departmentId}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.duration">Duration</span></dt>
+        <dd>
+            <span>{{examine.duration}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.score">Score</span></dt>
+        <dd>
+            <span>{{examine.score}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examine.projectId">Project Id</span></dt>
+        <dd>
+            <span>{{examine.projectId}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'examine/'+ examine.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

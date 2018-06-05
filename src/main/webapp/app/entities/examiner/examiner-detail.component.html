@@ -1,0 +1,38 @@
+
+<div *ngIf="examiner">
+    <h2><span jhiTranslate="tikuApp.examiner.detail.title">Examiner</span> {{examiner.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.examiner.name">Name</span></dt>
+        <dd>
+            <span>{{examiner.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examiner.departmentId">Department Id</span></dt>
+        <dd>
+            <span>{{examiner.departmentId}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examiner.userId">User Id</span></dt>
+        <dd>
+            <span>{{examiner.userId}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.examiner.time">Time</span></dt>
+        <dd>
+            <span>{{examiner.time}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'examiner/'+ examiner.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

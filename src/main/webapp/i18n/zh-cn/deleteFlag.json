@@ -1,0 +1,9 @@
+{
+    "tikuApp": {
+        "DeleteFlag" : {
+            "null": "",
+            "NORMAL": "NORMAL",
+            "DELETE": "DELETE"
+        }
+    }
+}

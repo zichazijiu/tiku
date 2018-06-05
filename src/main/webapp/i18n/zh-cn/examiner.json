@@ -1,0 +1,25 @@
+
+{
+    "tikuApp": {
+        "examiner" : {
+            "home": {
+                "title": "Examiners",
+                "createLabel": "创建新 Examiner",
+                "createOrEditLabel": "创建或编辑 Examiner"
+            },
+            "created": "Examiner {{ param }} 创建成功",
+            "updated": "Examiner {{ param }} 更新成功",
+            "deleted": "Examiner {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Examiner {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Examiner"
+            },
+            "name": "Name",
+            "departmentId": "Department Id",
+            "userId": "User Id",
+            "time": "Time"
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "createdTime",
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "createdBy",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "size",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "level",
+            "fieldType": "Level",
+            "fieldValues": "INFO, ERROR"
+        }
+    ],
+    "changelogDate": "20180604142450",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "log_backup",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}
