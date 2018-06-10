@@ -50,6 +50,17 @@ public class UserService {
         this.cacheManager = cacheManager;
     }
 
+    /**
+     * Get the userId of the current user.
+     *
+     * @return the userId of the current user
+     */
+    public Long getCurrentUserId() {
+        String login = SecurityUtils.getCurrentUserLogin().get();
+        Long userId = userRepository.findOneByLogin(login).get().getId();
+        return userId;
+    }
+
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository.findOneByActivationKey(key)

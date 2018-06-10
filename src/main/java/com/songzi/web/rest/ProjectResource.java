@@ -3,7 +3,9 @@ package com.songzi.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Project;
 
+import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.ProjectRepository;
+import com.songzi.service.ProjectService;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
@@ -37,8 +39,11 @@ public class ProjectResource {
 
     private final ProjectRepository projectRepository;
 
-    public ProjectResource(ProjectRepository projectRepository) {
+    private final ProjectService projectService;
+
+    public ProjectResource(ProjectRepository projectRepository, ProjectService projectService) {
         this.projectRepository = projectRepository;
+        this.projectService = projectService;
     }
 
     /**
@@ -93,8 +98,10 @@ public class ProjectResource {
     @Timed
     public ResponseEntity<List<Project>> getAllProjects(Pageable pageable) {
         log.debug("REST request to get a page of Projects");
-        Page<Project> page = projectRepository.findAll(pageable);
+        Page<Project> page = projectRepository.findAllByDelFlag(DeleteFlag.NORMAL, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
+
+//        List content = projectService.getContent(page.getContent());
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

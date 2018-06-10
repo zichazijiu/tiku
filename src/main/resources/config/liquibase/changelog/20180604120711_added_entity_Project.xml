@@ -17,6 +17,7 @@
     <!--
         Added the entity Project.
     -->
+
     <changeSet id="20180604120711-1" author="jhipster">
         <createTable tableName="project">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
@@ -37,14 +38,38 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-
-            <column name="jhi_type" type="varchar(255)">
+            <column name="duration" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="project_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
+        <createTable tableName="project_subject">
+            <column name="project_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="project_id, subject_id" tableName="project_subject"/>
+
+        <addForeignKeyConstraint baseColumnNames="subject_id"
+                                 baseTableName="project_subject"
+                                 constraintName="fk_subject_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject"/>
+        <addForeignKeyConstraint baseColumnNames="project_id"
+                                 baseTableName="project_subject"
+                                 constraintName="fk_project_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project"/>
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

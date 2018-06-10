@@ -5,13 +5,17 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.songzi.domain.enumeration.DeleteFlag;
 
 import com.songzi.domain.enumeration.Status;
 
 import com.songzi.domain.enumeration.Type;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * A Project.
@@ -43,8 +47,22 @@ public class Project implements Serializable {
     private Status status;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "project_type")
     private Type type;
+
+    @NotNull
+    @Column(name = "duration", nullable = false)
+    private Integer duration;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "project_subject",
+        joinColumns = {@JoinColumn(name = "project_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "subject_id", referencedColumnName = "id")})
+
+    @BatchSize(size = 20)
+    private Set<Subject> subjects = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -120,6 +138,23 @@ public class Project implements Serializable {
         this.type = type;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
 
     @Override
     public boolean equals(Object o) {

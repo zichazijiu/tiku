@@ -1,6 +1,8 @@
 package com.songzi.domain;
 
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -33,8 +35,12 @@ public class Examiner implements Serializable {
     private Long userId;
 
     @NotNull
-    @Column(name = "jhi_time", nullable = false)
+    @ApiModelProperty(name = "自查次数")
+    @Column(name = "examiner_time", nullable = false)
     private Integer time;
+
+    @Column
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

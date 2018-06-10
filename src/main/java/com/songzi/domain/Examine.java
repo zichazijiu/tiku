@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "examine")
-public class Examine implements Serializable {
+public class Examine extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,6 +42,10 @@ public class Examine implements Serializable {
 
     @Column(name = "score")
     private Integer score;
+
+    @Column(name = "user_id", nullable = false)
+    @NotNull
+    private Long userId;
 
     @NotNull
     @Column(name = "project_id", nullable = false)
@@ -147,6 +151,18 @@ public class Examine implements Serializable {
         this.projectId = projectId;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    public Examine UserId(Long userId) {
+        this.userId = userId;
+        return this;
+    }
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     @Override
     public boolean equals(Object o) {

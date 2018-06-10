@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface ExamineRepository extends JpaRepository<Examine, Long> {
 
+    @Query(value = "select e.id from Examine e where e.userId = ?1")
+    Long findIdByUserId(Long userId);
 }
