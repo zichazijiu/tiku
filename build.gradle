@@ -4,6 +4,7 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "http://repo.springsource.org/plugins-release" }
         maven { url "http://repo.spring.io/plugins-release" }
         maven { url "https://plugins.gradle.org/m2/" }
     }
@@ -16,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id "org.sonarqube" version "2.5"
+    id "org.sonarqube" version "2.6.2"
     id "net.ltgt.apt-eclipse" version "0.13"
     id "net.ltgt.apt-idea" version "0.13"
     id "net.ltgt.apt" version "0.13"
