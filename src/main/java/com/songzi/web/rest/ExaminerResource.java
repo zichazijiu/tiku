@@ -4,10 +4,13 @@ import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Examiner;
 
 import com.songzi.repository.ExaminerRepository;
+import com.songzi.service.ExaminerService;
+import com.songzi.service.dto.ExaminerDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -37,8 +40,11 @@ public class ExaminerResource {
 
     private final ExaminerRepository examinerRepository;
 
-    public ExaminerResource(ExaminerRepository examinerRepository) {
+    private final ExaminerService examinerService;
+
+    public ExaminerResource(ExaminerRepository examinerRepository,ExaminerService examinerService) {
         this.examinerRepository = examinerRepository;
+        this.examinerService = examinerService;
     }
 
     /**
@@ -109,6 +115,21 @@ public class ExaminerResource {
     public ResponseEntity<Examiner> getExaminer(@PathVariable Long id) {
         log.debug("REST request to get Examiner : {}", id);
         Examiner examiner = examinerRepository.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examiner));
+    }
+
+    /**
+     * GET  /examiners/:id : get the "id" examiner.
+     *
+     * @param id the id of the examiner to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the examiner, or with status 404 (Not Found)
+     */
+    @GetMapping("/examiners/current")
+    @Timed
+    @ApiOperation(value = "已测试：获取考评员详情")
+    public ResponseEntity<ExaminerDTO> getCurrentExaminer() {
+        log.debug("REST request to get current Examiner");
+        ExaminerDTO examiner = examinerService.getCurrentExaminer();
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examiner));
     }
 

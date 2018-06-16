@@ -6,10 +6,12 @@ import com.songzi.domain.Project;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.ProjectService;
+import com.songzi.service.dto.ProjectDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -95,13 +97,12 @@ public class ProjectResource {
      * @return the ResponseEntity with status 200 (OK) and the list of projects in body
      */
     @GetMapping("/projects")
+    @ApiOperation(value = "已测试：获取项目列表")
     @Timed
-    public ResponseEntity<List<Project>> getAllProjects(Pageable pageable) {
+    public ResponseEntity<List<ProjectDTO>> getAllProjects(Pageable pageable) {
         log.debug("REST request to get a page of Projects");
-        Page<Project> page = projectRepository.findAllByDelFlag(DeleteFlag.NORMAL, pageable);
+        Page<ProjectDTO> page = projectService.findAllWithExamine(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
-
-//        List content = projectService.getContent(page.getContent());
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

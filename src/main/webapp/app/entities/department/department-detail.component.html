@@ -1,0 +1,46 @@
+
+<div *ngIf="department">
+    <h2><span jhiTranslate="tikuApp.department.detail.title">Department</span> {{department.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.department.name">Name</span></dt>
+        <dd>
+            <span>{{department.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.department.code">Code</span></dt>
+        <dd>
+            <span>{{department.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.department.parentId">Parent Id</span></dt>
+        <dd>
+            <span>{{department.parentId}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.department.departmentStatus">Department Status</span></dt>
+        <dd>
+            <span>{{department.departmentStatus}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.department.departmentType">Department Type</span></dt>
+        <dd>
+            <span>{{department.departmentType}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.department.delFlag">Del Flag</span></dt>
+        <dd>
+            <span>{{department.delFlag}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'department/'+ department.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

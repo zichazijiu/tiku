@@ -22,7 +22,7 @@ import org.hibernate.annotations.BatchSize;
  */
 @Entity
 @Table(name = "project")
-public class Project implements Serializable {
+public class Project extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -63,6 +63,10 @@ public class Project implements Serializable {
 
     @BatchSize(size = 20)
     private Set<Subject> subjects = new HashSet<>();
+
+    @OneToMany(mappedBy = "project")
+    @JsonIgnore
+    private Set<Examine> examines = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -154,6 +158,32 @@ public class Project implements Serializable {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+
+    public Set<Examine> getExamines() {
+        return examines;
+    }
+
+    public Project examines(Set<Examine> examines) {
+        this.examines = examines;
+        return this;
+    }
+
+    public Project addExamine(Examine examine) {
+        this.examines.add(examine);
+        examine.setProject(this);
+        return this;
+    }
+
+    public Project removeExamine(Examine examine) {
+        this.examines.remove(examine);
+        examine.setProject(null);
+        return this;
+    }
+
+    public void setExamines(Set<Examine> examines) {
+        this.examines = examines;
     }
 
     @Override

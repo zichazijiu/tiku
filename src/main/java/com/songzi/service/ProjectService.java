@@ -5,12 +5,14 @@ import com.songzi.domain.Authority;
 import com.songzi.domain.Examine;
 import com.songzi.domain.Project;
 import com.songzi.domain.User;
+import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.AuthorityRepository;
 import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
+import com.songzi.service.dto.ProjectDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.vm.ProjectVM;
@@ -51,16 +53,7 @@ public class ProjectService {
         this.userService = userService;
     }
 
-//    public List<ProjectVM> getContent(List<Project> content) {
-//        Long userId = userService.getCurrentUserId();
-//        for (Project project : content){
-//            Long examineId = examineRepository.findIdByUserId(userId);
-//            ProjectVM projectVM = new ProjectVM();
-//
-//            projectVM.setName(project.getName());
-//            projectVM.setDescription(project.getDescription());
-//            projectVM.setDate(project.get);
-//        }
-//
-//    }
+    public Page<ProjectDTO> findAllWithExamine(Pageable pageable) {
+        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL, pageable);
+    }
 }

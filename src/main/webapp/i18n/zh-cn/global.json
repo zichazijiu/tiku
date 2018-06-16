@@ -13,6 +13,7 @@
                 "examiner": "Examiner",
                 "statistics": "Statistics",
                 "logBackup": "Log Backup",
+                "department": "Department",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

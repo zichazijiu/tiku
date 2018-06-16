@@ -1,6 +1,8 @@
 package com.songzi.domain;
 
 
+import com.songzi.domain.enumeration.DeleteFlag;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -29,8 +31,9 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     private String status;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "del_flag", nullable = false)
-    private String delFlag;
+    private DeleteFlag delFlag;
 
     @NotNull
     @Column(name = "department_id", nullable = false)
@@ -47,9 +50,10 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     @NotNull
     private Long userId;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
     @NotNull
-    @Column(name = "project_id", nullable = false)
-    private Long projectId;
+    private Project project;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -86,16 +90,16 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
-    public String getDelFlag() {
+    public DeleteFlag getDelFlag() {
         return delFlag;
     }
 
-    public Examine delFlag(String delFlag) {
+    public Examine delFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
         return this;
     }
 
-    public void setDelFlag(String delFlag) {
+    public void setDelFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
     }
 
@@ -138,17 +142,17 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.score = score;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public Examine projectId(Long projectId) {
-        this.projectId = projectId;
+    public Examine project(Project project) {
+        this.project = project;
         return this;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -194,7 +198,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
             ", departmentId=" + getDepartmentId() +
             ", duration=" + getDuration() +
             ", score=" + getScore() +
-            ", projectId=" + getProjectId() +
+            ", projectId=" + getProject().toString() +
             "}";
     }
 }
