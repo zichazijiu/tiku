@@ -97,14 +97,31 @@ public class ProjectResource {
      * @return the ResponseEntity with status 200 (OK) and the list of projects in body
      */
     @GetMapping("/projects")
-    @ApiOperation(value = "已测试：获取项目列表")
     @Timed
-    public ResponseEntity<List<ProjectDTO>> getAllProjects(Pageable pageable) {
+    public ResponseEntity<List<Project>> getAllProjects(Pageable pageable) {
         log.debug("REST request to get a page of Projects");
-        Page<ProjectDTO> page = projectService.findAllWithExamine(pageable);
+        Page<Project> page = projectRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
+
+    /**
+     * GET  /projects : get all the projects.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of projects in body
+     */
+    @GetMapping("/projects/current")
+    @ApiOperation(value = "已测试：获取项目列表")
+    @Timed
+    public ResponseEntity<List<ProjectDTO>> getProjects4CurrentUser(Pageable pageable) {
+        log.debug("REST request to get a page of Projects for current user");
+        Page<ProjectDTO> page = projectService.findAllWithExamine(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects/current");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
     /**
      * GET  /projects/:id : get the "id" project.
