@@ -1,6 +1,8 @@
 package com.songzi.domain;
 
 
+import com.songzi.domain.enumeration.DeleteFlag;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -42,8 +44,9 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
     private Long right;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "del_flag", nullable = false)
-    private String delFlag;
+    private DeleteFlag delFlag;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -132,16 +135,16 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
         this.right = right;
     }
 
-    public String getDelFlag() {
+    public DeleteFlag getDelFlag() {
         return delFlag;
     }
 
-    public Subject delFlag(String delFlag) {
+    public Subject delFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
         return this;
     }
 
-    public void setDelFlag(String delFlag) {
+    public void setDelFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove

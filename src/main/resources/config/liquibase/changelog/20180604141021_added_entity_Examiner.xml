@@ -38,6 +38,34 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="cell_phone" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="email" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="sex" type="varchar(10)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="birth" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="location" type="varchar(200)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="address" type="varchar(200)">
+                <constraints nullable="false" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
 

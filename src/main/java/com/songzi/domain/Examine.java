@@ -50,10 +50,11 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     @NotNull
     private Long userId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
-    @NotNull
-    private Project project;
+    @Column(name = "project_id")
+    private Long projectId;
+
+    @JoinColumn(name = "result",nullable = true)
+    private String result;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -142,18 +143,6 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.score = score;
     }
 
-    public Project getProject() {
-        return project;
-    }
-
-    public Examine project(Project project) {
-        this.project = project;
-        return this;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     public Examine UserId(Long userId) {
@@ -166,6 +155,22 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     @Override
@@ -198,7 +203,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
             ", departmentId=" + getDepartmentId() +
             ", duration=" + getDuration() +
             ", score=" + getScore() +
-            ", projectId=" + getProject().toString() +
+            ", projectId=" + getProjectId() +
             "}";
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ExaminerRepository extends JpaRepository<Examiner, Long> {
+public interface ExaminerRepository extends JpaRepository<Examiner, Long>,JpaSpecificationExecutor<Examiner>{
 
     @Query(value = "select e from Examiner e where e.userId = ?1")
     Examiner getOneByUserId(Long userId);

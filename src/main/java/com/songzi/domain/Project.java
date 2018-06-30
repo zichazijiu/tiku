@@ -54,20 +54,6 @@ public class Project extends AbstractAuditingEntity implements Serializable {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "project_subject",
-        joinColumns = {@JoinColumn(name = "project_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "subject_id", referencedColumnName = "id")})
-
-    @BatchSize(size = 20)
-    private Set<Subject> subjects = new HashSet<>();
-
-    @OneToMany(mappedBy = "project")
-    @JsonIgnore
-    private Set<Examine> examines = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -144,14 +130,6 @@ public class Project extends AbstractAuditingEntity implements Serializable {
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
 
-    public Set<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
     public Integer getDuration() {
         return duration;
     }
@@ -160,31 +138,6 @@ public class Project extends AbstractAuditingEntity implements Serializable {
         this.duration = duration;
     }
 
-
-    public Set<Examine> getExamines() {
-        return examines;
-    }
-
-    public Project examines(Set<Examine> examines) {
-        this.examines = examines;
-        return this;
-    }
-
-    public Project addExamine(Examine examine) {
-        this.examines.add(examine);
-        examine.setProject(this);
-        return this;
-    }
-
-    public Project removeExamine(Examine examine) {
-        this.examines.remove(examine);
-        examine.setProject(null);
-        return this;
-    }
-
-    public void setExamines(Set<Examine> examines) {
-        this.examines = examines;
-    }
 
     @Override
     public boolean equals(Object o) {

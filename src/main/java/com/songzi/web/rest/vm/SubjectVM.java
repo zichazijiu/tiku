@@ -1,24 +1,20 @@
 package com.songzi.web.rest.vm;
 
-import com.songzi.domain.enumeration.DeleteFlag;
-import com.songzi.domain.enumeration.Status;
-import com.songzi.domain.enumeration.Type;
-
-import java.time.LocalDate;
-
-public class ProjectVM {
+public class SubjectVM {
 
     private Long id;
 
     private String name;
 
+    private String title;
+
     private String description;
 
-    private Status status;
+    private String status;
 
-    private Type type;
+    private String type;
 
-    private Integer duration;
+    private Long right;
 
     public Long getId() {
         return id;
@@ -36,6 +32,14 @@ public class ProjectVM {
         this.name = name;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -44,27 +48,27 @@ public class ProjectVM {
         this.description = description;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public Long getRight() {
+        return right;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setRight(Long right) {
+        this.right = right;
     }
 }

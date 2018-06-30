@@ -2,14 +2,14 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Project;
-
-import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.ProjectService;
 import com.songzi.service.dto.ProjectDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
+import com.songzi.web.rest.vm.ProjectQueryVM;
+import com.songzi.web.rest.vm.ProjectVM;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -51,18 +50,18 @@ public class ProjectResource {
     /**
      * POST  /projects : Create a new project.
      *
-     * @param project the project to create
+     * @param projectVM the project to create
      * @return the ResponseEntity with status 201 (Created) and with body the new project, or with status 400 (Bad Request) if the project has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/projects")
     @Timed
-    public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) throws URISyntaxException {
-        log.debug("REST request to save Project : {}", project);
-        if (project.getId() != null) {
-            throw new BadRequestAlertException("A new project cannot already have an ID", ENTITY_NAME, "idexists");
+    public ResponseEntity<Project> createProject(@Valid @RequestBody ProjectVM projectVM) throws URISyntaxException {
+        log.debug("REST request to save Project : {}", projectVM);
+        if (projectVM.getId() != null) {
+            throw new BadRequestAlertException("新建项目ID必须为空", ENTITY_NAME, "ID必须为空");
         }
-        Project result = projectRepository.save(project);
+        Project result = projectService.insert(projectVM);
         return ResponseEntity.created(new URI("/api/projects/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -71,7 +70,7 @@ public class ProjectResource {
     /**
      * PUT  /projects : Updates an existing project.
      *
-     * @param project the project to update
+     * @param projectVM the project to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated project,
      * or with status 400 (Bad Request) if the project is not valid,
      * or with status 500 (Internal Server Error) if the project couldn't be updated
@@ -79,14 +78,14 @@ public class ProjectResource {
      */
     @PutMapping("/projects")
     @Timed
-    public ResponseEntity<Project> updateProject(@Valid @RequestBody Project project) throws URISyntaxException {
-        log.debug("REST request to update Project : {}", project);
-        if (project.getId() == null) {
-            return createProject(project);
+    public ResponseEntity<Project> updateProject(@Valid @RequestBody ProjectVM projectVM) throws URISyntaxException {
+        log.debug("REST request to update Project : {}", projectVM);
+        if (projectVM.getId() == null) {
+            throw new BadRequestAlertException("更新项目ID不能为空", ENTITY_NAME, "ID不能为空");
         }
-        Project result = projectRepository.save(project);
+        Project result = projectService.update(projectVM);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, project.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -98,9 +97,9 @@ public class ProjectResource {
      */
     @GetMapping("/projects")
     @Timed
-    public ResponseEntity<List<Project>> getAllProjects(Pageable pageable) {
-        log.debug("REST request to get a page of Projects");
-        Page<Project> page = projectRepository.findAll(pageable);
+    public ResponseEntity<List<Project>> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
+        log.debug("REST request to get a page of Projects {}{}",projectQueryVM,pageable);
+        Page<Project> page = projectService.findAll(projectQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -149,5 +148,28 @@ public class ProjectResource {
         log.debug("REST request to delete Project : {}", id);
         projectRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PostMapping("/projects/{projectId}/subjects")
+    @Timed
+    public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestBody List<Long> subjectIdList){
+
+
+        return null;
+    }
+
+
+    @PostMapping("/projects/depoly/{projectId}")
+    @Timed
+    public ResponseEntity depolyProject(@PathVariable(value = "projectId") Long projectId){
+
+        return null;
+    }
+
+    @PostMapping("/projects/auditing/{projectId}")
+    @Timed
+    public ResponseEntity auditing(Long projectId){
+
+        return null;
     }
 }

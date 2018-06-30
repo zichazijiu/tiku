@@ -4,12 +4,16 @@ import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Department;
 
 import com.songzi.repository.DepartmentRepository;
+import com.songzi.service.DepartmentSerivce;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
+import com.songzi.web.rest.vm.DepartmentQueryVM;
+import com.songzi.web.rest.vm.DepartmentVM;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +41,9 @@ public class DepartmentResource {
 
     private final DepartmentRepository departmentRepository;
 
+    @Autowired
+    private DepartmentSerivce departmentSerivce;
+
     public DepartmentResource(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
@@ -44,18 +51,18 @@ public class DepartmentResource {
     /**
      * POST  /departments : Create a new department.
      *
-     * @param department the department to create
+     * @param departmentVM the department to create
      * @return the ResponseEntity with status 201 (Created) and with body the new department, or with status 400 (Bad Request) if the department has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/departments")
     @Timed
-    public ResponseEntity<Department> createDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
-        log.debug("REST request to save Department : {}", department);
-        if (department.getId() != null) {
-            throw new BadRequestAlertException("A new department cannot already have an ID", ENTITY_NAME, "idexists");
+    public ResponseEntity<Department> createDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
+        log.debug("REST request to save Department : {}", departmentVM);
+        if (departmentVM.getId() != null) {
+            throw new BadRequestAlertException("新建机构ID必须为空", ENTITY_NAME, "ID必须为空");
         }
-        Department result = departmentRepository.save(department);
+        Department result = departmentSerivce.insert(departmentVM);
         return ResponseEntity.created(new URI("/api/departments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -64,7 +71,7 @@ public class DepartmentResource {
     /**
      * PUT  /departments : Updates an existing department.
      *
-     * @param department the department to update
+     * @param departmentVM the department to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated department,
      * or with status 400 (Bad Request) if the department is not valid,
      * or with status 500 (Internal Server Error) if the department couldn't be updated
@@ -72,14 +79,14 @@ public class DepartmentResource {
      */
     @PutMapping("/departments")
     @Timed
-    public ResponseEntity<Department> updateDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
-        log.debug("REST request to update Department : {}", department);
-        if (department.getId() == null) {
-            return createDepartment(department);
+    public ResponseEntity<Department> updateDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
+        log.debug("REST request to update Department : {}", departmentVM);
+        if (departmentVM.getId() == null) {
+            throw new BadRequestAlertException("更新机构ID不能为空", ENTITY_NAME, "ID不能为空");
         }
-        Department result = departmentRepository.save(department);
+        Department result = departmentSerivce.update(departmentVM);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, department.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -91,9 +98,9 @@ public class DepartmentResource {
      */
     @GetMapping("/departments")
     @Timed
-    public ResponseEntity<List<Department>> getAllDepartments(Pageable pageable) {
-        log.debug("REST request to get a page of Departments");
-        Page<Department> page = departmentRepository.findAll(pageable);
+    public ResponseEntity<List<Department>> getAllDepartments(DepartmentQueryVM departmentQueryVM, Pageable pageable) {
+        log.debug("REST request to get a page of Departments {}{}",departmentQueryVM,pageable);
+        Page<Department> page = departmentSerivce.getAll(departmentQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

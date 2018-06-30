@@ -1,7 +1,12 @@
 package com.songzi.service.dto;
 
+import com.songzi.domain.enumeration.Sex;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @ApiModel(description = "考评员")
 public class ExaminerDTO {
@@ -17,6 +22,35 @@ public class ExaminerDTO {
 
     @ApiModelProperty(value = "部门Id")
     private Long departmentId;
+
+    @ApiModelProperty(name = "手机号")
+    @Column(name = "cell_phone")
+    private String cellPhone;
+
+    @ApiModelProperty(name = "邮箱")
+    @Column(name = "email")
+    private String email;
+
+    @ApiModelProperty(name = "性别")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sex")
+    private Sex sex;
+
+    @ApiModelProperty(name = "生日")
+    @Column(name = "birth")
+    private String birth;
+
+    @ApiModelProperty(name = "区域")
+    @Column(name = "location")
+    private String location;
+
+    @ApiModelProperty(name = "座机")
+    @Column(name = "phone")
+    private String phone;
+
+    @ApiModelProperty(name = "地址")
+    @Column(name = "address")
+    private String address;
 
     public String getName() {
         return name;
@@ -48,5 +82,61 @@ public class ExaminerDTO {
 
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

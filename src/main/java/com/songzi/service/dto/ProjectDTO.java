@@ -18,11 +18,15 @@ public class ProjectDTO {
     @ApiModelProperty(value = "做题时间")
     private Instant date;
 
-    @ApiModelProperty(value = "分数")
+    @ApiModelProperty(value = "考试id")
     private Long examineId;
 
     @ApiModelProperty(value = "分数")
     private Integer score;
+
+    public ProjectDTO(){
+
+    }
 
     public ProjectDTO(String name, String description, Instant date, Long examineId, Integer score) {
         this.name = name;
