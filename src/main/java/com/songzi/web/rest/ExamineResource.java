@@ -9,7 +9,9 @@ import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.ExamineVM;
+import com.songzi.web.rest.vm.QuestionVM;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,7 @@ public class ExamineResource {
      */
     @PostMapping("/examines")
     @Timed
+    @ApiOperation(value = "开始答题")
     public ResponseEntity<ExamineDTO> createExamine(@Valid @RequestBody ExamineVM examineVM) throws URISyntaxException {
         log.debug("REST request to save Examine : {}", examineVM);
         if (examineVM.getId() != null) {
@@ -96,6 +99,7 @@ public class ExamineResource {
      */
     @GetMapping("/examines")
     @Timed
+    @ApiOperation(value = "查询所有的考试")
     public ResponseEntity<List<ExamineDTO>> getAllExamines(Pageable pageable) {
         log.debug("REST request to get a page of Examines");
         Page<ExamineDTO> page = examineService.getAll(pageable);
@@ -111,6 +115,7 @@ public class ExamineResource {
      */
     @GetMapping("/examines/{id}")
     @Timed
+    @ApiOperation(value = "通过id查询考试详情")
     public ResponseEntity<ExamineDTO> getExamine(@PathVariable Long id) {
         log.debug("REST request to get Examine : {}", id);
         ExamineDTO examineDTO = examineService.getOne(id);
@@ -129,5 +134,13 @@ public class ExamineResource {
         log.debug("REST request to delete Examine : {}", id);
         examineRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PutMapping("/examines/{examineId}/questions")
+    @Timed
+    @ApiOperation(value = "答题")
+    public ResponseEntity answer(@PathVariable(value = "examineId") Long examineId, @RequestBody List<QuestionVM> questionVMList){
+
+        return null;
     }
 }

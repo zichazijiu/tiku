@@ -11,6 +11,7 @@ import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
 import com.songzi.web.rest.vm.DepartmentVM;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class DepartmentResource {
      */
     @PostMapping("/departments")
     @Timed
+    @ApiOperation(value = "新建机构")
     public ResponseEntity<Department> createDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
         log.debug("REST request to save Department : {}", departmentVM);
         if (departmentVM.getId() != null) {
@@ -79,6 +81,7 @@ public class DepartmentResource {
      */
     @PutMapping("/departments")
     @Timed
+    @ApiOperation(value = "更新机构")
     public ResponseEntity<Department> updateDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
         log.debug("REST request to update Department : {}", departmentVM);
         if (departmentVM.getId() == null) {
@@ -98,6 +101,7 @@ public class DepartmentResource {
      */
     @GetMapping("/departments")
     @Timed
+    @ApiOperation(value = "查询所有机构")
     public ResponseEntity<List<Department>> getAllDepartments(DepartmentQueryVM departmentQueryVM, Pageable pageable) {
         log.debug("REST request to get a page of Departments {}{}",departmentQueryVM,pageable);
         Page<Department> page = departmentSerivce.getAll(departmentQueryVM,pageable);

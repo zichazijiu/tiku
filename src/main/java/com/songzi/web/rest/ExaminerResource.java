@@ -60,6 +60,7 @@ public class ExaminerResource {
      */
     @PostMapping("/examiners")
     @Timed
+    @ApiOperation(value = "新建考核员")
     public ResponseEntity<Examiner> createExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
         log.debug("REST request to save Examiner : {}", examinerVM);
         if (examinerVM.getId() != null) {
@@ -82,6 +83,7 @@ public class ExaminerResource {
      */
     @PutMapping("/examiners")
     @Timed
+    @ApiOperation(value = "更新考核员")
     public ResponseEntity<Examiner> updateExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
         log.debug("REST request to update Examiner : {}", examinerVM);
         if (examinerVM.getId() == null) {
@@ -101,6 +103,7 @@ public class ExaminerResource {
      */
     @GetMapping("/examiners")
     @Timed
+    @ApiOperation(value = "查询所有的考核员")
     public ResponseEntity<List<ExaminerDTO>> getAllExaminers(ExaminerQueryVM examinerQueryVM, Pageable pageable) {
         log.debug("REST request to get a page of Examiners {}{}",examinerQueryVM,pageable);
         Page<ExaminerDTO> page = examinerService.getAll(examinerQueryVM,pageable);

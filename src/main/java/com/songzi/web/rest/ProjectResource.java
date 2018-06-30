@@ -56,6 +56,7 @@ public class ProjectResource {
      */
     @PostMapping("/projects")
     @Timed
+    @ApiOperation(value = "新建项目")
     public ResponseEntity<Project> createProject(@Valid @RequestBody ProjectVM projectVM) throws URISyntaxException {
         log.debug("REST request to save Project : {}", projectVM);
         if (projectVM.getId() != null) {
@@ -78,6 +79,7 @@ public class ProjectResource {
      */
     @PutMapping("/projects")
     @Timed
+    @ApiOperation(value = "更新项目")
     public ResponseEntity<Project> updateProject(@Valid @RequestBody ProjectVM projectVM) throws URISyntaxException {
         log.debug("REST request to update Project : {}", projectVM);
         if (projectVM.getId() == null) {
@@ -97,6 +99,7 @@ public class ProjectResource {
      */
     @GetMapping("/projects")
     @Timed
+    @ApiOperation(value = "查询所有项目")
     public ResponseEntity<List<Project>> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
         log.debug("REST request to get a page of Projects {}{}",projectQueryVM,pageable);
         Page<Project> page = projectService.findAll(projectQueryVM,pageable);
@@ -152,6 +155,7 @@ public class ProjectResource {
 
     @PostMapping("/projects/{projectId}/subjects")
     @Timed
+    @ApiOperation(value = "给项目添加考核项")
     public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestBody List<Long> subjectIdList){
 
 
@@ -161,6 +165,7 @@ public class ProjectResource {
 
     @PostMapping("/projects/depoly/{projectId}")
     @Timed
+    @ApiOperation(value = "发布项目")
     public ResponseEntity depolyProject(@PathVariable(value = "projectId") Long projectId){
 
         return null;
@@ -168,6 +173,7 @@ public class ProjectResource {
 
     @PostMapping("/projects/auditing/{projectId}")
     @Timed
+    @ApiOperation(value = "评审项目")
     public ResponseEntity auditing(Long projectId){
 
         return null;

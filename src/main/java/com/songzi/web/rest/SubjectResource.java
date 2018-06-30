@@ -12,6 +12,7 @@ import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.SubjectQueryVM;
 import com.songzi.web.rest.vm.SubjectVM;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class SubjectResource {
      */
     @PostMapping("/subjects")
     @Timed
+    @ApiOperation(value = "新建考核项")
     public ResponseEntity<Subject> createSubject(@Valid @RequestBody SubjectVM subjectVM) throws URISyntaxException {
         log.debug("REST request to save Subject : {}", subjectVM);
         if (subjectVM.getId() != null) {
@@ -80,6 +82,7 @@ public class SubjectResource {
      */
     @PutMapping("/subjects")
     @Timed
+    @ApiOperation(value = "更新考核项")
     public ResponseEntity<Subject> updateSubject(@Valid @RequestBody SubjectVM subjectVM) throws URISyntaxException {
         log.debug("REST request to update Subject : {}", subjectVM);
         if (subjectVM.getId() == null) {
@@ -99,6 +102,7 @@ public class SubjectResource {
      */
     @GetMapping("/subjects")
     @Timed
+    @ApiOperation(value = "查询所有的考核项目")
     public ResponseEntity<List<SubjectDTO>> getAllSubjects(SubjectQueryVM subjectQueryVM,Pageable pageable) {
         log.debug("REST request to get a page of Subjects {}{}",subjectQueryVM,pageable);
         Page<SubjectDTO> page = subjectService.getAll(subjectQueryVM,pageable);
