@@ -23,8 +23,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
     @Query(value = "select p from Project p where p.delFlag = ?1")
     Page<Project> findAllByDelFlag(DeleteFlag deleteFlag, Pageable pageable);
 
-    @Query(value = "select new com.songzi.service.dto.ProjectDTO(p.name, p.description, p.createdDate, e.id, e.score) from Project p left join Examine e on p.id = e.projectId where p.delFlag = ?1 and e.delFlag = ?1 or e.delFlag IS NULL")
-    Page<ProjectDTO> findAllByDelFlagWithExamine(DeleteFlag deleteFlag, Pageable pageable);
+    @Query(value = "select new com.songzi.service.dto.ProjectDTO(p.name, p.description, p.createdDate, e.id, e.score) from Project p left join Examine e on p.id = e.projectId where p.delFlag = ?1 and e.delFlag = ?1 and e.userId = ?2")
+    Page<ProjectDTO> findAllByDelFlagWithExamine(DeleteFlag deleteFlag,Long userId, Pageable pageable);
 
     @Query(value = "select p.name from project p LEFT JOIN project_subject ps on p.id = ps.project_id where ps.subject_id =?1 and p.del_flag = 'NORMAL'",nativeQuery = true)
     List<String> getProjectNameBySujectId(Long subjectId);

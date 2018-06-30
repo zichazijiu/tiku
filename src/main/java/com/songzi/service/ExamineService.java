@@ -101,4 +101,19 @@ public class ExamineService {
         return examineRepository.findAllByDelFlag(DeleteFlag.NORMAL,pageable)
             .map(examineMapper :: toDto);
     }
+
+    public ExamineDTO getOne(Long id){
+        Examine examine = examineRepository.findOne(id);
+        Examiner examiner = examinerRepository.getOneByUserId(userService.getCurrentUserId());
+        Department department = departmentRepository.findOne(examiner.getDepartmentId());
+        Project project = projectRepository.findOne(examine.getProjectId());
+
+        ExamineDTO examineDTO = examineMapper.toDto(examine);
+        examineDTO.setProject(projectMapper.toDto(project));
+        examineDTO.setExamineSubjectDTOList(
+            subjectRepository.findAllByProjectId(project.getId())
+                .stream().map(examineSubjectVMMapper :: toDto)
+                .collect(Collectors.toList()));
+        return examineDTO;
+    }
 }

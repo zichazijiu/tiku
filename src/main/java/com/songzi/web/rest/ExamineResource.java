@@ -111,10 +111,10 @@ public class ExamineResource {
      */
     @GetMapping("/examines/{id}")
     @Timed
-    public ResponseEntity<Examine> getExamine(@PathVariable Long id) {
+    public ResponseEntity<ExamineDTO> getExamine(@PathVariable Long id) {
         log.debug("REST request to get Examine : {}", id);
-        Examine examine = examineRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examine));
+        ExamineDTO examineDTO = examineService.getOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examineDTO));
     }
 
     /**

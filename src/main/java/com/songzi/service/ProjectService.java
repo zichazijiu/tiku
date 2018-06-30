@@ -102,6 +102,7 @@ public class ProjectService {
     }
 
     public Page<ProjectDTO> findAllWithExamine(Pageable pageable) {
-        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL, pageable);
+        Long userId = userService.getCurrentUserId();
+        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL,userId,pageable);
     }
 }
