@@ -70,6 +70,8 @@ public class ExamineService {
         Project project = projectRepository.findOne(examineVM.getProjectId());
         examine.setName(department.getName()+"-"+examiner.getName()+ project.getName() + "-" +"的考试");
         examine.setScore(0);
+        examine.setDuration(project.getDuration());
+        examine.setStatus("0");
         examine =  examineRepository.save(examine);
 
         ExamineDTO examineDTO = examineMapper.toDto(examine);
