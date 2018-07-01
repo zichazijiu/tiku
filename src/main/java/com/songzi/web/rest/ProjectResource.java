@@ -103,9 +103,9 @@ public class ProjectResource {
     @GetMapping("/projects")
     @Timed
     @ApiOperation(value = "查询所有项目")
-    public ResponseEntity<List<Project>> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
+    public ResponseEntity<List<ProjectDTO>> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
         log.debug("REST request to get a page of Projects {}{}",projectQueryVM,pageable);
-        Page<Project> page = projectService.findAll(projectQueryVM,pageable);
+        Page<ProjectDTO> page = projectService.findAll(projectQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

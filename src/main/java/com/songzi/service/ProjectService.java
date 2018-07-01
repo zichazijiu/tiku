@@ -86,7 +86,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Page<Project> findAll(ProjectQueryVM projectQueryVM, Pageable pageable){
+    public Page<ProjectDTO> findAll(ProjectQueryVM projectQueryVM, Pageable pageable){
         return projectRepository.findAll(new Specification<Project>() {
             @Override
             public Predicate toPredicate(Root<Project> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -101,7 +101,7 @@ public class ProjectService {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable);
+        },pageable).map(projectMapper :: toDto);
     }
 
     /**

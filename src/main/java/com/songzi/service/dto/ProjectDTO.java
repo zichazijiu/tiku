@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 
 @ApiModel(description = "项目")
@@ -27,20 +28,24 @@ public class ProjectDTO {
     @ApiModelProperty(value = "用户是否答过题标志")
     private boolean hasExamineFlag;
 
+    @ApiModelProperty(value = "创建时间")
+    private Instant createdDate;
+
+    @ApiModelProperty(value = "创建人")
+    private String createdBy;
+
     public ProjectDTO(){
 
     }
 
-    public ProjectDTO(String name, String description, Instant date, Long examineId, Integer score) {
+    public ProjectDTO(String name, String description, Instant date, Long examineId, Integer score,Instant createDate,String createBy) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.examineId = examineId;
         this.score = score;
-        if(this.examineId == null){
-            this.hasExamineFlag = false;
-        }
-        this.hasExamineFlag = true;
+        this.createdDate = createdDate;
+        this.createdBy = createdBy;
     }
 
     public String getName() {
@@ -84,10 +89,31 @@ public class ProjectDTO {
     }
 
     public boolean isHasExamineFlag() {
+        if(this.examineId == null){
+            this.hasExamineFlag = false;
+        }else{
+            this.hasExamineFlag = true;
+        }
         return hasExamineFlag;
     }
 
     public void setHasExamineFlag(boolean hasExamineFlag) {
         this.hasExamineFlag = hasExamineFlag;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

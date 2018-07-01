@@ -4,7 +4,7 @@ public class QuestionVM {
 
     private Long subjectId;
 
-    private int right;
+    private Long right;
 
     public Long getSubjectId() {
         return subjectId;
@@ -14,11 +14,11 @@ public class QuestionVM {
         this.subjectId = subjectId;
     }
 
-    public int getRight() {
+    public Long getRight() {
         return right;
     }
 
-    public void setRight(int right) {
+    public void setRight(Long right) {
         this.right = right;
     }
 }

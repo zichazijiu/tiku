@@ -140,7 +140,7 @@ public class ExamineResource {
     @Timed
     @ApiOperation(value = "答题")
     public ResponseEntity answer(@PathVariable(value = "examineId") Long examineId, @RequestBody List<QuestionVM> questionVMList){
-
+        examineService.answer(examineId,questionVMList);
         return null;
     }
 }

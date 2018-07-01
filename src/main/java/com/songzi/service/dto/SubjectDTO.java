@@ -1,5 +1,7 @@
 package com.songzi.service.dto;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 public class SubjectDTO {
@@ -19,6 +21,10 @@ public class SubjectDTO {
     private Long right;
 
     List<String> projectList;
+
+    private String createdBy;
+
+    private Instant createdDate;
 
     public Long getId() {
         return id;
@@ -82,5 +88,21 @@ public class SubjectDTO {
 
     public void setProjectList(List<String> projectList) {
         this.projectList = projectList;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
     }
 }

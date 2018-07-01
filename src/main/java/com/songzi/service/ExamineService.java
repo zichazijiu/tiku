@@ -1,9 +1,6 @@
 package com.songzi.service;
 
-import com.songzi.domain.Department;
-import com.songzi.domain.Examine;
-import com.songzi.domain.Examiner;
-import com.songzi.domain.Project;
+import com.songzi.domain.*;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.*;
 import com.songzi.service.dto.ExamineDTO;
@@ -12,12 +9,16 @@ import com.songzi.service.mapper.ExamineSubjectVMMapper;
 import com.songzi.service.mapper.ExamineVMMapper;
 import com.songzi.service.mapper.ProjectMapper;
 import com.songzi.web.rest.vm.ExamineVM;
+import com.songzi.web.rest.vm.QuestionVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,5 +118,20 @@ public class ExamineService {
                 .stream().map(examineSubjectVMMapper :: toDto)
                 .collect(Collectors.toList()));
         return examineDTO;
+    }
+
+    public Examine answer(Long examineId,List<QuestionVM> questionVMList){
+        Examine examine = examineRepository.findOne(examineId);
+
+//        Long projectId = examine.getProjectId();
+//        Map<Long,Subject> subjectMap = subjectRepository.findAllByProjectId(projectId).stream().collect(Collectors.toMap(Subject ::getId,Function.identity()));
+//
+//        for(QuestionVM questionVM : questionVMList){
+//            Subject subject = subjectMap.get(questionVM.getSubjectId());
+//            if(subject.getRight() == questionVM.getRight()){
+//
+//            }
+//        }
+        return null;
     }
 }
