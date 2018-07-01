@@ -3,11 +3,13 @@ package com.songzi.service;
 import com.songzi.domain.Department;
 import com.songzi.domain.Project;
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.Status;
 import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.dto.ProjectDTO;
 import com.songzi.service.mapper.ProjectMapper;
 import com.songzi.service.mapper.ProjectVMMapper;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ProjectQueryVM;
 import com.songzi.web.rest.vm.ProjectVM;
 import org.slf4j.Logger;
@@ -62,6 +64,7 @@ public class ProjectService {
         Project project = projectVMMapper.toEntity(projectVM);
 
         project.setDelFlag(DeleteFlag.NORMAL);
+        project.setStatus(Status.NORMAL);
 
         return projectRepository.save(project);
     }
@@ -75,7 +78,7 @@ public class ProjectService {
         Project project = projectRepository.findOne(projectVM.getId());
 
         project.setName(projectVM.getName());
-        project.setStatus(projectVM.getStatus());
+        project.setStatus(Status.NORMAL);
         project.setType(projectVM.getType());
         project.setDescription(projectVM.getDescription());
         project.setDuration(projectVM.getDuration());
@@ -101,8 +104,56 @@ public class ProjectService {
         },pageable);
     }
 
+    /**
+     *
+     * @param pageable
+     * @return
+     */
     public Page<ProjectDTO> findAllWithExamine(Pageable pageable) {
         Long userId = userService.getCurrentUserId();
-        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL,userId,pageable);
+        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL,userId,Status.PUBLISH,pageable);
+    }
+
+    /**
+     *
+     * @param projectId
+     * @param subjectIdList
+     */
+    public void addSubject(Long projectId,List<Long> subjectIdList){
+        for(Long subjectId : subjectIdList){
+            projectRepository.insertProjectSubject(projectId,subjectId);
+        }
+    }
+
+    /**
+     * 发布
+     * @param projectId
+     * @return
+     */
+    public Project publish(Long projectId){
+        Project project = projectRepository.findOne(projectId);
+        if(project.getStatus() != Status.AUDITED){
+            throw new BadRequestAlertException("只有审批状态的项目才能发布",this.getClass().getName(),"只有审批状态的项目才能发布");
+        }
+        project.setStatus(Status.PUBLISH);
+        return projectRepository.save(project);
+    }
+
+    /**
+     * 审批
+     * @param projectId
+     * @return
+     */
+    public Project audited(Long projectId,Status status){
+        Project project = projectRepository.findOne(projectId);
+        if(project.getStatus() == Status.PUBLISH){
+            throw new BadRequestAlertException("发布过的项目不能再次审批",this.getClass().getName(),"发布过的项目不能再次审批");
+        }
+        if(status == Status.AUDITED){
+            project.setStatus(Status.AUDITED);
+        }else{
+            project.setStatus(Status.NOTAUDITED);
+        }
+        return projectRepository.save(project);
     }
 }

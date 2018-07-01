@@ -2,6 +2,7 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Project;
+import com.songzi.domain.enumeration.Status;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.ProjectService;
 import com.songzi.service.dto.ProjectDTO;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -156,26 +159,29 @@ public class ProjectResource {
     @PostMapping("/projects/{projectId}/subjects")
     @Timed
     @ApiOperation(value = "给项目添加考核项")
-    public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestBody List<Long> subjectIdList){
-
-
-        return null;
+    public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestParam(value = "subjectIdList") List<Long> subjectIdList){
+        log.debug("给项目添加考核项 {}{}",projectId,subjectIdList);
+        projectService.addSubject(projectId,subjectIdList);
+        Map map = new HashMap();
+        map.put("successFlag","1");
+        map.put("message","all success");
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(map));
     }
 
 
-    @PostMapping("/projects/depoly/{projectId}")
+    @PostMapping("/projects/publish/{projectId}")
     @Timed
     @ApiOperation(value = "发布项目")
-    public ResponseEntity depolyProject(@PathVariable(value = "projectId") Long projectId){
-
-        return null;
+    public ResponseEntity publishProject(@PathVariable(value = "projectId") Long projectId){
+        Project project = projectService.publish(projectId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
     }
 
-    @PostMapping("/projects/auditing/{projectId}")
+    @PostMapping("/projects/audited/{projectId}/{status}")
     @Timed
     @ApiOperation(value = "评审项目")
-    public ResponseEntity auditing(Long projectId){
-
-        return null;
+    public ResponseEntity audited(@PathVariable(value = "projectId") Long projectId,@PathVariable(value = "status") Status status){
+        Project project = projectService.audited(projectId,status);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
     }
 }

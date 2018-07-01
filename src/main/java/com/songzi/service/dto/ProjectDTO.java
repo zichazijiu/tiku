@@ -24,6 +24,9 @@ public class ProjectDTO {
     @ApiModelProperty(value = "分数")
     private Integer score;
 
+    @ApiModelProperty(value = "用户是否答过题标志")
+    private boolean hasExamineFlag;
+
     public ProjectDTO(){
 
     }
@@ -34,6 +37,10 @@ public class ProjectDTO {
         this.date = date;
         this.examineId = examineId;
         this.score = score;
+        if(this.examineId == null){
+            this.hasExamineFlag = false;
+        }
+        this.hasExamineFlag = true;
     }
 
     public String getName() {
@@ -76,4 +83,11 @@ public class ProjectDTO {
         this.score = score;
     }
 
+    public boolean isHasExamineFlag() {
+        return hasExamineFlag;
+    }
+
+    public void setHasExamineFlag(boolean hasExamineFlag) {
+        this.hasExamineFlag = hasExamineFlag;
+    }
 }

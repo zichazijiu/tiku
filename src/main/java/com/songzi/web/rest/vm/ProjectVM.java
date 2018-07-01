@@ -14,8 +14,6 @@ public class ProjectVM {
 
     private String description;
 
-    private Status status;
-
     private Type type;
 
     private Integer duration;
@@ -42,14 +40,6 @@ public class ProjectVM {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public Type getType() {
