@@ -136,11 +136,11 @@ public class ExamineResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    @PutMapping("/examines/{examineId}/questions")
+    @PutMapping("/examines/{examineId}/questions/{submit}")
     @Timed
     @ApiOperation(value = "答题")
-    public ResponseEntity answer(@PathVariable(value = "examineId") Long examineId, @RequestBody List<QuestionVM> questionVMList){
-        examineService.answer(examineId,questionVMList);
-        return null;
+    public ResponseEntity<?> answer(@PathVariable(value = "examineId") Long examineId,@PathVariable(value = "submit") String submit,@RequestBody List<QuestionVM> questionVMList){
+        ExamineDTO examineDTO = examineService.answer(examineId,submit,questionVMList);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examineDTO));
     }
 }

@@ -1,5 +1,6 @@
 package com.songzi.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.songzi.domain.*;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.*;
@@ -120,18 +121,27 @@ public class ExamineService {
         return examineDTO;
     }
 
-    public Examine answer(Long examineId,List<QuestionVM> questionVMList){
+    public ExamineDTO answer(Long examineId,String submit,List<QuestionVM> questionVMList){
         Examine examine = examineRepository.findOne(examineId);
 
-//        Long projectId = examine.getProjectId();
-//        Map<Long,Subject> subjectMap = subjectRepository.findAllByProjectId(projectId).stream().collect(Collectors.toMap(Subject ::getId,Function.identity()));
-//
-//        for(QuestionVM questionVM : questionVMList){
-//            Subject subject = subjectMap.get(questionVM.getSubjectId());
-//            if(subject.getRight() == questionVM.getRight()){
-//
-//            }
-//        }
-        return null;
+        String result = JSONObject.toJSONString(questionVMList);
+        examine.setResult(result);
+
+        if(submit != null && "submit".equals(submit)){
+            Long projectId = examine.getProjectId();
+            Map<Long,Subject> subjectMap = subjectRepository.findAllByProjectId(projectId).stream().collect(Collectors.toMap(Subject ::getId,Function.identity()));
+            int rightCount = 0;
+            int total = subjectMap.size();
+            for(QuestionVM questionVM : questionVMList){
+                Subject subject = subjectMap.get(questionVM.getSubjectId());
+                if(subject.getRight() == questionVM.getRight()){
+                    rightCount++;
+                }
+            }
+            int score = rightCount/total * 100;
+            examine.setScore(score);
+        }
+        examine = examineRepository.save(examine);
+        return examineMapper.toDto(examine);
     }
 }
