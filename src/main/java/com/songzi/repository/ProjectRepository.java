@@ -33,4 +33,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
     @Modifying
     @Query(value = "INSERT INTO project_subject(project_id,subject_id) VALUES (?1, ?2)",nativeQuery = true)
     void insertProjectSubject(Long projectId,Long subjectId);
+
+    @Query(value = "select count(ps.project_id) from project_subject ps where ps.project_id = ?1 and ps.subject_id = ?2",nativeQuery = true)
+    Long getProjectSubject(Long projectId,Long subjectId);
 }

@@ -10,6 +10,9 @@ import java.time.LocalDate;
 @ApiModel(description = "项目")
 public class ProjectDTO {
 
+    @ApiModelProperty(value = "主键id")
+    private Long id;
+
     @ApiModelProperty(value = "名称")
     private String name;
 
@@ -46,6 +49,14 @@ public class ProjectDTO {
         this.score = score;
         this.createdDate = createdDate;
         this.createdBy = createdBy;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

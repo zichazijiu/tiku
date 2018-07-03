@@ -3,6 +3,8 @@ package com.songzi.service;
 import com.songzi.domain.Department;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.DepartmentRepository;
+import com.songzi.service.dto.DepartmentDTO;
+import com.songzi.service.mapper.DepartmentMapper;
 import com.songzi.service.mapper.DepartmentVMMapper;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
 import com.songzi.web.rest.vm.DepartmentVM;
@@ -30,17 +32,19 @@ public class DepartmentSerivce {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
     /**
      * 新建机构部门
      * @param departmentVM
      * @return
      */
-    public Department insert(DepartmentVM departmentVM){
+    public DepartmentDTO insert(DepartmentVM departmentVM){
         Department department = departmentVMMapper.toEntity(departmentVM);
-        if(department.getParentId() == null){
-            department.setParentId(0L);
-        }
-        return departmentRepository.save(department);
+        department.setDepartmentStatus("NORMAL");
+        department.setDepartmentType("部门");
+        return departmentMapper.toDto(departmentRepository.save(department));
     }
 
     /**
@@ -48,17 +52,17 @@ public class DepartmentSerivce {
      * @param departmentVM
      * @return
      */
-    public Department update(DepartmentVM departmentVM){
+    public DepartmentDTO update(DepartmentVM departmentVM){
         Department department = departmentRepository.findOne(departmentVM.getId());
 
         department.setCode(departmentVM.getCode());
         department.setName(departmentVM.getName());
         department.setDelFlag(departmentVM.getDelFlag());
-        department.setDepartmentStatus(departmentVM.getDepartmentStatus());
-        department.setDepartmentType(departmentVM.getDepartmentType());
+        department.setDepartmentStatus("NORMAL");
+        department.setDepartmentType("部门");
         department.setParentId(departmentVM.getParentId());
 
-        return departmentRepository.save(department);
+        return departmentMapper.toDto(departmentRepository.save(department));
     }
 
     /**
@@ -67,7 +71,7 @@ public class DepartmentSerivce {
      * @param pageable
      * @return
      */
-    public Page<Department> getAll(DepartmentQueryVM departmentQueryVM, Pageable pageable){
+    public Page<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM, Pageable pageable){
 
         return departmentRepository.findAll(new Specification<Department>() {
             @Override
@@ -83,6 +87,6 @@ public class DepartmentSerivce {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable);
+        },pageable).map(departmentMapper :: toDto);
     }
 }

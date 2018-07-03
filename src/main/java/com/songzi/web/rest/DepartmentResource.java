@@ -5,6 +5,7 @@ import com.songzi.domain.Department;
 
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.service.DepartmentSerivce;
+import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
@@ -59,12 +60,12 @@ public class DepartmentResource {
     @PostMapping("/departments")
     @Timed
     @ApiOperation(value = "新建机构")
-    public ResponseEntity<Department> createDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
+    public ResponseEntity<DepartmentDTO> createDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
         log.debug("REST request to save Department : {}", departmentVM);
         if (departmentVM.getId() != null) {
             throw new BadRequestAlertException("新建机构ID必须为空", ENTITY_NAME, "ID必须为空");
         }
-        Department result = departmentSerivce.insert(departmentVM);
+        DepartmentDTO result = departmentSerivce.insert(departmentVM);
         return ResponseEntity.created(new URI("/api/departments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -82,12 +83,12 @@ public class DepartmentResource {
     @PutMapping("/departments")
     @Timed
     @ApiOperation(value = "更新机构")
-    public ResponseEntity<Department> updateDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
+    public ResponseEntity<DepartmentDTO> updateDepartment(@Valid @RequestBody DepartmentVM departmentVM) throws URISyntaxException {
         log.debug("REST request to update Department : {}", departmentVM);
         if (departmentVM.getId() == null) {
             throw new BadRequestAlertException("更新机构ID不能为空", ENTITY_NAME, "ID不能为空");
         }
-        Department result = departmentSerivce.update(departmentVM);
+        DepartmentDTO result = departmentSerivce.update(departmentVM);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -102,9 +103,9 @@ public class DepartmentResource {
     @GetMapping("/departments")
     @Timed
     @ApiOperation(value = "查询所有机构")
-    public ResponseEntity<List<Department>> getAllDepartments(DepartmentQueryVM departmentQueryVM, Pageable pageable) {
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartments(DepartmentQueryVM departmentQueryVM, Pageable pageable) {
         log.debug("REST request to get a page of Departments {}{}",departmentQueryVM,pageable);
-        Page<Department> page = departmentSerivce.getAll(departmentQueryVM,pageable);
+        Page<DepartmentDTO> page = departmentSerivce.getAll(departmentQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
