@@ -1,6 +1,7 @@
 package com.songzi.repository;
 
 import com.songzi.domain.Project;
+import com.songzi.domain.Subject;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.Status;
 import com.songzi.service.dto.ProjectDTO;
@@ -36,4 +37,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
 
     @Query(value = "select count(ps.project_id) from project_subject ps where ps.project_id = ?1 and ps.subject_id = ?2",nativeQuery = true)
     Long getProjectSubject(Long projectId,Long subjectId);
+
+    @Query(value = "select s.id,s.name,s.title,s.description,s.status,s.jhi_type,s.jhi_right,s.created_by,s.created_date from subject s left join project_subject ps on s.id = ps.subject_id where ps.project_id = ?1",nativeQuery = true)
+    List<Object[]> findAllSubjectByProjectId(Long projectId);
 }

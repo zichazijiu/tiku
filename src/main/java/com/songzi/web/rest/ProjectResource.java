@@ -136,9 +136,9 @@ public class ProjectResource {
      */
     @GetMapping("/projects/{id}")
     @Timed
-    public ResponseEntity<Project> getProject(@PathVariable Long id) {
+    public ResponseEntity<ProjectDTO> getProject(@PathVariable Long id) {
         log.debug("REST request to get Project : {}", id);
-        Project project = projectRepository.findOne(id);
+        ProjectDTO project = projectService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
     }
 
@@ -159,7 +159,7 @@ public class ProjectResource {
     @PostMapping("/projects/{projectId}/subjects")
     @Timed
     @ApiOperation(value = "给项目添加考核项")
-    public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestParam(value = "subjectIdList") List<Long> subjectIdList){
+    public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestBody List<Long> subjectIdList){
         log.debug("给项目添加考核项 {}{}",projectId,subjectIdList);
         projectService.addSubject(projectId,subjectIdList);
         Map map = new HashMap();

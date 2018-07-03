@@ -1,10 +1,12 @@
 package com.songzi.service.dto;
 
+import com.songzi.domain.enumeration.Status;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @ApiModel(description = "项目")
@@ -22,6 +24,9 @@ public class ProjectDTO {
     @ApiModelProperty(value = "做题时间")
     private Instant date;
 
+    @ApiModelProperty(value = "项目状态")
+    private Status status;
+
     @ApiModelProperty(value = "考试id")
     private Long examineId;
 
@@ -36,6 +41,8 @@ public class ProjectDTO {
 
     @ApiModelProperty(value = "创建人")
     private String createdBy;
+
+    private List<SubjectDTO> subjectDTOList;
 
     public ProjectDTO(){
 
@@ -126,5 +133,21 @@ public class ProjectDTO {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<SubjectDTO> getSubjectDTOList() {
+        return subjectDTOList;
+    }
+
+    public void setSubjectDTOList(List<SubjectDTO> subjectDTOList) {
+        this.subjectDTOList = subjectDTOList;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

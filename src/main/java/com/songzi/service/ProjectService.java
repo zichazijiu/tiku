@@ -1,14 +1,14 @@
 package com.songzi.service;
 
-import com.songzi.domain.Department;
 import com.songzi.domain.Project;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.Status;
-import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.dto.ProjectDTO;
+import com.songzi.service.dto.SubjectDTO;
 import com.songzi.service.mapper.ProjectMapper;
 import com.songzi.service.mapper.ProjectVMMapper;
+import com.songzi.service.mapper.SubjectMapper;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ProjectQueryVM;
 import com.songzi.web.rest.vm.ProjectVM;
@@ -25,9 +25,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +40,6 @@ public class ProjectService {
     private final Logger log = LoggerFactory.getLogger(ProjectService.class);
 
     private ProjectRepository projectRepository;
-    private ExamineRepository examineRepository;
     private UserService userService;
 
     @Autowired
@@ -49,9 +48,11 @@ public class ProjectService {
     @Autowired
     private ProjectVMMapper projectVMMapper;
 
-    public ProjectService(ProjectRepository projectRepository, ExamineRepository examineRepository, UserService userService) {
+    @Autowired
+    private SubjectMapper subjectMapper;
+
+    public ProjectService(ProjectRepository projectRepository, UserService userService) {
         this.projectRepository = projectRepository;
-        this.examineRepository = examineRepository;
         this.userService = userService;
     }
 
@@ -163,5 +164,33 @@ public class ProjectService {
             project.setStatus(Status.NOTAUDITED);
         }
         return projectRepository.save(project);
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public ProjectDTO findOne(Long id){
+        Project project = projectRepository.findOne(id);
+        ProjectDTO projectDTO = projectMapper.toDto(project);
+        List<Object[]> sub = projectRepository.findAllSubjectByProjectId(id);
+        List<SubjectDTO> subjectDTOList = new ArrayList<>();
+        for(Object[] objects : sub){
+            SubjectDTO subjectDTO = new SubjectDTO();
+            subjectDTO.setId (Long.parseLong(objects[0]+""));
+            subjectDTO.setName (objects[1]+"");
+            subjectDTO.setTitle (objects[2]+"");
+            subjectDTO.setDescription (objects[3]+"");
+            subjectDTO.setStatus (objects[4]+"");
+            subjectDTO.setType (objects[5]+"");
+            subjectDTO.setRight (Long.parseLong(objects[6]+""));
+            subjectDTO.setCreatedBy (objects[7]+"");
+            Timestamp timestamp = (Timestamp) objects[8];
+            subjectDTO.setCreatedDate (timestamp.toInstant());
+            subjectDTOList.add(subjectDTO);
+        }
+        projectDTO.setSubjectDTOList(subjectDTOList);
+        return projectDTO;
     }
 }
