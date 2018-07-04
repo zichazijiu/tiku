@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,9 +121,10 @@ public class ProjectResource {
     @GetMapping("/projects/current")
     @ApiOperation(value = "已测试：获取项目列表")
     @Timed
-    public ResponseEntity<List<ProjectDTO>> getProjects4CurrentUser(Pageable pageable) {
+    public ResponseEntity<List<ProjectDTO>> getProjects4CurrentUser(@RequestParam(value = "projectName",required = false) String projectName,
+                                                                    @RequestParam(value = "createdDate",required = false) LocalDate localdate, Pageable pageable) {
         log.debug("REST request to get a page of Projects for current user");
-        Page<ProjectDTO> page = projectService.findAllWithExamine(pageable);
+        Page<ProjectDTO> page = projectService.findAllWithExamine(projectName,localdate,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects/current");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

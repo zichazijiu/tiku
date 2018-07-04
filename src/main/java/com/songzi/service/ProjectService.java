@@ -27,6 +27,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,9 +111,22 @@ public class ProjectService {
      * @param pageable
      * @return
      */
-    public Page<ProjectDTO> findAllWithExamine(Pageable pageable) {
+    public Page<ProjectDTO> findAllWithExamine(String projectName,LocalDate localDate,Pageable pageable) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String localDateString;
         Long userId = userService.getCurrentUserId();
-        return projectRepository.findAllByDelFlagWithExamine(DeleteFlag.NORMAL,userId,Status.PUBLISH,pageable);
+        if(projectName == null || "".equals(projectName)){
+            projectName = "%";
+        }else{
+            projectName = "%"+projectName+"%";
+        }
+
+        if(localDate != null){
+            localDateString = localDate.format(dateTimeFormatter);
+        }else{
+            localDateString = "%";
+        }
+        return projectRepository.findAllByDelFlagWithExamineAndCreatedDate(DeleteFlag.NORMAL,userId,Status.PUBLISH,projectName,localDateString,pageable);
     }
 
     /**

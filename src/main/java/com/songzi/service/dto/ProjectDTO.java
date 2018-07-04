@@ -42,13 +42,17 @@ public class ProjectDTO {
     @ApiModelProperty(value = "创建人")
     private String createdBy;
 
+    @ApiModelProperty(value = "规定时间")
+    private Integer duration;
+
     private List<SubjectDTO> subjectDTOList;
 
     public ProjectDTO(){
 
     }
 
-    public ProjectDTO(String name, String description, Instant date, Long examineId, Integer score,Instant createDate,String createBy) {
+    public ProjectDTO(Long id,String name, String description, Instant date, Long examineId, Integer score,Instant createdDate,String createdBy,Integer duration) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.date = date;
@@ -56,6 +60,7 @@ public class ProjectDTO {
         this.score = score;
         this.createdDate = createdDate;
         this.createdBy = createdBy;
+        this.duration = duration;
     }
 
     public Long getId() {
@@ -149,5 +154,13 @@ public class ProjectDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 }

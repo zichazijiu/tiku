@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -25,8 +26,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
     @Query(value = "select p from Project p where p.delFlag = ?1")
     Page<Project> findAllByDelFlag(DeleteFlag deleteFlag, Pageable pageable);
 
-    @Query(value = "select new com.songzi.service.dto.ProjectDTO(p.name, p.description, p.createdDate, e.id, e.score,p.createdDate,p.createdBy) from Project p left join Examine e on p.id = e.projectId where p.delFlag = ?1 and p.status = ?3 and (e.delFlag = ?1 or e.delFlag is null) and (e.userId = ?2 or e.userId is null)")
-    Page<ProjectDTO> findAllByDelFlagWithExamine(DeleteFlag deleteFlag, Long userId, Status status,Pageable pageable);
+    @Query(value = "select new com.songzi.service.dto.ProjectDTO(p.id,p.name, p.description, p.createdDate, e.id, e.score,p.createdDate,p.createdBy,p.duration) from Project p left join Examine e on p.id = e.projectId where p.delFlag = ?1 and p.status = ?3 and (e.delFlag = ?1 or e.delFlag is null) and (e.userId = ?2 or e.userId is null)  and p.name like ?4 and date_format(p.createdDate,'%Y-%m-%d') like ?5")
+    Page<ProjectDTO> findAllByDelFlagWithExamineAndCreatedDate(DeleteFlag deleteFlag, Long userId, Status status, String projectName, String localDate, Pageable pageable);
 
     @Query(value = "select p.name from project p LEFT JOIN project_subject ps on p.id = ps.project_id where ps.subject_id =?1 and p.del_flag = 'NORMAL'",nativeQuery = true)
     List<String> getProjectNameBySujectId(Long subjectId);
