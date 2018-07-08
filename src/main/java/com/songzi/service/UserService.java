@@ -313,4 +313,8 @@ public class UserService {
         log.debug("Created Information for User: {}", user);
         return user;
     }
+
+    public User findOne(Long id){
+        return userRepository.findOne(id);
+    }
 }

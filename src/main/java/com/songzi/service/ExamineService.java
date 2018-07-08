@@ -95,7 +95,7 @@ public class ExamineService {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("开始答题");
+        logBackup.setDescription("开始答题"+examine.getId());
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");
@@ -168,7 +168,7 @@ public class ExamineService {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("结束答题");
+        logBackup.setDescription("结束答题"+examineId);
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");

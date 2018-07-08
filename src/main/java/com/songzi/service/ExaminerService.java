@@ -85,13 +85,18 @@ public class ExaminerService {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("新建用户"+examiner.getName());
+        logBackup.setDescription("新建用户"+examiner.getId());
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");
         logBackup.setLogType(LogType.SECURITY);
         logBackupSerivce.insert(logBackup);
-        return examinerMapper.toDto(examiner);
+
+        ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);
+        examinerDTO.setLogin(user.getLogin());
+        examinerDTO.setCreatedBy(user.getCreatedBy());
+        examinerDTO.setCreatedDate(user.getCreatedDate());
+        return examinerDTO;
     }
 
     /**
@@ -127,14 +132,20 @@ public class ExaminerService {
                     list.add(cb.like(root.get("name").as(String.class), "%"+examinerQueryVM.getName()+"%"));
                 }
                 if(examinerQueryVM.getDepartMentId() != null){
-                    list.add(cb.equal(root.get("parentId").as(Long.class), examinerQueryVM.getDepartMentId()));
+                    list.add(cb.equal(root.get("departmentId").as(Long.class), examinerQueryVM.getDepartMentId()));
                 }
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
         },pageable).map(examinerMapper :: toDto).map(examinerDTO -> {
             Department department = departmentRepository.findOne(examinerDTO.getDepartmentId());
-            examinerDTO.setDepartmentName(department.getName());
+            if(department != null){
+                examinerDTO.setDepartmentName(department.getName());
+            }
+            User user = userService.findOne(examinerDTO.getUserId());
+            examinerDTO.setLogin(user.getLogin());
+            examinerDTO.setCreatedBy(user.getCreatedBy());
+            examinerDTO.setCreatedDate(user.getCreatedDate());
             return examinerDTO;
         });
     }
@@ -176,7 +187,7 @@ public class ExaminerService {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("删除用户");
+        logBackup.setDescription("删除用户"+id);
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");

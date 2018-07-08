@@ -58,7 +58,7 @@ public class DepartmentSerivce {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("创建机构");
+        logBackup.setDescription("创建机构"+department.getId());
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");
@@ -116,7 +116,7 @@ public class DepartmentSerivce {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("删除机构");
+        logBackup.setDescription("删除机构"+id);
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");

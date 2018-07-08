@@ -50,7 +50,7 @@ public class DatabaseService {
         LogBackup logBackup = new LogBackup();
         logBackup.setCreatedTime(Instant.now());
         logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("数据库备份");
+        logBackup.setDescription("数据库备份"+path+filename);
         logBackup.setSize(27);
         logBackup.setLevel(Level.INFO);
         logBackup.setAuthority("ROLE_ADMIN");

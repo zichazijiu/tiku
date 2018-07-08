@@ -1,5 +1,6 @@
 package com.songzi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.songzi.domain.enumeration.Sex;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,12 +8,19 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.time.Instant;
 
 @ApiModel(description = "考评员")
 public class ExaminerDTO {
 
     @ApiModelProperty(value = "主键id")
     private Long id;
+
+    @JsonIgnore
+    private Long userId;
+
+    @ApiModelProperty(value = "登录名")
+    private String login;
 
     @ApiModelProperty(value = "名称")
     private String name;
@@ -54,6 +62,10 @@ public class ExaminerDTO {
     @ApiModelProperty(name = "地址")
     @Column(name = "address")
     private String address;
+
+    private String createdBy;
+
+    private Instant createdDate;
 
     public String getName() {
         return name;
@@ -149,5 +161,37 @@ public class ExaminerDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
     }
 }
