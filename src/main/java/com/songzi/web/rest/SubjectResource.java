@@ -134,7 +134,7 @@ public class SubjectResource {
     @Timed
     public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         log.debug("REST request to delete Subject : {}", id);
-        subjectRepository.delete(id);
+        subjectService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

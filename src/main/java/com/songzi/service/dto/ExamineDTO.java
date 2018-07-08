@@ -1,5 +1,7 @@
 package com.songzi.service.dto;
 
+import com.songzi.domain.enumeration.ExamineStatus;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -9,7 +11,7 @@ public class ExamineDTO {
 
     private String name;
 
-    private String status;
+    private ExamineStatus status;
 
     private Long departmentId;
 
@@ -51,11 +53,11 @@ public class ExamineDTO {
         this.name = name;
     }
 
-    public String getStatus() {
+    public ExamineStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ExamineStatus status) {
         this.status = status;
     }
 
@@ -153,6 +155,9 @@ public class ExamineDTO {
         if(time > this.duration){
             return 0;
         }else{
+            if(this.status == ExamineStatus.FINISHED){
+                return 0;
+            }
             return Math.toIntExact(this.duration - time);
         }
     }

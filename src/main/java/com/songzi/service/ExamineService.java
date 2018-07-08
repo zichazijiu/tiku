@@ -3,12 +3,14 @@ package com.songzi.service;
 import com.alibaba.fastjson.JSONObject;
 import com.songzi.domain.*;
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.repository.*;
 import com.songzi.service.dto.ExamineDTO;
 import com.songzi.service.mapper.ExamineMapper;
 import com.songzi.service.mapper.ExamineSubjectVMMapper;
 import com.songzi.service.mapper.ExamineVMMapper;
 import com.songzi.service.mapper.ProjectMapper;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ExamineVM;
 import com.songzi.web.rest.vm.QuestionVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,10 @@ public class ExamineService {
      * @return
      */
     public ExamineDTO insert(ExamineVM examineVM){
-
+        List<Examine> examineOld = examineRepository.findAllByProjectIdAndDelFlag(examineVM.getProjectId(),DeleteFlag.NORMAL);
+        if(examineOld != null && examineOld.size() > 0){
+            throw new BadRequestAlertException("该项目已经有正在答题的考试，同一项目不允许有多场考试",this.getClass().getName(),"不允许有多场考试");
+        }
         Examine examine = examineVMMapper.toEntity(examineVM);
         examine.setDelFlag(DeleteFlag.NORMAL);
         examine.setUserId(userService.getCurrentUserId());
@@ -71,9 +76,9 @@ public class ExamineService {
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
         Project project = projectRepository.findOne(examineVM.getProjectId());
         examine.setName(department.getName()+"-"+examiner.getName()+ project.getName() + "-" +"的考试");
-        examine.setScore(0);
+        examine.setScore(null);
         examine.setDuration(project.getDuration());
-        examine.setStatus("0");
+        examine.setStatus(ExamineStatus.NORMAL);
         examine =  examineRepository.save(examine);
 
         ExamineDTO examineDTO = examineMapper.toDto(examine);
@@ -123,7 +128,9 @@ public class ExamineService {
 
     public ExamineDTO answer(Long examineId,String submit,List<QuestionVM> questionVMList){
         Examine examine = examineRepository.findOne(examineId);
-
+        if(examine.getStatus() == ExamineStatus.FINISHED){
+            throw new BadRequestAlertException("该场考试已结束，不能再次提交答案",this.getClass().getName(),"考试已结束");
+        }
         String result = JSONObject.toJSONString(questionVMList);
         examine.setResult(result);
 
@@ -138,8 +145,9 @@ public class ExamineService {
                     rightCount++;
                 }
             }
-            int score = rightCount/total * 100;
+            int score = rightCount* 100/total;
             examine.setScore(score);
+            examine.setStatus(ExamineStatus.FINISHED);
         }
         examine = examineRepository.save(examine);
         return examineMapper.toDto(examine);

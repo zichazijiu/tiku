@@ -2,6 +2,7 @@ package com.songzi.domain;
 
 
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.ExamineStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -28,7 +29,8 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ExamineStatus status;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -78,16 +80,16 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.name = name;
     }
 
-    public String getStatus() {
+    public ExamineStatus getStatus() {
         return status;
     }
 
-    public Examine status(String status) {
+    public Examine status(ExamineStatus status) {
         this.status = status;
         return this;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ExamineStatus status) {
         this.status = status;
     }
 

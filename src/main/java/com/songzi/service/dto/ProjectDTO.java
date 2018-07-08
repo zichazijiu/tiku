@@ -1,5 +1,6 @@
 package com.songzi.service.dto;
 
+import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.domain.enumeration.Status;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,6 +28,9 @@ public class ProjectDTO {
     @ApiModelProperty(value = "项目状态")
     private Status status;
 
+    @ApiModelProperty(value = "考试状态")
+    private ExamineStatus examineStatus;
+
     @ApiModelProperty(value = "考试id")
     private Long examineId;
 
@@ -51,7 +55,7 @@ public class ProjectDTO {
 
     }
 
-    public ProjectDTO(Long id,String name, String description, Instant date, Long examineId, Integer score,Instant createdDate,String createdBy,Integer duration) {
+    public ProjectDTO(Long id,String name, String description, Instant date, Long examineId, Integer score,Instant createdDate,String createdBy,Integer duration,ExamineStatus examineStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -61,6 +65,7 @@ public class ProjectDTO {
         this.createdDate = createdDate;
         this.createdBy = createdBy;
         this.duration = duration;
+        this.examineStatus = examineStatus;
     }
 
     public Long getId() {
@@ -162,5 +167,13 @@ public class ProjectDTO {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public ExamineStatus getExamineStatus() {
+        return examineStatus;
+    }
+
+    public void setExamineStatus(ExamineStatus examineStatus) {
+        this.examineStatus = examineStatus;
     }
 }

@@ -9,6 +9,7 @@ import com.songzi.service.dto.ProjectDTO;
 import com.songzi.service.dto.SubjectDTO;
 import com.songzi.service.mapper.SubjectMapper;
 import com.songzi.service.mapper.SubjectVMMapper;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.SubjectQueryVM;
 import com.songzi.web.rest.vm.SubjectVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,16 @@ public class SubjectService {
         SubjectDTO subjectDTO = subjectMapper.toDto(subject);
         subjectDTO.setProjectList(projectList);
         return subjectDTO;
+    }
+
+    public void delete(Long id){
+        Long count = subjectRepository.getCountProjecctSubjectBySubjectId(id);
+
+        if(count > 0){
+            throw new BadRequestAlertException("被项目引用的题目不能删除",this.getClass().getName(),"不能删除");
+        }else{
+            subjectRepository.delete(id);
+        }
     }
 
 }

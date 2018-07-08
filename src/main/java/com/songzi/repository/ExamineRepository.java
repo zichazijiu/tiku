@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.util.List;
+
 
 /**
  * Spring Data JPA repository for the Examine entity.
@@ -20,4 +22,6 @@ public interface ExamineRepository extends JpaRepository<Examine, Long>,JpaSpeci
     Long findIdByUserId(Long userId);
 
     Page<Examine> findAllByDelFlag(DeleteFlag del, Pageable pageable);
+
+    List<Examine> findAllByProjectIdAndDelFlag(Long projectId,DeleteFlag deleteFlag);
 }
