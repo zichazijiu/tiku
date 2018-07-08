@@ -61,12 +61,12 @@ public class ExaminerResource {
     @PostMapping("/examiners")
     @Timed
     @ApiOperation(value = "新建考核员")
-    public ResponseEntity<Examiner> createExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
+    public ResponseEntity<ExaminerDTO> createExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
         log.debug("REST request to save Examiner : {}", examinerVM);
         if (examinerVM.getId() != null) {
             throw new BadRequestAlertException("新建考评员ID必须为空", ENTITY_NAME, "ID必须为空");
         }
-        Examiner result = new Examiner();//examinerRepository.save(examiner);
+        ExaminerDTO result = examinerService.insert(examinerVM);
         return ResponseEntity.created(new URI("/api/examiners/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -84,12 +84,12 @@ public class ExaminerResource {
     @PutMapping("/examiners")
     @Timed
     @ApiOperation(value = "更新考核员")
-    public ResponseEntity<Examiner> updateExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
+    public ResponseEntity<ExaminerDTO> updateExaminer(@Valid @RequestBody ExaminerVM examinerVM) throws URISyntaxException {
         log.debug("REST request to update Examiner : {}", examinerVM);
         if (examinerVM.getId() == null) {
             throw new BadRequestAlertException("更新考评员信息ID不能为空", ENTITY_NAME, "ID不能为空");
         }
-        Examiner result = new Examiner();//examinerRepository.save(examinerVM);
+        ExaminerDTO result = examinerService.update(examinerVM);//examinerRepository.save(examinerVM);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, examinerVM.getId().toString()))
             .body(result);
@@ -154,7 +154,7 @@ public class ExaminerResource {
     @Timed
     public ResponseEntity<Void> deleteExaminer(@PathVariable Long id) {
         log.debug("REST request to delete Examiner : {}", id);
-        examinerRepository.delete(id);
+        examinerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

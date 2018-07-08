@@ -11,6 +11,9 @@ import javax.persistence.Enumerated;
 @ApiModel(description = "考评员")
 public class ExaminerDTO {
 
+    @ApiModelProperty(value = "主键id")
+    private Long id;
+
     @ApiModelProperty(value = "名称")
     private String name;
 
@@ -138,5 +141,13 @@ public class ExaminerDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,59 +1,31 @@
-package com.songzi.domain;
+package com.songzi.service.dto;
 
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Objects;
 
 import com.songzi.domain.enumeration.BakType;
 import com.songzi.domain.enumeration.Level;
-
 import com.songzi.domain.enumeration.LogType;
 
-/**
- * A LogBackup.
- */
-@Entity
-@Table(name = "log_backup")
-public class LogBackup implements Serializable {
+import java.io.Serializable;
+import java.time.Instant;
 
-    private static final long serialVersionUID = 1L;
+public class LogBackupDTO implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "created_time", nullable = false)
     private Instant createdTime;
 
-    @NotNull
-    @Column(name = "created_by", nullable = false)
     private String createdBy;
 
-    @NotNull
-    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "jhi_size")
     private Integer size;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_level")
     private Level level;
 
-    @Column(name = "authority")
     private String authority;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "log_type")
     private LogType logType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "bak_type")
     private BakType bakType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -69,7 +41,7 @@ public class LogBackup implements Serializable {
         return createdTime;
     }
 
-    public LogBackup createdTime(Instant createdTime) {
+    public LogBackupDTO createdTime(Instant createdTime) {
         this.createdTime = createdTime;
         return this;
     }
@@ -82,7 +54,7 @@ public class LogBackup implements Serializable {
         return createdBy;
     }
 
-    public LogBackup createdBy(String createdBy) {
+    public LogBackupDTO createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
@@ -95,7 +67,7 @@ public class LogBackup implements Serializable {
         return description;
     }
 
-    public LogBackup description(String description) {
+    public LogBackupDTO description(String description) {
         this.description = description;
         return this;
     }
@@ -108,7 +80,7 @@ public class LogBackup implements Serializable {
         return size;
     }
 
-    public LogBackup size(Integer size) {
+    public LogBackupDTO size(Integer size) {
         this.size = size;
         return this;
     }
@@ -121,7 +93,7 @@ public class LogBackup implements Serializable {
         return level;
     }
 
-    public LogBackup level(Level level) {
+    public LogBackupDTO level(Level level) {
         this.level = level;
         return this;
     }
@@ -134,7 +106,7 @@ public class LogBackup implements Serializable {
         return authority;
     }
 
-    public LogBackup authority(String authority) {
+    public LogBackupDTO authority(String authority) {
         this.authority = authority;
         return this;
     }
@@ -147,7 +119,7 @@ public class LogBackup implements Serializable {
         return logType;
     }
 
-    public LogBackup logType(LogType logType) {
+    public LogBackupDTO logType(LogType logType) {
         this.logType = logType;
         return this;
     }
@@ -162,28 +134,6 @@ public class LogBackup implements Serializable {
 
     public void setBakType(BakType bakType) {
         this.bakType = bakType;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        LogBackup logBackup = (LogBackup) o;
-        if (logBackup.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), logBackup.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
     }
 
     @Override

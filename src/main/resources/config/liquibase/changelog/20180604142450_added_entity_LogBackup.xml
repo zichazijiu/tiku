@@ -42,10 +42,22 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="authority" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="log_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="bak_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="log_backup" columnName="created_time" columnDataType="datetime"/>
-        
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

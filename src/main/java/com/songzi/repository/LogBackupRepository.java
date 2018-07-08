@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LogBackupRepository extends JpaRepository<LogBackup, Long> {
+public interface LogBackupRepository extends JpaRepository<LogBackup, Long>,JpaSpecificationExecutor<LogBackup> {
 
 }

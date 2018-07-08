@@ -2,9 +2,9 @@ package com.songzi.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.songzi.domain.*;
-import com.songzi.domain.enumeration.DeleteFlag;
-import com.songzi.domain.enumeration.ExamineStatus;
+import com.songzi.domain.enumeration.*;
 import com.songzi.repository.*;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.ExamineDTO;
 import com.songzi.service.mapper.ExamineMapper;
 import com.songzi.service.mapper.ExamineSubjectVMMapper;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -58,6 +59,9 @@ public class ExamineService {
     @Autowired
     private ExamineSubjectVMMapper examineSubjectVMMapper;
 
+    @Autowired
+    private LogBackupSerivce logBackupSerivce;
+
     /**
      *
      * @param examineVM
@@ -87,6 +91,16 @@ public class ExamineService {
             subjectRepository.findAllByProjectId(project.getId())
                 .stream().map(examineSubjectVMMapper :: toDto)
                 .collect(Collectors.toList()));
+
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("开始答题");
+        logBackup.setSize(27);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.SECURITY);
+        logBackupSerivce.insert(logBackup);
         return examineDTO;
     }
 
@@ -150,6 +164,17 @@ public class ExamineService {
             examine.setStatus(ExamineStatus.FINISHED);
         }
         examine = examineRepository.save(examine);
+
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("结束答题");
+        logBackup.setSize(27);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.SECURITY);
+        logBackupSerivce.insert(logBackup);
+
         return examineMapper.toDto(examine);
     }
 }

@@ -22,6 +22,8 @@
             <th jhiSortBy="description"><span jhiTranslate="tikuApp.logBackup.description">Description</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="size"><span jhiTranslate="tikuApp.logBackup.size">Size</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="level"><span jhiTranslate="tikuApp.logBackup.level">Level</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="authority"><span jhiTranslate="tikuApp.logBackup.authority">Authority</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="logType"><span jhiTranslate="tikuApp.logBackup.logType">Log Type</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -33,6 +35,8 @@
                 <td>{{logBackup.description}}</td>
                 <td>{{logBackup.size}}</td>
                 <td jhiTranslate="{{'tikuApp.Level.' + logBackup.level}}">{{logBackup.level}}</td>
+                <td>{{logBackup.authority}}</td>
+                <td jhiTranslate="{{'tikuApp.LogType.' + logBackup.logType}}">{{logBackup.logType}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

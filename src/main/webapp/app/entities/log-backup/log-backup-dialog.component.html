@@ -63,6 +63,19 @@
                 <option value="ERROR">{{'tikuApp.Level.ERROR' | translate}}</option>
             </select>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.authority" for="field_authority">Authority</label>
+            <input type="text" class="form-control" name="authority" id="field_authority"
+                [(ngModel)]="logBackup.authority" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.logBackup.logType" for="field_logType">Log Type</label>
+            <select class="form-control" name="logType" [(ngModel)]="logBackup.logType" id="field_logType" >
+                <option value="IEMPORT">{{'tikuApp.LogType.IEMPORT' | translate}}</option>
+                <option value="DATABASE">{{'tikuApp.LogType.DATABASE' | translate}}</option>
+                <option value="SECURITY">{{'tikuApp.LogType.SECURITY' | translate}}</option>
+            </select>
+        </div>
 
     </div>
     <div class="modal-footer">

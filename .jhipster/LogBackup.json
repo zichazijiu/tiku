@@ -31,6 +31,15 @@
             "fieldName": "level",
             "fieldType": "Level",
             "fieldValues": "INFO, ERROR"
+        },
+        {
+            "fieldName": "authority",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "logType",
+            "fieldType": "LogType",
+            "fieldValues": "IEMPORT,DATABASE,SECURITY"
         }
     ],
     "changelogDate": "20180604142450",

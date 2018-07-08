@@ -20,7 +20,9 @@
             "createdBy": "Created By",
             "description": "Description",
             "size": "Size",
-            "level": "Level"
+            "level": "Level",
+            "authority": "Authority",
+            "logType": "Log Type"
         }
     }
 }

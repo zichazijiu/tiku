@@ -71,6 +71,12 @@
                             <span jhiTranslate="global.menu.entities.department">Department</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="log-backup" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <span jhiTranslate="global.menu.entities.logBackup">Log Backup</span>
+                        </a>
+                    </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
                 </ul>
             </li>

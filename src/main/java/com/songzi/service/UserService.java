@@ -11,6 +11,7 @@ import com.songzi.security.SecurityUtils;
 import com.songzi.service.util.RandomUtil;
 import com.songzi.service.dto.UserDTO;
 
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -277,4 +278,39 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
+
+    public User createUserByExaminer(UserDTO userDTO) {
+        Optional<User> userByEmail = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
+        if(userByEmail.isPresent()){
+            throw new BadRequestAlertException("邮箱已经存在",this.getClass().getName(),"邮箱已经存在");
+        }
+        User user = new User();
+        user.setLogin(userDTO.getLogin());
+        user.setEmail(userDTO.getEmail());
+        if (userDTO.getLangKey() == null) {
+            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+        } else {
+            user.setLangKey(userDTO.getLangKey());
+        }
+//        if (userDTO.getAuthorities() != null) {
+//            Set<Authority> authorities = userDTO.getAuthorities().stream()
+//                .map(authorityRepository::findOne)
+//                .collect(Collectors.toSet());
+//            user.setAuthorities(authorities);
+//        }
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(authorityRepository.findOne("ROLE_EXAMINER"));
+        authorities.add(authorityRepository.findOne("ROLE_USER"));
+        user.setAuthorities(authorities);
+        String encryptedPassword = passwordEncoder.encode("666666");
+        user.setPassword(encryptedPassword);
+        user.setResetKey(RandomUtil.generateResetKey());
+        user.setResetDate(Instant.now());
+        user.setActivated(true);
+        userRepository.save(user);
+        cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+        cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+        log.debug("Created Information for User: {}", user);
+        return user;
+    }
 }

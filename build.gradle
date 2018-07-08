@@ -196,6 +196,7 @@ dependencies {
     compile "io.springfox:springfox-bean-validators"
     compile "mysql:mysql-connector-java"
     compile "com.alibaba:fastjson:1.2.46"
+    compile group: 'com.belerweb', name: 'pinyin4j', version: '2.5.1'
     compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
     testCompile "com.jayway.jsonpath:json-path"
     testCompile ("org.springframework.boot:spring-boot-starter-test") {

@@ -1,8 +1,12 @@
 package com.songzi.service;
 
 import com.songzi.domain.Department;
+import com.songzi.domain.LogBackup;
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.Level;
+import com.songzi.domain.enumeration.LogType;
 import com.songzi.repository.DepartmentRepository;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.mapper.DepartmentMapper;
 import com.songzi.service.mapper.DepartmentVMMapper;
@@ -19,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +40,9 @@ public class DepartmentSerivce {
     @Autowired
     private DepartmentMapper departmentMapper;
 
+    @Autowired
+    private LogBackupSerivce logBackupSerivce;
+
     /**
      * 新建机构部门
      * @param departmentVM
@@ -44,7 +52,20 @@ public class DepartmentSerivce {
         Department department = departmentVMMapper.toEntity(departmentVM);
         department.setDepartmentStatus("NORMAL");
         department.setDepartmentType("部门");
-        return departmentMapper.toDto(departmentRepository.save(department));
+
+        department = departmentRepository.save(department);
+
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("创建机构");
+        logBackup.setSize(27);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.SECURITY);
+        logBackupSerivce.insert(logBackup);
+
+        return departmentMapper.toDto(department);
     }
 
     /**
@@ -88,5 +109,18 @@ public class DepartmentSerivce {
                 return cb.and(list.toArray(p));
             }
         },pageable).map(departmentMapper :: toDto);
+    }
+
+    public void delete(Long id){
+        departmentRepository.delete(id);
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("删除机构");
+        logBackup.setSize(27);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.SECURITY);
+        logBackupSerivce.insert(logBackup);
     }
 }

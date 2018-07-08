@@ -1,0 +1,10 @@
+{
+    "tikuApp": {
+        "LogType" : {
+            "null": "",
+            "IEMPORT": "IEMPORT",
+            "DATABASE": "DATABASE",
+            "SECURITY": "SECURITY"
+        }
+    }
+}
