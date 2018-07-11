@@ -55,7 +55,7 @@ public class ExaminerService {
     private ExaminerMapper examinerMapper;
 
     @Autowired
-    private LogBackupSerivce logBackupSerivce;
+    private LogBackupService logBackupService;
 
     public ExaminerService(ExaminerRepository examinerRepository, UserService userService, DepartmentRepository departmentRepository) {
         this.examinerRepository = examinerRepository;
@@ -81,16 +81,6 @@ public class ExaminerService {
         examiner.setUserId(user.getId());
         examiner.setTime(0);
         examiner = examinerRepository.save(examiner);
-
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("新建用户"+examiner.getId());
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
 
         ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);
         examinerDTO.setLogin(user.getLogin());
@@ -184,15 +174,6 @@ public class ExaminerService {
     public void delete(Long id){
 
         examinerRepository.delete(id);
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("删除用户"+id);
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
 
     }
 

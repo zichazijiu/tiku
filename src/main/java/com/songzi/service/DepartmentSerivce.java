@@ -41,7 +41,7 @@ public class DepartmentSerivce {
     private DepartmentMapper departmentMapper;
 
     @Autowired
-    private LogBackupSerivce logBackupSerivce;
+    private LogBackupService logBackupService;
 
     /**
      * 新建机构部门
@@ -54,17 +54,6 @@ public class DepartmentSerivce {
         department.setDepartmentType("部门");
 
         department = departmentRepository.save(department);
-
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("创建机构"+department.getId());
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
-
         return departmentMapper.toDto(department);
     }
 
@@ -113,14 +102,5 @@ public class DepartmentSerivce {
 
     public void delete(Long id){
         departmentRepository.delete(id);
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("删除机构"+id);
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
     }
 }

@@ -1,5 +1,6 @@
 package com.songzi;
 
+import com.songzi.aop.logging.LogbackProperties;
 import com.songzi.config.ApplicationProperties;
 import com.songzi.config.DefaultProfileUtil;
 
@@ -23,7 +24,7 @@ import java.util.Collection;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
-@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
+@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class,LogbackProperties.class})
 public class TikuApp {
 
     private static final Logger log = LoggerFactory.getLogger(TikuApp.class);

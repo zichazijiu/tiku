@@ -19,7 +19,7 @@ import java.util.Map;
 public class DatabaseService {
 
     @Autowired
-    private LogBackupSerivce logBackupSerivce;
+    private LogBackupService logBackupService;
 
     /**
      * linux 命令  在linux上可以直接执行  放在程序中就不行  问题待排查
@@ -56,7 +56,7 @@ public class DatabaseService {
         logBackup.setAuthority("ROLE_ADMIN");
         logBackup.setLogType(LogType.DATABASE);
         logBackup.setBakType(BakType.DABABASE);
-        logBackupSerivce.insert(logBackup);
+        logBackupService.insert(logBackup);
         return map;
     }
 }

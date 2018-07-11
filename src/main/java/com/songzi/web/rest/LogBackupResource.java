@@ -1,17 +1,13 @@
 package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.songzi.domain.LogBackup;
 
 import com.songzi.repository.LogBackupRepository;
-import com.songzi.service.LogBackupSerivce;
+import com.songzi.service.LogBackupService;
 import com.songzi.service.dto.LogBackupDTO;
-import com.songzi.web.rest.errors.BadRequestAlertException;
-import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DataBackupQueryVM;
 import com.songzi.web.rest.vm.LogBackupQueryVM;
-import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing LogBackup.
@@ -44,7 +37,7 @@ public class LogBackupResource {
     private final LogBackupRepository logBackupRepository;
 
     @Autowired
-    private LogBackupSerivce logBackupSerivce;
+    private LogBackupService logBackupService;
 
     public LogBackupResource(LogBackupRepository logBackupRepository) {
         this.logBackupRepository = logBackupRepository;
@@ -103,7 +96,7 @@ public class LogBackupResource {
     @ApiOperation(value = "获取日志列表")
     public ResponseEntity<List<LogBackupDTO>> getAllLogBackups(LogBackupQueryVM logBackupQueryVM,Pageable pageable) {
         log.debug("获取日志列表");
-        Page<LogBackupDTO> page = logBackupSerivce.getAllLogBackups(logBackupQueryVM,pageable);
+        Page<LogBackupDTO> page = logBackupService.getAllLogBackups(logBackupQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/log-backups");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -113,7 +106,7 @@ public class LogBackupResource {
     @ApiOperation(value = "导入导出列表")
     public ResponseEntity<List<LogBackupDTO>> getAllIEmportBackups(DataBackupQueryVM dataBackupQueryVM,Pageable pageable) {
         log.debug("导入导出列表");
-        Page<LogBackupDTO> page = logBackupSerivce.getAllIEmportBackups(dataBackupQueryVM,pageable);
+        Page<LogBackupDTO> page = logBackupService.getAllIEmportBackups(dataBackupQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/log-backups");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -123,7 +116,7 @@ public class LogBackupResource {
     @ApiOperation(value = "数据备份列表")
     public ResponseEntity<List<LogBackupDTO>> getAllDatabaseBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {
         log.debug("数据备份列表");
-        Page<LogBackupDTO> page = logBackupSerivce.getAllDatabaseBackups(dataBackupQueryVM,pageable);
+        Page<LogBackupDTO> page = logBackupService.getAllDatabaseBackups(dataBackupQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/log-backups");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

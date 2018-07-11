@@ -60,7 +60,7 @@ public class ExamineService {
     private ExamineSubjectVMMapper examineSubjectVMMapper;
 
     @Autowired
-    private LogBackupSerivce logBackupSerivce;
+    private LogBackupService logBackupService;
 
     /**
      *
@@ -92,15 +92,6 @@ public class ExamineService {
                 .stream().map(examineSubjectVMMapper :: toDto)
                 .collect(Collectors.toList()));
 
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("开始答题"+examine.getId());
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
         return examineDTO;
     }
 
@@ -164,17 +155,6 @@ public class ExamineService {
             examine.setStatus(ExamineStatus.FINISHED);
         }
         examine = examineRepository.save(examine);
-
-        LogBackup logBackup = new LogBackup();
-        logBackup.setCreatedTime(Instant.now());
-        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        logBackup.setDescription("结束答题"+examineId);
-        logBackup.setSize(27);
-        logBackup.setLevel(Level.INFO);
-        logBackup.setAuthority("ROLE_ADMIN");
-        logBackup.setLogType(LogType.SECURITY);
-        logBackupSerivce.insert(logBackup);
-
         return examineMapper.toDto(examine);
     }
 }

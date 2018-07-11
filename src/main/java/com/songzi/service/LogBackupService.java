@@ -29,7 +29,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class LogBackupSerivce {
+public class LogBackupService {
 
     @Autowired
     private LogBackupRepository logBackupRepository;
