@@ -15,12 +15,12 @@ import java.util.List;
 @Repository
 public interface StatisticsRepository extends JpaRepository<Statistics, Long> {
 
-    @Query(value = "SELECT FORMAT(AVG(e.score),0) as score,DATE_FORMAT(e.created_date,'%m') as month FROM `examine` e where e.user_id =?1 GROUP BY DATE_FORMAT(e.created_date,'%Y-%m')",nativeQuery = true)
+    @Query(value = "SELECT FORMAT(AVG(e.score),0) as score,DATE_FORMAT(e.created_date,'%m') as month,DATE_FORMAT(e.created_date,'%Y-%m')  FROM `examine` e where e.user_id =?1 GROUP BY DATE_FORMAT(e.created_date,'%Y-%m')",nativeQuery = true)
     List<Object[]> getStatisticsCurrentUser(Long userId);
 
 
 
-    @Query(value = "SELECT FORMAT(AVG(e.score),0) as score,DATE_FORMAT(e.created_date,'%m') as month FROM `examine` e where e.department_id =?1 GROUP BY DATE_FORMAT(e.created_date,'%Y-%m')",nativeQuery = true)
+    @Query(value = "SELECT FORMAT(AVG(e.score),0) as score,DATE_FORMAT(e.created_date,'%m') as month,DATE_FORMAT(e.created_date,'%Y-%m') FROM `examine` e where e.department_id =?1 GROUP BY DATE_FORMAT(e.created_date,'%Y-%m')",nativeQuery = true)
     List<Object[]> getStatisticsDepartment(Long departmentId);
 
 
