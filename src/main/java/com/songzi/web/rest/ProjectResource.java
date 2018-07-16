@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,7 +106,7 @@ public class ProjectResource {
     @GetMapping("/projects")
     @Timed
     @ApiOperation(value = "查询所有项目")
-    public ResponseEntity<List<ProjectDTO>> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
+    public ResponseEntity<?> getAllProjects(ProjectQueryVM projectQueryVM,Pageable pageable) {
         log.debug("REST request to get a page of Projects {}{}",projectQueryVM,pageable);
         Page<ProjectDTO> page = projectService.findAll(projectQueryVM,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
@@ -121,10 +123,10 @@ public class ProjectResource {
     @GetMapping("/projects/current")
     @ApiOperation(value = "已测试：获取项目列表")
     @Timed
-    public ResponseEntity<List<ProjectDTO>> getProjects4CurrentUser(@RequestParam(value = "projectName",required = false) String projectName,
-                                                                    @RequestParam(value = "createdDate",required = false) LocalDate localdate, Pageable pageable) {
+    public ResponseEntity<?> getProjects4CurrentUser(@RequestParam(value = "projectName",required = false) String projectName,
+                                                                    @RequestParam(value = "createdDate",required = false) LocalDate localdate,Pageable pageable) {
         log.debug("REST request to get a page of Projects for current user");
-        Page<ProjectDTO> page = projectService.findAllWithExamine(projectName,localdate,pageable);
+        Page<Object[]> page = projectService.findAllWithExamine(projectName,localdate,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects/current");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

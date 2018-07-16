@@ -2,6 +2,7 @@ package com.songzi.repository;
 
 import com.songzi.domain.Examine;
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.ExamineStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,8 @@ public interface ExamineRepository extends JpaRepository<Examine, Long>,JpaSpeci
     Page<Examine> findAllByDelFlag(DeleteFlag del, Pageable pageable);
 
     List<Examine> findAllByProjectIdAndDelFlag(Long projectId,DeleteFlag deleteFlag);
+
+    List<Examine> findAllByStatusAndDelFlag(ExamineStatus examineStatus,DeleteFlag deleteFlag);
+
+    List<Examine> findAllByDelFlagAndUserId(DeleteFlag deleteFlag,Long useId);
 }

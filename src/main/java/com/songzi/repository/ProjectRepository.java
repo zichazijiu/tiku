@@ -26,8 +26,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
     @Query(value = "select p from Project p where p.delFlag = ?1")
     Page<Project> findAllByDelFlag(DeleteFlag deleteFlag, Pageable pageable);
 
-    @Query(value = "select new com.songzi.service.dto.ProjectDTO(p.id,p.name, p.description, p.createdDate, e.id, e.score,p.createdDate,p.createdBy,p.duration,e.status) from Project p left join Examine e on p.id = e.projectId where p.delFlag = ?1 and p.status = ?3 and (e.delFlag = ?1 or e.delFlag is null) and (e.userId = ?2 or e.userId is null)  and p.name like ?4 and date_format(p.createdDate,'%Y-%m-%d') like ?5")
-    Page<ProjectDTO> findAllByDelFlagWithExamineAndCreatedDate(DeleteFlag deleteFlag, Long userId, Status status, String projectName, String localDate, Pageable pageable);
+    @Query(value = "select * from (select p.id id,p.name, p.description, p.created_date panswer_date, e.id eid, e.score,p.created_date pcreate_date,p.created_by,p.duration,e.status from project p left join examine e on p.id = e.project_id where p.del_flag = ?1 and p.status = ?3 and e.del_flag = ?1 and e.user_id = ?2 and p.name like ?4 and date_format(p.created_date,'%Y-%m-%d') like ?5" +
+        " union select p.id id,p.name, p.description, p.created_date panswer_date,null,null,p.created_date pcreate_date,p.created_by,p.duration,null from project p where p.del_flag = ?1 and p.status = ?3 and p.name like ?4 and date_format(p.created_date,'%Y-%m-%d') like ?5 and p.id not in (select e1.project_id from examine e1 left join examiner er on e1.user_id = er.user_id where e1.del_flag = ?1 and e1.user_id = ?2 )) p order by id desc limit ?6,?7",nativeQuery = true)
+    List<Object[]> findAllByDelFlagWithExamineAndCreatedDate(String deleteFlag, Long userId, String status, String projectName, String localDate,int start,int size);
+
+    @Query(value = "select count(*) from (select p.id id,p.name, p.description, p.created_date panswer_date, e.id eid, e.score,p.created_date pcreate_date,p.created_by,p.duration,e.status from project p left join examine e on p.id = e.project_id where p.del_flag = ?1 and p.status = ?3 and e.del_flag = ?1 and e.user_id = ?2 and p.name like ?4 and date_format(p.created_date,'%Y-%m-%d') like ?5" +
+        " union select p.id id,p.name, p.description, p.created_date panswer_date,null,null,p.created_date pcreate_date,p.created_by,p.duration,null from project p where p.del_flag = ?1 and p.status = ?3 and p.name like ?4 and date_format(p.created_date,'%Y-%m-%d') like ?5 and p.id not in (select e1.project_id from examine e1 left join examiner er on e1.user_id = er.user_id where e1.del_flag = ?1 and e1.user_id = ?2 )) p",nativeQuery = true)
+    Long countAllByDelFlagWithExamineAndCreatedDate(String deleteFlag, Long userId, String status, String projectName, String localDate);
 
     @Query(value = "select p.name from project p LEFT JOIN project_subject ps on p.id = ps.project_id where ps.subject_id =?1 and p.del_flag = 'NORMAL'",nativeQuery = true)
     List<String> getProjectNameBySujectId(Long subjectId);
@@ -47,4 +52,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
 
     @Query(value = "delete project_subject ps where ps.project_id = ?1",nativeQuery = true)
     void deleteProjectSubject(Long projectId);
+
+    List<Project> findAllByDelFlagAndIdNotIn(DeleteFlag deleteFlag,List<Long> ids);
 }

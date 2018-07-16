@@ -2,6 +2,7 @@ package com.songzi.service;
 
 import com.songzi.domain.Project;
 import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.domain.enumeration.Status;
 import com.songzi.repository.ProjectRepository;
 import com.songzi.service.dto.ProjectDTO;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,10 +29,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing users.
@@ -111,7 +117,7 @@ public class ProjectService {
      * @param pageable
      * @return
      */
-    public Page<ProjectDTO> findAllWithExamine(String projectName,LocalDate localDate,Pageable pageable) {
+    public Page<Object[]> findAllWithExamine(String projectName,LocalDate localDate,Pageable pageable) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String localDateString;
         Long userId = userService.getCurrentUserId();
@@ -126,7 +132,26 @@ public class ProjectService {
         }else{
             localDateString = "%";
         }
-        return projectRepository.findAllByDelFlagWithExamineAndCreatedDate(DeleteFlag.NORMAL,userId,Status.PUBLISH,projectName,localDateString,pageable);
+        int start = pageable.getPageNumber()*pageable.getPageSize();
+        List<ProjectDTO> projectDTOList = projectRepository.findAllByDelFlagWithExamineAndCreatedDate(DeleteFlag.NORMAL.name(),userId,Status.PUBLISH.name(),projectName,localDateString,start,pageable.getPageSize())
+            .stream().map(objects -> {
+                ProjectDTO projectDTO = new ProjectDTO();
+                projectDTO.setId (Long.parseLong(objects[0]+""));
+                projectDTO.setName (objects[1]+"");
+                projectDTO.setDescription (objects[2]+"");
+                Timestamp timestamp = (Timestamp) objects[3];
+                projectDTO.setDate (timestamp.toInstant());
+                projectDTO.setExamineId (objects[4] == null ? null:Long.parseLong(objects[4]+""));
+                projectDTO.setScore (objects[5] == null ? null:Integer.parseInt(objects[5]+""));
+                projectDTO.setCreatedDate (timestamp.toInstant());
+                projectDTO.setCreatedBy (objects[7]+"");
+                projectDTO.setDuration (Integer.parseInt(objects[8]+""));
+                projectDTO.setExamineStatus (objects[9] == null ? null:ExamineStatus.valueOf(objects[9]+""));
+                return projectDTO;
+            }).collect(Collectors.toList());
+        Long count = projectRepository.countAllByDelFlagWithExamineAndCreatedDate(DeleteFlag.NORMAL.name(),userId,Status.PUBLISH.name(),projectName,localDateString);
+        PageImpl page = new PageImpl(projectDTOList,pageable,count);
+        return page;
     }
 
     /**
