@@ -51,7 +51,7 @@ public class LogBackupService {
                 }
 
                 if(logBackupQueryVM.getCreatedStartDate() != null && logBackupQueryVM.getCreatedStartTime() != null){
-                    String[] local = logBackupQueryVM.getCreatedEndTime().split(":");
+                    String[] local = logBackupQueryVM.getCreatedStartTime().split(":");
                     LocalTime localTime = LocalTime.of(Integer.parseInt(local[0]),Integer.parseInt(local[1]),Integer.parseInt(local[2]));
                     list.add(cb.greaterThanOrEqualTo(root.get("createdTime").as(LocalDateTime.class), LocalDateTime.of(logBackupQueryVM.getCreatedStartDate(),localTime)));
                 }

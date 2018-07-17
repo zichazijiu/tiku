@@ -87,11 +87,11 @@ public class LogbackAspect {
         String className = classNameArray[classNameArray.length-1];
         String methodName = joinPoint.getSignature().getName();
         Map<String, Map<String,String>> needlogbakmethod = logbackProperties.getNeedlogbakmethod();
+        Object object = joinPoint.proceed();
         if(needlogbakmethod.containsKey(className)){
             Map<String,String> methodList = needlogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
                 Object[] objects = joinPoint.getArgs();
-                Object object = joinPoint.proceed();
                 String primaryKey = "";
                 if(object == null){
                     primaryKey = objects[0] + "";
@@ -118,8 +118,6 @@ public class LogbackAspect {
                 logBackupService.insert(logBackup);
             }
         }
-
-        Object object = joinPoint.proceed();
         return object;
     }
 }

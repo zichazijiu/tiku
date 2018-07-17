@@ -12,6 +12,7 @@
     <include file="config/liquibase/changelog/20180604141400_added_entity_Statistics.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180604142450_added_entity_LogBackup.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180616105304_added_entity_Department.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180717142450_modify_entity_LogBackup_description.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/load_data.xml" relativeToChangelogFile="false"/>
