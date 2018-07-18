@@ -78,10 +78,12 @@ public class ExaminerService {
         userDTO.setEmail(examinerVM.getEmail());
 
         Set<String> authoritiesSet = new HashSet<>();
-        for(AuthoritiesType authoritiesType : examinerVM.getAuthoritiesType()){
-            authoritiesSet.add(authoritiesType.name());
+        if(examinerVM.getAuthoritiesType() != null){
+            for(AuthoritiesType authoritiesType : examinerVM.getAuthoritiesType()){
+                authoritiesSet.add(authoritiesType.name());
+            }
+            userDTO.setAuthorities(authoritiesSet);
         }
-        userDTO.setAuthorities(authoritiesSet);
         User user = userService.createUserByExaminer(userDTO);
 
         Examiner examiner = examinerVMMapper.toEntity(examinerVM);
@@ -112,8 +114,9 @@ public class ExaminerService {
         //更新用户数据的时候不会更新其对应的考评次数
         //examiner.setTime(0);
         examiner.setCellPhone(examinerVM.getCellPhone());
-        examiner.setEmail(examinerVM.getEmail());
-        examiner.setSex(examinerVM.getSex());
+        if(examinerVM.getSex() != null){
+            examiner.setSex(examinerVM.getSex());
+        }
         examiner.setBirth(examinerVM.getBirth());
         examiner.setLocation(examinerVM.getLocation());
         examiner.setPhone(examinerVM.getPhone());
