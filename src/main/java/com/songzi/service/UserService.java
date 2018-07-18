@@ -292,16 +292,16 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-//        if (userDTO.getAuthorities() != null) {
-//            Set<Authority> authorities = userDTO.getAuthorities().stream()
-//                .map(authorityRepository::findOne)
-//                .collect(Collectors.toSet());
-//            user.setAuthorities(authorities);
-//        }
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(authorityRepository.findOne("ROLE_EXAMINER"));
-        authorities.add(authorityRepository.findOne("ROLE_USER"));
-        user.setAuthorities(authorities);
+        if (userDTO.getAuthorities() != null) {
+            Set<Authority> authorities = userDTO.getAuthorities().stream()
+                .map(authorityRepository::findOne)
+                .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        }else{
+            Set<Authority> authorities = new HashSet<>();
+            authorities.add(authorityRepository.findOne("ROLE_EXAMINER"));
+            user.setAuthorities(authorities);
+        }
         String encryptedPassword = passwordEncoder.encode("666666");
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());

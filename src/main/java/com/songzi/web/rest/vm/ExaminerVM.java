@@ -1,6 +1,9 @@
 package com.songzi.web.rest.vm;
 
+import com.songzi.domain.enumeration.AuthoritiesType;
 import com.songzi.domain.enumeration.Sex;
+
+import java.util.List;
 
 public class ExaminerVM {
 
@@ -23,6 +26,8 @@ public class ExaminerVM {
     private String phone;
 
     private String address;
+
+    private List<AuthoritiesType> authoritiesType;
 
     public Long getId() {
         return id;
@@ -102,5 +107,13 @@ public class ExaminerVM {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<AuthoritiesType> getAuthoritiesType() {
+        return authoritiesType;
+    }
+
+    public void setAuthoritiesType(List<AuthoritiesType> authoritiesType) {
+        this.authoritiesType = authoritiesType;
     }
 }

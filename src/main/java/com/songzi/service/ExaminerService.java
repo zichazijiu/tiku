@@ -1,11 +1,10 @@
 package com.songzi.service;
 
-import com.songzi.domain.Department;
-import com.songzi.domain.Examiner;
-import com.songzi.domain.LogBackup;
-import com.songzi.domain.User;
+import com.songzi.domain.*;
+import com.songzi.domain.enumeration.AuthoritiesType;
 import com.songzi.domain.enumeration.Level;
 import com.songzi.domain.enumeration.LogType;
+import com.songzi.domain.enumeration.Sex;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ExaminerRepository;
 import com.songzi.security.SecurityUtils;
@@ -33,7 +32,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service class for managing examiners.
@@ -75,11 +76,20 @@ public class ExaminerService {
         String now = LocalDateTime.now().format(formatter);
         userDTO.setLogin(ChineseToEnglishUtil.getPingYin(examinerVM.getName()+ now));
         userDTO.setEmail(examinerVM.getEmail());
+
+        Set<String> authoritiesSet = new HashSet<>();
+        for(AuthoritiesType authoritiesType : examinerVM.getAuthoritiesType()){
+            authoritiesSet.add(authoritiesType.name());
+        }
+        userDTO.setAuthorities(authoritiesSet);
         User user = userService.createUserByExaminer(userDTO);
 
         Examiner examiner = examinerVMMapper.toEntity(examinerVM);
         examiner.setUserId(user.getId());
         examiner.setTime(0);
+        if(examiner.getSex() == null){
+            examiner.setSex(Sex.MAN);
+        }
         examiner = examinerRepository.save(examiner);
 
         ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);
