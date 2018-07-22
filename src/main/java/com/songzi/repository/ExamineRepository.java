@@ -24,7 +24,7 @@ public interface ExamineRepository extends JpaRepository<Examine, Long>,JpaSpeci
 
     Page<Examine> findAllByDelFlag(DeleteFlag del, Pageable pageable);
 
-    List<Examine> findAllByProjectIdAndDelFlag(Long projectId,DeleteFlag deleteFlag);
+    List<Examine> findAllByProjectIdAndDelFlagAndUserId(Long projectId,DeleteFlag deleteFlag,Long userid);
 
     List<Examine> findAllByStatusAndDelFlag(ExamineStatus examineStatus,DeleteFlag deleteFlag);
 

@@ -2,6 +2,7 @@ package com.songzi.web.rest;
 
 import com.songzi.security.jwt.JWTConfigurer;
 import com.songzi.security.jwt.TokenProvider;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.LoginVM;
 
 import com.codahale.metrics.annotation.Timed;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,8 +42,12 @@ public class UserJWTController {
 
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
-
-        Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+        Authentication authentication = null;
+        try{
+            authentication = this.authenticationManager.authenticate(authenticationToken);
+        }catch (BadCredentialsException ex){
+            throw new BadRequestAlertException("用户名或密码错误",this.getClass().getName(),"用户名或密码错误");
+        }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);

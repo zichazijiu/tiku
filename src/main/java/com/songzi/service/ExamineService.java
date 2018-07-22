@@ -73,7 +73,8 @@ public class ExamineService {
      * @return
      */
     public ExamineDTO insert(ExamineVM examineVM){
-        List<Examine> examineOld = examineRepository.findAllByProjectIdAndDelFlag(examineVM.getProjectId(),DeleteFlag.NORMAL);
+        Long userId = userService.getCurrentUserId();
+        List<Examine> examineOld = examineRepository.findAllByProjectIdAndDelFlagAndUserId(examineVM.getProjectId(),DeleteFlag.NORMAL,userId);
         if(examineOld != null && examineOld.size() > 0){
             throw new BadRequestAlertException("该项目已经有正在答题的考试，同一项目不允许有多场考试",this.getClass().getName(),"不允许有多场考试");
         }

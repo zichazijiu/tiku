@@ -19,4 +19,6 @@ public interface ExaminerRepository extends JpaRepository<Examiner, Long>,JpaSpe
 
     @Query(value = "select u.id as uid,u.login,u.password_hash,e.id as eid,e.name,e.department_id,e.cell_phone,e.email,e.sex,e.birth,e.location,e.phone,e.address from examiner e LEFT JOIN jhi_user u on e.user_id = u.id",nativeQuery = true)
     List<Object[]> exprotExaminerAndUserMessage();
+
+    List<Examiner> findAllByDepartmentId(Long departmentId);
 }

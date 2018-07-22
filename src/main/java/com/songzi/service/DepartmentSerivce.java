@@ -1,15 +1,18 @@
 package com.songzi.service;
 
 import com.songzi.domain.Department;
+import com.songzi.domain.Examiner;
 import com.songzi.domain.LogBackup;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.Level;
 import com.songzi.domain.enumeration.LogType;
 import com.songzi.repository.DepartmentRepository;
+import com.songzi.repository.ExaminerRepository;
 import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.mapper.DepartmentMapper;
 import com.songzi.service.mapper.DepartmentVMMapper;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
 import com.songzi.web.rest.vm.DepartmentVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +44,7 @@ public class DepartmentSerivce {
     private DepartmentMapper departmentMapper;
 
     @Autowired
-    private LogBackupService logBackupService;
+    private ExaminerRepository examinerRepository;
 
     /**
      * 新建机构部门
@@ -101,6 +104,15 @@ public class DepartmentSerivce {
     }
 
     public void delete(Long id){
+        List<Examiner> examinerList = examinerRepository.findAllByDepartmentId(id);
+        if(examinerList != null && examinerList.size() >0){
+            throw new BadRequestAlertException("本机构下有考察员不允许删除",this.getClass().getName(),"不能删除");
+        }
+
+        List<Department> departmentList = departmentRepository.findAllByParentIdAndDelFlag(id,DeleteFlag.NORMAL);
+        if(departmentList != null && departmentList.size() >0){
+            throw new BadRequestAlertException("本机构下有其他机构不允许删除",this.getClass().getName(),"不能删除");
+        }
         departmentRepository.delete(id);
     }
 }
