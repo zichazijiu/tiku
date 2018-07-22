@@ -80,7 +80,7 @@ public class ExamineService {
         Examine examine = examineVMMapper.toEntity(examineVM);
         examine.setDelFlag(DeleteFlag.NORMAL);
         examine.setUserId(userService.getCurrentUserId());
-        Examiner examiner = examinerRepository.getOneByUserId(userService.getCurrentUserId());
+        Examiner examiner = examinerRepository.findOneByUserId(userService.getCurrentUserId());
         examine.setDepartmentId(examiner.getDepartmentId());
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
         Project project = projectRepository.findOne(examineVM.getProjectId());
@@ -123,7 +123,7 @@ public class ExamineService {
 
     public ExamineDTO getOne(Long id){
         Examine examine = examineRepository.findOne(id);
-        Examiner examiner = examinerRepository.getOneByUserId(userService.getCurrentUserId());
+        Examiner examiner = examinerRepository.findOneByUserId(userService.getCurrentUserId());
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
         Project project = projectRepository.findOne(examine.getProjectId());
 

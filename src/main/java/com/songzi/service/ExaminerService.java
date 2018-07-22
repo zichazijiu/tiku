@@ -84,6 +84,8 @@ public class ExaminerService {
             }
             userDTO.setAuthorities(authoritiesSet);
         }
+        userDTO.setLastName(examinerVM.getName());
+        userDTO.setFirstName(examinerVM.getName());
         User user = userService.createUserByExaminer(userDTO);
 
         Examiner examiner = examinerVMMapper.toEntity(examinerVM);
@@ -159,7 +161,7 @@ public class ExaminerService {
      * @return
      */
     public ExaminerDTO getOneById(Long userId) {
-        Examiner examiner = examinerRepository.getOneByUserId(userId);
+        Examiner examiner = examinerRepository.findOneByUserId(userId);
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
 
         ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);
@@ -175,7 +177,7 @@ public class ExaminerService {
      */
     public ExaminerDTO getCurrentExaminer() {
         Long userId = userService.getCurrentUserId();
-        Examiner examiner = examinerRepository.getOneByUserId(userId);
+        Examiner examiner = examinerRepository.findOneByUserId(userId);
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
 
         ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);

@@ -2,6 +2,7 @@ package com.songzi.web.rest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codahale.metrics.annotation.Timed;
+import com.songzi.service.ExportImportService;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -13,6 +14,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,9 @@ public class ExportImportResource {
 
     private final Logger log = LoggerFactory.getLogger(ExportImportResource.class);
 
+    @Autowired
+    private ExportImportService exportImportService;
+
     /**
      * 连接模型连接变量批量导入
      * @param importType
@@ -44,6 +49,9 @@ public class ExportImportResource {
     public ResponseEntity<?> importVariable(@RequestParam String importType,
                                             @RequestParam MultipartFile file) throws Exception {
         log.debug("批量导入 : {}", importType);
+        if("EXAMINER".equals(importType)){
+            exportImportService.importExaminerXml(file);
+        }
         Map result = new HashMap();
         result.put("flag","success");
         result.put("message","成功导入");
@@ -54,8 +62,14 @@ public class ExportImportResource {
     @Timed
     @ApiOperation(value = "导出变量",httpMethod = "GET",response = Void.class ,notes = "导出变量")
     public ResponseEntity<?> exportVariable(@RequestParam String importType, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        ServletOutputStream result = this.exportExcel(importType,response);
+        if("EXAMINER".equals(importType)){
+            exportImportService.exportExaminerExcel(response);
+        }else{
+            this.exportExcel(importType,response);
+        }
+        Map result = new HashMap();
+        result.put("flag","success");
+        result.put("message","成功导出");
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
