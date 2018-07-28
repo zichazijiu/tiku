@@ -8,6 +8,7 @@ import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.SubjectRepository;
 import com.songzi.web.rest.vm.QuestionVM;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,6 +27,9 @@ public class AnswerTimeOutScheduledTask implements Runnable {
     private ExamineRepository examineRepository;
 
     private List<Examine> examineList;
+
+    @Autowired
+    private ExamineSubjectService examineSubjectService;
 
     public AnswerTimeOutScheduledTask(List<Examine> examineList, SubjectRepository subjectRepository, ExamineRepository examineRepository){
         this.examineList = examineList;
@@ -77,12 +81,14 @@ public class AnswerTimeOutScheduledTask implements Runnable {
         for(QuestionVM questionVM : questionVMList){
             Subject subject = subjectMap.get(questionVM.getSubjectId());
             if(subject.getRight() == questionVM.getRight()){
+                examineSubjectService.doExamineSubjectCount(subject.getId());
                 rightCount++;
             }
         }
         int score = rightCount* 100/total;
         examine.setScore(score);
         examine.setStatus(ExamineStatus.FINISHED);
+        examine.setActualDuration(examine.getDuration());
         examine = examineRepository.save(examine);
     }
 }

@@ -65,42 +65,8 @@ public class StatisticsResource {
         log.debug("REST request to get 薄弱环节分析");
         //随便造点数据
         WeaknessDTO weaknessDTO = new WeaknessDTO();
-
-        ProblemPercentDTO problemPercentDTO = new ProblemPercentDTO();
-        problemPercentDTO.setTotalRight(100);
-        List<SubjectPercentDTO> subjectPercentDTOS = new ArrayList<>();
-        SubjectPercentDTO subjectPercentDTO = new SubjectPercentDTO();
-        subjectPercentDTO.setId(1L);
-        subjectPercentDTO.setCount(40);
-        SubjectPercentDTO subjectPercentDTO1 = new SubjectPercentDTO();
-        subjectPercentDTO1.setId(2L);
-        subjectPercentDTO1.setCount(30);
-        SubjectPercentDTO subjectPercentDTO2 = new SubjectPercentDTO();
-        subjectPercentDTO2.setId(3L);
-        subjectPercentDTO2.setCount(30);
-
-        subjectPercentDTOS.add(subjectPercentDTO);
-        subjectPercentDTOS.add(subjectPercentDTO1);
-        subjectPercentDTOS.add(subjectPercentDTO2);
-        problemPercentDTO.setSubjectPercentDTOList(subjectPercentDTOS);
-        weaknessDTO.setProblemPercentDTO(problemPercentDTO);
-
-        AnswerTimePercentDTO answerTimePercentDTO = new AnswerTimePercentDTO();
-        answerTimePercentDTO.setTotalMinutes(100);
-        List<TimePercentDTO> timePercentDTOS = new ArrayList<>();
-        TimePercentDTO timePercentDTO = new TimePercentDTO();
-        timePercentDTO.setKey("0-30");
-        timePercentDTO.setPercent("60");
-
-        TimePercentDTO timePercentDTO1 = new TimePercentDTO();
-        timePercentDTO1.setKey("30-");
-        timePercentDTO1.setPercent("40");
-
-        timePercentDTOS.add(timePercentDTO);
-        timePercentDTOS.add((timePercentDTO1));
-        answerTimePercentDTO.setTimePercentDTOList(timePercentDTOS);
-
-        weaknessDTO.setAnswerTimePercentDTO(answerTimePercentDTO);
+        weaknessDTO.setProblemPercentDTO(statisticsService.getProblemPercentDTO(compareTime));
+        weaknessDTO.setAnswerTimePercentDTO(statisticsService.getAnswerTimePercentDTO(compareTime));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(weaknessDTO));
     }
 

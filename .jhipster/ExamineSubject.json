@@ -1,0 +1,28 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "year",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "month",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subjectId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "rightTime",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20180728044943",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "examine_subject",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

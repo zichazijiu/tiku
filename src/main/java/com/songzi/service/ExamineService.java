@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -66,6 +67,9 @@ public class ExamineService {
 
     @Autowired
     private LogBackupService logBackupService;
+
+    @Autowired
+    private ExamineSubjectService examineSubjectService;
 
     /**
      *
@@ -153,12 +157,15 @@ public class ExamineService {
             for(QuestionVM questionVM : questionVMList){
                 Subject subject = subjectMap.get(questionVM.getSubjectId());
                 if(subject.getRight() == questionVM.getRight()){
+                    examineSubjectService.doExamineSubjectCount(subject.getId());
                     rightCount++;
                 }
             }
             int score = rightCount* 100/total;
             examine.setScore(score);
             examine.setStatus(ExamineStatus.FINISHED);
+            Instant now = Instant.now();
+            examine.setActualDuration(Integer.parseInt((now.getEpochSecond() - examine.getCreatedDate().getEpochSecond())+""));
         }
         examine = examineRepository.save(examine);
         return examineMapper.toDto(examine);

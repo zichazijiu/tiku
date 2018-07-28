@@ -58,6 +58,9 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name = "result",nullable = true)
     private String result;
 
+    @Column(name = "actual_duration", nullable = false)
+    private Integer actualDuration;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -175,6 +178,14 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.result = result;
     }
 
+    public Integer getActualDuration() {
+        return actualDuration;
+    }
+
+    public void setActualDuration(Integer actualDuration) {
+        this.actualDuration = actualDuration;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -198,14 +209,17 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "Examine{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", delFlag='" + getDelFlag() + "'" +
-            ", departmentId=" + getDepartmentId() +
-            ", duration=" + getDuration() +
-            ", score=" + getScore() +
-            ", projectId=" + getProjectId() +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", status=" + status +
+            ", delFlag=" + delFlag +
+            ", departmentId=" + departmentId +
+            ", duration=" + duration +
+            ", score=" + score +
+            ", userId=" + userId +
+            ", projectId=" + projectId +
+            ", result='" + result + '\'' +
+            ", actualDuration=" + actualDuration +
+            '}';
     }
 }

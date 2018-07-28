@@ -147,6 +147,7 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
     public void setDelFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -172,14 +173,14 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "Subject{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", title='" + getTitle() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", type='" + getType() + "'" +
-            ", right=" + getRight() +
-            ", delFlag='" + getDelFlag() + "'" +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", status='" + status + '\'' +
+            ", type='" + type + '\'' +
+            ", right=" + right +
+            ", delFlag=" + delFlag +
+            '}';
     }
 }

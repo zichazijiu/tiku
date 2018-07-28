@@ -3,6 +3,7 @@ package com.songzi.web.rest;
 import com.alibaba.fastjson.JSONObject;
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.service.ExportImportService;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -51,6 +52,10 @@ public class ExportImportResource {
         log.debug("批量导入 : {}", importType);
         if("EXAMINER".equals(importType)){
             exportImportService.importExaminerXml(file);
+        }else if("SUBJECT".equals(importType)){
+            exportImportService.importSubjectXml(file);
+        }else{
+            throw new BadRequestAlertException("不支持的导入类型",this.getClass().getName(),"不支持");
         }
         Map result = new HashMap();
         result.put("flag","success");
@@ -64,8 +69,11 @@ public class ExportImportResource {
     public ResponseEntity<?> exportVariable(@RequestParam String importType, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if("EXAMINER".equals(importType)){
             exportImportService.exportExaminerExcel(response);
+        }else if("SUBJECT".equals(importType)){
+            exportImportService.exportSubjectExcel(response);
         }else{
-            this.exportExcel(importType,response);
+            throw new BadRequestAlertException("不支持的导出类型",this.getClass().getName(),"不支持");
+            //this.exportExcel(importType,response);
         }
         Map result = new HashMap();
         result.put("flag","success");
