@@ -3,9 +3,11 @@ package com.songzi.service;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.reflect.TypeToken;
 import com.songzi.domain.Examine;
+import com.songzi.domain.Examiner;
 import com.songzi.domain.Subject;
 import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.repository.ExamineRepository;
+import com.songzi.repository.ExaminerRepository;
 import com.songzi.repository.SubjectRepository;
 import com.songzi.web.rest.vm.QuestionVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,16 @@ public class AnswerTimeOutScheduledTask implements Runnable {
 
     private List<Examine> examineList;
 
+    private ExaminerRepository examinerRepository;
+
     @Autowired
     private ExamineSubjectService examineSubjectService;
 
-    public AnswerTimeOutScheduledTask(List<Examine> examineList, SubjectRepository subjectRepository, ExamineRepository examineRepository){
+    public AnswerTimeOutScheduledTask(List<Examine> examineList, SubjectRepository subjectRepository, ExamineRepository examineRepository, ExaminerRepository examinerRepository){
         this.examineList = examineList;
         this.subjectRepository = subjectRepository;
         this.examineRepository = examineRepository;
+        this.examinerRepository = examinerRepository;
     }
 
     @Override
@@ -89,6 +94,11 @@ public class AnswerTimeOutScheduledTask implements Runnable {
         examine.setScore(score);
         examine.setStatus(ExamineStatus.FINISHED);
         examine.setActualDuration(examine.getDuration());
+        Long userId = examine.getUserId();
+        Examiner examiner = examinerRepository.findOneByUserId(userId);
+        int times = examiner.getTime();
+        examiner.setTime(times + 1);
+        examinerRepository.save(examiner);
         examine = examineRepository.save(examine);
     }
 }

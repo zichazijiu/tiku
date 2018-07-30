@@ -123,6 +123,7 @@ public class ExaminerService {
         examiner.setLocation(examinerVM.getLocation());
         examiner.setPhone(examinerVM.getPhone());
         examiner.setAddress(examinerVM.getAddress());
+        examiner.setName(examinerVM.getName());
 
         examiner = examinerRepository.save(examiner);
         return examinerMapper.toDto(examiner);

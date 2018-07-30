@@ -166,6 +166,11 @@ public class ExamineService {
             examine.setStatus(ExamineStatus.FINISHED);
             Instant now = Instant.now();
             examine.setActualDuration(Integer.parseInt((now.getEpochSecond() - examine.getCreatedDate().getEpochSecond())+""));
+            Long userId = examine.getUserId();
+            Examiner examiner = examinerRepository.findOneByUserId(userId);
+            int times = examiner.getTime();
+            examiner.setTime(times + 1);
+            examinerRepository.save(examiner);
         }
         examine = examineRepository.save(examine);
         return examineMapper.toDto(examine);
@@ -189,7 +194,7 @@ public class ExamineService {
         }
         List<Examine> examineList = examineRepository.findAllByStatusAndDelFlag(ExamineStatus.NORMAL,DeleteFlag.NORMAL);
         log.info("------------开始执行答题时间结束定时任务------------------");
-        threadPoolExecutor.execute(new AnswerTimeOutScheduledTask(examineList,subjectRepository,examineRepository));
+        threadPoolExecutor.execute(new AnswerTimeOutScheduledTask(examineList,subjectRepository,examineRepository,examinerRepository));
     }
 
     /**

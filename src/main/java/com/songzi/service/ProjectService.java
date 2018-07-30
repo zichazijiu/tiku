@@ -159,15 +159,18 @@ public class ProjectService {
      * @param projectId
      * @param subjectIdList
      */
-    public void addSubject(Long projectId,List<Long> subjectIdList){
+    public void updateSubject(Long projectId,List<Long> subjectIdList){
         Project project = projectRepository.findOne(projectId);
         if(project.getStatus() != Status.NORMAL && project.getStatus() != Status.NOTAUDITED){
             throw new BadRequestAlertException("发布或者审批过的项目，不允许添加题目",this.getClass().getName(),"不允许添加题目");
         }
+
+        //先删除后插入
+        projectRepository.deleteProjectSubject(projectId);
         for(Long subjectId : subjectIdList){
             Long count = projectRepository.getProjectSubject(projectId,subjectId);
             if(count >= 1){
-                throw new BadRequestAlertException("该题目"+subjectId+"已经添加过了，不允许重复添加",this.getClass().getName(),"重复的题目");
+                continue;
             }
             projectRepository.insertProjectSubject(projectId,subjectId);
         }

@@ -50,7 +50,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>,JpaSpeci
     @Query(value = "select count(ps.project_id) from project_subject ps inner join subject s on ps.subject_id = s.id where ps.projectId = ?1",nativeQuery = true)
     Long getCountProjecctSubjectByProjectId(Long projectId);
 
-    @Query(value = "delete project_subject ps where ps.project_id = ?1",nativeQuery = true)
+    @Modifying
+    @Query(value = "delete from project_subject where project_id = ?1",nativeQuery = true)
     void deleteProjectSubject(Long projectId);
 
     List<Project> findAllByDelFlagAndIdNotIn(DeleteFlag deleteFlag,List<Long> ids);

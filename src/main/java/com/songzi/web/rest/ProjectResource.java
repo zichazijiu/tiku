@@ -165,7 +165,7 @@ public class ProjectResource {
     @ApiOperation(value = "给项目添加考核项")
     public ResponseEntity addSubject(@PathVariable(value = "projectId") Long projectId,@RequestBody List<Long> subjectIdList){
         log.debug("给项目添加考核项 {}{}",projectId,subjectIdList);
-        projectService.addSubject(projectId,subjectIdList);
+        projectService.updateSubject(projectId,subjectIdList);
         Map map = new HashMap();
         map.put("successFlag","1");
         map.put("message","all success");

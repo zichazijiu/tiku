@@ -78,6 +78,12 @@ public class AnswerMonthOutScheduledTask implements Runnable {
         //答题时间在当前时间往前推一个月  保证答题和项目都在一个月中
         examine.setCreatedDate(localDateTime.toInstant(ZoneOffset.UTC));
         examine.setActualDuration(examine.getDuration());
+
+        Long userId = examine.getUserId();
+        int times = examiner.getTime();
+        examiner.setTime(times + 1);
+        examinerRepository.save(examiner);
+
         examine =  examineRepository.save(examine);
     }
 }
