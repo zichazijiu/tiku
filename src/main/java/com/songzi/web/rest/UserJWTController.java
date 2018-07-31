@@ -46,7 +46,7 @@ public class UserJWTController {
         try{
             authentication = this.authenticationManager.authenticate(authenticationToken);
         }catch (BadCredentialsException ex){
-            throw new BadRequestAlertException("用户名或密码错误",this.getClass().getName(),"用户名或密码错误");
+            throw ex;
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();

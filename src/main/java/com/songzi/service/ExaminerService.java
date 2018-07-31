@@ -111,8 +111,6 @@ public class ExaminerService {
         Examiner examiner = examinerRepository.findOne(examinerVM.getId());
 
         examiner.setDepartmentId(examinerVM.getDepartmentId());
-        //自动关联到当前登录用户上
-        examiner.setUserId(userService.getCurrentUserId());
         //更新用户数据的时候不会更新其对应的考评次数
         //examiner.setTime(0);
         examiner.setCellPhone(examinerVM.getCellPhone());
@@ -126,7 +124,10 @@ public class ExaminerService {
         examiner.setName(examinerVM.getName());
 
         examiner = examinerRepository.save(examiner);
-        return examinerMapper.toDto(examiner);
+        ExaminerDTO examinerDTO = examinerMapper.toDto(examiner);
+        Department department = departmentRepository.findOne(examiner.getDepartmentId());
+        examinerDTO.setDepartmentName(department.getName());
+        return examinerDTO;
     }
 
     public Page<ExaminerDTO> getAll(ExaminerQueryVM examinerQueryVM, Pageable pageable){

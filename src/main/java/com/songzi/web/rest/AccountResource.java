@@ -12,6 +12,7 @@ import com.songzi.web.rest.errors.*;
 import com.songzi.web.rest.vm.KeyAndPasswordVM;
 import com.songzi.web.rest.vm.ManagedUserVM;
 
+import com.songzi.web.rest.vm.PasswordChangeVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,12 +134,14 @@ public class AccountResource {
     /**
      * POST  /account/change-password : changes the current user's password
      *
-     * @param password the new password
+     * @param passwordChangeVM the new password
      * @throws InvalidPasswordException 400 (Bad Request) if the new password is incorrect
      */
     @PostMapping(path = "/account/change-password")
     @Timed
-    public void changePassword(@RequestBody String password) {
+    public void changePassword(@RequestBody PasswordChangeVM passwordChangeVM) {
+        String oldpassword = passwordChangeVM.getOldPassword();
+        String password = passwordChangeVM.getPassword();
         if (!checkPasswordLength(password)) {
             throw new InvalidPasswordException();
         }
