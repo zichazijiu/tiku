@@ -25,6 +25,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -310,6 +312,8 @@ public class ExportImportService {
         }
     }
 
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     public void exportModleXls(String modelType,HttpServletResponse response) throws IOException{
         String fileName;
@@ -320,14 +324,14 @@ public class ExportImportService {
         }else{
             throw new BadRequestAlertException("不支持的类型",this.getClass().getName(),"不支持的类型");
         }
-        File file = ResourceUtils.getFile(fileName);
+        Resource resource = resourceLoader.getResource(fileName);
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         response.setHeader("Content-Disposition", "attachment;filename="+ fileName.getBytes());
         ServletOutputStream out = response.getOutputStream();
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         try {
-            bis = new BufferedInputStream(new FileInputStream(file));
+            bis = new BufferedInputStream(resource.getInputStream());
             bos = new BufferedOutputStream(out);
             byte[] buff = new byte[2048];
             int bytesRead;
