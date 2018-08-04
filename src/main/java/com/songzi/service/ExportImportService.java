@@ -26,12 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -306,6 +307,40 @@ public class ExportImportService {
             subjectVM.setRight(Long.parseLong(str[3]+""));
             subjectVM.setType("NORMAL");
             subjectService.insert(subjectVM);
+        }
+    }
+
+
+    public void exportModleXls(String modelType,HttpServletResponse response) throws IOException{
+        String fileName;
+        if("EXAMINER".equals(modelType)){
+            fileName = "classpath:templates/考员.xls";
+        }else if("SUBJECT".equals(modelType)){
+            fileName = "classpath:templates/考评项.xls";
+        }else{
+            throw new BadRequestAlertException("不支持的类型",this.getClass().getName(),"不支持的类型");
+        }
+        File file = ResourceUtils.getFile(fileName);
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename="+ fileName.getBytes());
+        ServletOutputStream out = response.getOutputStream();
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(file));
+            bos = new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+        } catch (final IOException e) {
+            throw e;
+        } finally {
+            if (bis != null)
+                bis.close();
+            if (bos != null)
+                bos.close();
         }
     }
 }

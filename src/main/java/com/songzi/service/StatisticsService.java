@@ -1,18 +1,23 @@
 package com.songzi.service;
 
 import com.songzi.domain.Department;
+import com.songzi.domain.ExamineSubject;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.ExamineSubjectRepository;
 import com.songzi.repository.StatisticsRepository;
 import com.songzi.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,78 +76,86 @@ public class StatisticsService {
     }
 
 
-    public ProblemPercentDTO getProblemPercentDTO(String yearMonth){
+    public ProblemPercentDTO getProblemPercentDTO(String yearMonth,Long departmentId){
+        Pageable pageable = new PageRequest(0,10);
         String[] yearMonthArray = yearMonth.split("-");
         String year = yearMonthArray[0];
         String month = yearMonthArray[1];
         ProblemPercentDTO problemPercentDTO = new ProblemPercentDTO();
-        int total = examineSubjectRepository.countAllByYearAndMonth(year,month);
+        int total = 0;
+        List<SubjectPercentDTO> subjectPercentDTOList;
+        if(departmentId != null && departmentId != 0){
+            total = examineSubjectRepository.countWrongTimeByYearAndMonthAndDepartmentId(year,month,departmentId);
+            subjectPercentDTOList = examineSubjectRepository.findAllByYearAndMonthAndDepartmentIdOrderByWrongTimeDesc(year,month,departmentId,pageable).stream()
+                .map(examineSubject -> {
+                    SubjectPercentDTO subjectPercentDTO = new SubjectPercentDTO();
+                    subjectPercentDTO.setId(examineSubject.getSubjectId());
+                    subjectPercentDTO.setCount(examineSubject.getWrongTime());
+                    return subjectPercentDTO;
+                }).collect(Collectors.toList());
+        }else{
+            total = examineSubjectRepository.countWrongTimeByYearAndMonth(year,month);
+            subjectPercentDTOList = examineSubjectRepository.findAllByYearAndMonthOrderByWrongTimeDesc(year,month,pageable).stream()
+                .map(objects -> {
+                    SubjectPercentDTO subjectPercentDTO = new SubjectPercentDTO();
+                    subjectPercentDTO = new SubjectPercentDTO();
+                    subjectPercentDTO.setId((Long) objects[1]);
+                    subjectPercentDTO.setCount(Integer.parseInt(objects[0]+""));
+                    return subjectPercentDTO;
+                }).collect(Collectors.toList());
+        }
         problemPercentDTO.setTotalRight(total);
-        List<SubjectPercentDTO> subjectPercentDTOList = examineSubjectRepository.findAllByYearAndMonth(year,month).stream()
-            .map(examineSubject -> {
-                SubjectPercentDTO subjectPercentDTO = new SubjectPercentDTO();
-                subjectPercentDTO.setId(examineSubject.getSubjectId());
-                subjectPercentDTO.setCount(examineSubject.getRightTime());
-                return subjectPercentDTO;
-            }).collect(Collectors.toList());
+
         problemPercentDTO.setSubjectPercentDTOList(subjectPercentDTOList);
         return problemPercentDTO;
     }
 
-    public AnswerTimePercentDTO getAnswerTimePercentDTO(String yearMonth){
+    public AnswerTimePercentDTO getAnswerTimePercentDTO(String yearMonth,Long departmentId){
+        String[] yearMonthArray = yearMonth.split("-");
+        String year = yearMonthArray[0];
+        String month = yearMonthArray[1];
         AnswerTimePercentDTO answerTimePercentDTO = new AnswerTimePercentDTO();
         List<TimePercentDTO> timePercentDTOList = new ArrayList<>();
-        Long totalS = examineRepository.getTotalTime(yearMonth);
-        if(totalS == null){
-            answerTimePercentDTO.setTotalMinutes(0);
-            answerTimePercentDTO.setTimePercentDTOList(timePercentDTOList);
-            TimePercentDTO timePercentDTO30 = new TimePercentDTO();
-            timePercentDTO30.setKey("0-30");
-            timePercentDTO30.setPercent("100");
-            timePercentDTOList.add(timePercentDTO30);
-
-            TimePercentDTO timePercentDTO30_50 = new TimePercentDTO();
-            timePercentDTO30_50.setKey("30-50");
-            timePercentDTO30_50.setPercent("0");
-            timePercentDTOList.add(timePercentDTO30_50);
-
-            TimePercentDTO timePercentDTO50_ = new TimePercentDTO();
-            timePercentDTO50_.setKey("50-");
-            timePercentDTO50_.setPercent("0");
-            timePercentDTOList.add(timePercentDTO50_);
-
-            return answerTimePercentDTO;
+        int totalS = 0;
+        if(departmentId != null && departmentId != 0){
+            totalS = examineSubjectRepository.getTotalCountTimsByDepartmentId(year,month,departmentId);
+            int finalTotalS = totalS;
+            List<TimePercentDTO> timePercentDTOS = examineSubjectRepository.findAllByYearAndMonthAndDepartmentIdOrderByWrongTimeDesc(year,month,departmentId).stream()
+                .map(examineSubject -> {
+                    TimePercentDTO timePercentDTO = new TimePercentDTO();
+                    timePercentDTO.setKey(examineSubject.getSubjectId()+"");
+                    timePercentDTO.setPercent(examineSubject.getWrongTime() +"");
+                    return timePercentDTO;
+                }).collect(Collectors.toList());
+            timePercentDTOList = timePercentDTOS;
+        }else{
+            totalS = examineSubjectRepository.getTotalCountTims(year,month);
+            timePercentDTOList = examineSubjectRepository.findAllByYearAndMonthOrderByWrongTimeDesc(year,month).stream()
+                .map(objects -> {
+                    TimePercentDTO timePercentDTO = new TimePercentDTO();
+                    timePercentDTO.setKey(objects[1]+"");
+                    timePercentDTO.setPercent(objects[0]+"");
+                    return timePercentDTO;
+                }).collect(Collectors.toList());
         }
-        int totalM = Integer.parseInt(totalS/60+"");
-        answerTimePercentDTO.setTotalMinutes(totalM);
+
+        //处理成百分比的
+        int wrongPercent = 0;
+        for(TimePercentDTO timePercentDTO : timePercentDTOList){
+            int times = Integer.parseInt(timePercentDTO.getPercent());
+            int percent = times * 100 /totalS;
+            wrongPercent = wrongPercent + percent;
+            timePercentDTO.setPercent(percent+"");
+        }
+
+        TimePercentDTO rightPercent = new TimePercentDTO();
+        rightPercent.setKey("else");
+        rightPercent.setPercent((100-wrongPercent)+"");
+
+        timePercentDTOList.add(rightPercent);
+
         answerTimePercentDTO.setTimePercentDTOList(timePercentDTOList);
-
-        Long duration30 = examineRepository.getTotalTime30(yearMonth);
-        if(duration30 == null){
-            duration30 = 0L;
-        }
-        TimePercentDTO timePercentDTO30 = new TimePercentDTO();
-        timePercentDTO30.setKey("0-30");
-        timePercentDTO30.setPercent(Integer.parseInt(duration30*100/totalS +"") +"");
-        timePercentDTOList.add(timePercentDTO30);
-
-        Long duration30_50 = examineRepository.getTotalTime30_50(yearMonth);
-        if(duration30_50 == null){
-            duration30_50 = 0L;
-        }
-        TimePercentDTO timePercentDTO30_50 = new TimePercentDTO();
-        timePercentDTO30_50.setKey("30-50");
-        timePercentDTO30_50.setPercent(Integer.parseInt(duration30_50*100/totalS +"") +"");
-        timePercentDTOList.add(timePercentDTO30_50);
-
-        Long duration50_ = examineRepository.getTotalTime50_(yearMonth);
-        if(duration50_ == null){
-            duration50_ = 0L;
-        }
-        TimePercentDTO timePercentDTO50_ = new TimePercentDTO();
-        timePercentDTO50_.setKey("50-");
-        timePercentDTO50_.setPercent(Integer.parseInt(duration50_*100/totalS +"") +"");
-        timePercentDTOList.add(timePercentDTO50_);
+        answerTimePercentDTO.setTotalMinutes(totalS);
         return answerTimePercentDTO;
     }
 

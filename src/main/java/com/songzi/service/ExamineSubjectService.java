@@ -22,12 +22,12 @@ public class ExamineSubjectService {
      * @param subjectId
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void doExamineSubjectCount(Long subjectId){
+    public synchronized void doExamineSubjectCount(Long subjectId,Long departmentId){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         String[] localDate = LocalDate.now().format(formatter).split("-");
         String year = localDate[0];
         String month = localDate[1];
-        ExamineSubject examineSubject = examineSubjectRepository.findOneBySubjectIdAndYearAndMonth(subjectId,year+"",month+"");
+        ExamineSubject examineSubject = examineSubjectRepository.findOneBySubjectIdAndYearAndMonthAndDepartmentId(subjectId,year+"",month+"",departmentId);
         if(examineSubject != null){
             int examineTimes = examineSubject.getRightTime();
             examineSubject.setRightTime(examineTimes++);
@@ -37,6 +37,30 @@ public class ExamineSubjectService {
             examineSubject.setMonth(month+"");
             examineSubject.setSubjectId(subjectId);
             examineSubject.setRightTime(1);
+        }
+        examineSubjectRepository.save(examineSubject);
+    }
+
+    /**
+     * 统计某年某月 当月题目答题正确次数
+     * @param subjectId
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public synchronized void doExamineSubjectWrongCount(Long subjectId,Long departmentId){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        String[] localDate = LocalDate.now().format(formatter).split("-");
+        String year = localDate[0];
+        String month = localDate[1];
+        ExamineSubject examineSubject = examineSubjectRepository.findOneBySubjectIdAndYearAndMonthAndDepartmentId(subjectId,year+"",month+"",departmentId);
+        if(examineSubject != null){
+            int examineTimes = examineSubject.getWrongTime();
+            examineSubject.setWrongTime(examineTimes++);
+        }else{
+            examineSubject = new ExamineSubject();
+            examineSubject.setYear(year+"");
+            examineSubject.setMonth(month+"");
+            examineSubject.setSubjectId(subjectId);
+            examineSubject.setWrongTime(1);
         }
         examineSubjectRepository.save(examineSubject);
     }

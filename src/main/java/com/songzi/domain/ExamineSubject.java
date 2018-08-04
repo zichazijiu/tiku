@@ -31,6 +31,12 @@ public class ExamineSubject implements Serializable {
     @Column(name = "right_time")
     private Integer rightTime;
 
+    @Column(name = "wrong_time")
+    private Integer wrongTime;
+
+    @Column(name = "department_id")
+    private Long departmentId;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -91,6 +97,23 @@ public class ExamineSubject implements Serializable {
     public void setRightTime(Integer rightTime) {
         this.rightTime = rightTime;
     }
+
+    public Integer getWrongTime() {
+        return wrongTime;
+    }
+
+    public void setWrongTime(Integer wrongTime) {
+        this.wrongTime = wrongTime;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -116,11 +139,13 @@ public class ExamineSubject implements Serializable {
     @Override
     public String toString() {
         return "ExamineSubject{" +
-            "id=" + getId() +
-            ", year='" + getYear() + "'" +
-            ", month='" + getMonth() + "'" +
-            ", subjectId=" + getSubjectId() +
-            ", rightTime=" + getRightTime() +
-            "}";
+            "id=" + id +
+            ", year='" + year + '\'' +
+            ", month='" + month + '\'' +
+            ", subjectId=" + subjectId +
+            ", rightTime=" + rightTime +
+            ", wrongTime=" + wrongTime +
+            ", departmentId=" + departmentId +
+            '}';
     }
 }

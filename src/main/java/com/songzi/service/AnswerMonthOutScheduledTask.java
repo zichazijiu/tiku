@@ -1,17 +1,18 @@
 package com.songzi.service;
 
-import com.songzi.domain.Department;
-import com.songzi.domain.Examine;
-import com.songzi.domain.Examiner;
-import com.songzi.domain.Project;
+import com.songzi.domain.*;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.repository.*;
+import com.songzi.web.rest.vm.QuestionVM;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AnswerMonthOutScheduledTask implements Runnable {
@@ -26,12 +27,15 @@ public class AnswerMonthOutScheduledTask implements Runnable {
 
     private DepartmentRepository departmentRepository;
 
-    public AnswerMonthOutScheduledTask(ExaminerRepository examinerRepository, SubjectRepository subjectRepository, ExamineRepository examineRepository,ProjectRepository projectRepository,DepartmentRepository departmentRepository){
+    private ExamineSubjectService examineSubjectService;
+
+    public AnswerMonthOutScheduledTask(ExaminerRepository examinerRepository, SubjectRepository subjectRepository, ExamineRepository examineRepository,ProjectRepository projectRepository,DepartmentRepository departmentRepository,ExamineSubjectService examineSubjectService){
         this.examinerRepository = examinerRepository;
         this.subjectRepository = subjectRepository;
         this.examineRepository = examineRepository;
         this.projectRepository = projectRepository;
         this.departmentRepository = departmentRepository;
+        this.examineSubjectService = examineSubjectService;
     }
 
     @Override
@@ -82,6 +86,11 @@ public class AnswerMonthOutScheduledTask implements Runnable {
         Long userId = examine.getUserId();
         int times = examiner.getTime();
         examiner.setTime(times + 1);
+
+        List<Subject> subjectMap = subjectRepository.findAllByProjectId(project.getId());
+        for(Subject subject : subjectMap){
+            examineSubjectService.doExamineSubjectWrongCount(subject.getId(),examine.getDepartmentId());
+        }
         examinerRepository.save(examiner);
 
         examine =  examineRepository.save(examine);

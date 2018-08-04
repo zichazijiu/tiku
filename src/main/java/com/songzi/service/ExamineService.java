@@ -157,8 +157,10 @@ public class ExamineService {
             for(QuestionVM questionVM : questionVMList){
                 Subject subject = subjectMap.get(questionVM.getSubjectId());
                 if(subject.getRight() == questionVM.getRight()){
-                    examineSubjectService.doExamineSubjectCount(subject.getId());
+                    examineSubjectService.doExamineSubjectCount(subject.getId(),examine.getDepartmentId());
                     rightCount++;
+                }else{
+                    examineSubjectService.doExamineSubjectWrongCount(subject.getId(),examine.getDepartmentId());
                 }
             }
             int score = rightCount* 100/total;
@@ -207,6 +209,6 @@ public class ExamineService {
             return;
         }
         log.info("------------开始执行答题月份结束结束定时任务------------------");
-        threadPoolMonthExecutor.execute(new AnswerMonthOutScheduledTask(examinerRepository,subjectRepository,examineRepository,projectRepository,departmentRepository));
+        threadPoolMonthExecutor.execute(new AnswerMonthOutScheduledTask(examinerRepository,subjectRepository,examineRepository,projectRepository,departmentRepository,examineSubjectService));
     }
 }

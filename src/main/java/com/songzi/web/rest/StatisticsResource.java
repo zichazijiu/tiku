@@ -61,12 +61,11 @@ public class StatisticsResource {
     @GetMapping("/statistics/weakness")
     @ApiOperation(value = "薄弱环节分析")
     @Timed
-    public ResponseEntity<?> getStatisticsWeakness(@RequestParam(value = "compareTime") String compareTime) {
+    public ResponseEntity<?> getStatisticsWeakness(@RequestParam(value = "compareTime") String compareTime,@RequestParam(value = "departmentId",required = false) Long departmentId) {
         log.debug("REST request to get 薄弱环节分析");
-        //随便造点数据
         WeaknessDTO weaknessDTO = new WeaknessDTO();
-        weaknessDTO.setProblemPercentDTO(statisticsService.getProblemPercentDTO(compareTime));
-        weaknessDTO.setAnswerTimePercentDTO(statisticsService.getAnswerTimePercentDTO(compareTime));
+        weaknessDTO.setProblemPercentDTO(statisticsService.getProblemPercentDTO(compareTime,departmentId));
+        weaknessDTO.setAnswerTimePercentDTO(statisticsService.getAnswerTimePercentDTO(compareTime,departmentId));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(weaknessDTO));
     }
 

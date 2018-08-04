@@ -86,8 +86,10 @@ public class AnswerTimeOutScheduledTask implements Runnable {
         for(QuestionVM questionVM : questionVMList){
             Subject subject = subjectMap.get(questionVM.getSubjectId());
             if(subject.getRight() == questionVM.getRight()){
-                examineSubjectService.doExamineSubjectCount(subject.getId());
+                examineSubjectService.doExamineSubjectCount(subject.getId(),examine.getDepartmentId());
                 rightCount++;
+            }else{
+                examineSubjectService.doExamineSubjectWrongCount(subject.getId(),examine.getDepartmentId());
             }
         }
         int score = rightCount* 100/total;
