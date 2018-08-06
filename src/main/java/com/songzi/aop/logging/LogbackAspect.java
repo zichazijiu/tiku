@@ -65,7 +65,7 @@ public class LogbackAspect {
                 logBackup.setCreatedTime(Instant.now());
                 logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
                 logBackup.setDescription(methodList.get(methodName)+":"+e.getMessage());
-                logBackup.setSize(27);
+                logBackup.setSize(0);
                 logBackup.setLevel(Level.INFO);
                 logBackup.setAuthority("ROLE_ADMIN");
                 logBackup.setLogType(LogType.SECURITY);
@@ -111,7 +111,7 @@ public class LogbackAspect {
                 logBackup.setCreatedTime(Instant.now());
                 logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
                 logBackup.setDescription(methodList.get(methodName)+":"+primaryKey);
-                logBackup.setSize(27);
+                logBackup.setSize(0);
                 logBackup.setLevel(Level.INFO);
                 logBackup.setAuthority("ROLE_ADMIN");
                 logBackup.setLogType(LogType.SECURITY);

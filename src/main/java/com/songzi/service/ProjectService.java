@@ -16,10 +16,7 @@ import com.songzi.web.rest.vm.ProjectVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,6 +92,8 @@ public class ProjectService {
     }
 
     public Page<ProjectDTO> findAll(ProjectQueryVM projectQueryVM, Pageable pageable){
+        Sort sort = new Sort(Sort.Direction.DESC,"id");
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
         return projectRepository.findAll(new Specification<Project>() {
             @Override
             public Predicate toPredicate(Root<Project> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -109,7 +108,7 @@ public class ProjectService {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable).map(projectMapper :: toDto);
+        },pageRequest).map(projectMapper :: toDto);
     }
 
     /**

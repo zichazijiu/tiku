@@ -1,13 +1,14 @@
 package com.songzi.service;
 
 import com.songzi.domain.Examiner;
+import com.songzi.domain.LogBackup;
 import com.songzi.domain.Subject;
 import com.songzi.domain.User;
-import com.songzi.domain.enumeration.AuthoritiesType;
-import com.songzi.domain.enumeration.Sex;
+import com.songzi.domain.enumeration.*;
 import com.songzi.repository.ExaminerRepository;
 import com.songzi.repository.SubjectRepository;
 import com.songzi.repository.UserRepository;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.ExaminerDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
@@ -36,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -60,6 +62,9 @@ public class ExportImportService {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private LogBackupService logBackupService;
 
     public ServletOutputStream exportExaminerExcel(HttpServletResponse response) throws IOException {
         try {
@@ -113,6 +118,17 @@ public class ExportImportService {
             response.setHeader("Content-disposition", "attachment;filename= 用户_"+date+".xls");
             response.flushBuffer();
             workbook.write(response.getOutputStream());
+
+            LogBackup logBackup = new LogBackup();
+            logBackup.setCreatedTime(Instant.now());
+            logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+            logBackup.setDescription("考评员数据导出");
+            logBackup.setSize(0);
+            logBackup.setLevel(Level.INFO);
+            logBackup.setAuthority("ROLE_ADMIN");
+            logBackup.setLogType(LogType.IEMPORT);
+            logBackup.setBakType(BakType.EXAMINER);
+            logBackupService.insert(logBackup);
         } catch (Exception e) {
             log.debug("error{}" + e.getMessage());
 
@@ -147,26 +163,42 @@ public class ExportImportService {
             throw new BadRequestAlertException("导入文件里面是空数据", this.getClass().getName(),"空数据");
         }
         List<String[]> list = new ArrayList<>();
-        for(int i = 0; i < totalRow; i++){
+        int i = 0;
+        while(true){
             //第一行  标题列不取
             row = sheet.getRow(i+1);
             String[] rowCell = new String[13];
-            rowCell[0] = row.getCell(0).getStringCellValue() == null?"":row.getCell(0).getStringCellValue();
-            rowCell[1] = row.getCell(1).getStringCellValue() == null?"":row.getCell(1).getStringCellValue();
-            rowCell[2] = row.getCell(2).getStringCellValue() == null?"":row.getCell(2).getStringCellValue();
-            rowCell[3] = row.getCell(3).getStringCellValue() == null?"":row.getCell(3).getStringCellValue();
-            rowCell[4] = row.getCell(4).getStringCellValue() == null?"":row.getCell(4).getStringCellValue();
-            rowCell[5] = row.getCell(5).getStringCellValue() == null?"":row.getCell(5).getStringCellValue();
-            rowCell[6] = row.getCell(6).getStringCellValue() == null?"":row.getCell(6).getStringCellValue();
-            rowCell[7] = row.getCell(7).getStringCellValue() == null?"":row.getCell(7).getStringCellValue();
-            rowCell[8] = row.getCell(8).getStringCellValue() == null?"":row.getCell(8).getStringCellValue();
+            if(row.getCell(0) == null && row.getCell(1) == null && row.getCell(2) == null && row.getCell(3) == null && row.getCell(4) == null){
+                break;
+            }
+            rowCell[0] = row.getCell(0) == null?"":row.getCell(0).getStringCellValue();
+            rowCell[1] = row.getCell(1) == null?"":row.getCell(1).getStringCellValue();
+            rowCell[2] = row.getCell(2) == null?"":row.getCell(2).getStringCellValue();
+            rowCell[3] = row.getCell(3) == null?"":row.getCell(3).getStringCellValue();
+            rowCell[4] = row.getCell(4) == null?"":row.getCell(4).getStringCellValue();
+            rowCell[5] = row.getCell(5) == null?"":row.getCell(5).getStringCellValue();
+            rowCell[6] = row.getCell(6) == null?"":row.getCell(6).getStringCellValue();
+            rowCell[7] = row.getCell(7) == null?"":row.getCell(7).getStringCellValue();
+            rowCell[8] = row.getCell(8) == null?"":row.getCell(8).getStringCellValue();
 //            rowCell[9] = row.getCell(9).getStringCellValue() == null?"":row.getCell(9).getStringCellValue();
 //            rowCell[10] = row.getCell(10).getStringCellValue() == null?"":row.getCell(10).getStringCellValue();
 //            rowCell[11] = row.getCell(11).getStringCellValue() == null?"":row.getCell(11).getStringCellValue();
 //            rowCell[12] = row.getCell(12).getStringCellValue() == null?"":row.getCell(12).getStringCellValue();
             list.add(rowCell);
+            i++;
         }
         this.importExaminerXmlSave(list);
+
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("考评员数据导入");
+        logBackup.setSize(0);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.IEMPORT);
+        logBackup.setBakType(BakType.EXAMINER);
+        logBackupService.insert(logBackup);
     }
 
     public void importExaminerXmlSave(List<String[]> rowList){
@@ -252,6 +284,17 @@ public class ExportImportService {
             response.setHeader("Content-disposition", "attachment;filename= 题目_"+date+".xls");
             response.flushBuffer();
             workbook.write(response.getOutputStream());
+
+            LogBackup logBackup = new LogBackup();
+            logBackup.setCreatedTime(Instant.now());
+            logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+            logBackup.setDescription("考评项数据导出");
+            logBackup.setSize(0);
+            logBackup.setLevel(Level.INFO);
+            logBackup.setAuthority("ROLE_ADMIN");
+            logBackup.setLogType(LogType.IEMPORT);
+            logBackup.setBakType(BakType.SUBJECT);
+            logBackupService.insert(logBackup);
         } catch (Exception e) {
             log.debug("error{}" + e.getMessage());
 
@@ -287,17 +330,36 @@ public class ExportImportService {
             throw new BadRequestAlertException("导入文件里面是空数据", this.getClass().getName(),"空数据");
         }
         List<String[]> list = new ArrayList<>();
-        for(int i = 0; i < totalRow; i++){
+        int i = 0;
+        while (true){
             //第一行  标题列不取
             row = sheet.getRow(i+1);
             String[] rowCell = new String[13];
-            rowCell[0] = row.getCell(0).getStringCellValue() == null?"":row.getCell(0).getStringCellValue();
-            rowCell[1] = row.getCell(1).getStringCellValue() == null?"":row.getCell(1).getStringCellValue();
-            rowCell[2] = row.getCell(2).getStringCellValue() == null?"":row.getCell(2).getStringCellValue();
-            rowCell[3] = row.getCell(3).getStringCellValue() == null?"":row.getCell(3).getStringCellValue();
+
+            if(row.getCell(0) == null && row.getCell(1) == null && row.getCell(2) == null && row.getCell(3) == null && row.getCell(4) == null){
+                break;
+            }
+
+            rowCell[0] = row.getCell(0) == null?"":row.getCell(0).getStringCellValue();
+            rowCell[1] = row.getCell(1) == null?"":row.getCell(1).getStringCellValue();
+            rowCell[2] = row.getCell(2) == null?"":row.getCell(2).getStringCellValue();
+            rowCell[3] = row.getCell(3) == null?"":row.getCell(3).getStringCellValue();
             list.add(rowCell);
+
+            i++;
         }
         this.importSubjectXmlSave(list);
+
+        LogBackup logBackup = new LogBackup();
+        logBackup.setCreatedTime(Instant.now());
+        logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        logBackup.setDescription("考评项数据导入");
+        logBackup.setSize(0);
+        logBackup.setLevel(Level.INFO);
+        logBackup.setAuthority("ROLE_ADMIN");
+        logBackup.setLogType(LogType.IEMPORT);
+        logBackup.setBakType(BakType.SUBJECT);
+        logBackupService.insert(logBackup);
     }
 
     public void importSubjectXmlSave(List<String[]> rowList){

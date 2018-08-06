@@ -14,7 +14,9 @@ import com.songzi.web.rest.vm.SubjectQueryVM;
 import com.songzi.web.rest.vm.SubjectVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +83,8 @@ public class SubjectService {
      * @return
      */
     public Page<SubjectDTO> getAll(SubjectQueryVM subjectQueryVM, Pageable pageable){
-
+        Sort sort = new Sort(Sort.Direction.DESC,"id");
+        PageRequest pageRequest = new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),sort);
         return subjectRepository.findAll(new Specification<Subject>() {
             @Override
             public Predicate toPredicate(Root<Subject> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -96,7 +99,7 @@ public class SubjectService {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable).map(subjectMapper :: toDto).map(subjectDTO -> {
+        },pageRequest).map(subjectMapper :: toDto).map(subjectDTO -> {
             List<String> projectList = projectRepository.getProjectNameBySujectId(subjectDTO.getId());
             subjectDTO.setProjectList(projectList);
             return subjectDTO;
