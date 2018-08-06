@@ -30,19 +30,21 @@ public class ExamineSubjectService {
         ExamineSubject examineSubject = examineSubjectRepository.findOneBySubjectIdAndYearAndMonthAndDepartmentId(subjectId,year+"",month+"",departmentId);
         if(examineSubject != null){
             int examineTimes = examineSubject.getRightTime();
-            examineSubject.setRightTime(examineTimes++);
+            examineSubject.setRightTime(examineTimes+1);
         }else{
             examineSubject = new ExamineSubject();
             examineSubject.setYear(year+"");
             examineSubject.setMonth(month+"");
             examineSubject.setSubjectId(subjectId);
             examineSubject.setRightTime(1);
+            examineSubject.setWrongTime(0);
+            examineSubject.setDepartmentId(departmentId);
         }
         examineSubjectRepository.save(examineSubject);
     }
 
     /**
-     * 统计某年某月 当月题目答题正确次数
+     * 统计某年某月 当月题目答题错误次数
      * @param subjectId
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -54,13 +56,15 @@ public class ExamineSubjectService {
         ExamineSubject examineSubject = examineSubjectRepository.findOneBySubjectIdAndYearAndMonthAndDepartmentId(subjectId,year+"",month+"",departmentId);
         if(examineSubject != null){
             int examineTimes = examineSubject.getWrongTime();
-            examineSubject.setWrongTime(examineTimes++);
+            examineSubject.setWrongTime(examineTimes+1);
         }else{
             examineSubject = new ExamineSubject();
             examineSubject.setYear(year+"");
             examineSubject.setMonth(month+"");
             examineSubject.setSubjectId(subjectId);
             examineSubject.setWrongTime(1);
+            examineSubject.setRightTime(0);
+            examineSubject.setDepartmentId(departmentId);
         }
         examineSubjectRepository.save(examineSubject);
     }
