@@ -29,6 +29,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -81,10 +82,9 @@ public class DepartmentSerivce {
     /**
      * 根据条件查询机构部门
      * @param departmentQueryVM
-     * @param pageable
      * @return
      */
-    public Page<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM, Pageable pageable){
+    public List<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM){
 
         return departmentRepository.findAll(new Specification<Department>() {
             @Override
@@ -100,7 +100,7 @@ public class DepartmentSerivce {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable).map(departmentMapper :: toDto);
+        }).stream().map(departmentMapper :: toDto).collect(Collectors.toList());
     }
 
     public void delete(Long id){

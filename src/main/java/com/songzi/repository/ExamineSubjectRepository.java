@@ -30,6 +30,12 @@ public interface ExamineSubjectRepository extends JpaRepository<ExamineSubject, 
     @Query(value = "select COALESCE(sum(e.wrongTime),0),e.subjectId from ExamineSubject e where e.year =?1 and e.month =?2 GROUP BY e.subjectId order by COALESCE(sum(e.wrongTime),0) desc")
     List<Object[]> findAllByYearAndMonthOrderByWrongTimeDesc(String year,String month);
 
+    @Query(value = "select COALESCE(sum(e.wrongTime),0),e.departmentId from ExamineSubject e where e.year =?1 and e.month =?2 GROUP BY e.departmentId order by COALESCE(sum(e.wrongTime),0) desc")
+    List<Object[]> findAllByYearAndMonthGroupByDepartmentOrderByWrongTimeDesc(String year,String month);
+
+    @Query(value = "select COALESCE(sum(e.wrongTime),0),e.month from ExamineSubject e where e.year =?1 and e.departmentId =?2 GROUP BY e.month order by COALESCE(sum(e.wrongTime),0) desc")
+    List<Object[]> findAllByYearGroupByMonthOrderByWrongTimeDesc(String year,Long departmentId);
+
     List<ExamineSubject> findAllByYearAndMonthAndDepartmentIdOrderByWrongTimeDesc(String year,String month,Long departmentId);
 
     List<ExamineSubject> findAllByYearAndMonthAndDepartmentIdOrderByWrongTimeDesc(String year,String month,Long departmentId,Pageable pageable);

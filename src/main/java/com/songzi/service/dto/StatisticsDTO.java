@@ -2,6 +2,7 @@ package com.songzi.service.dto;
 
 public class StatisticsDTO {
 
+    //现在代表错误的题目数
     private int score;
 
     private String month;

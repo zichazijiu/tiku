@@ -236,9 +236,12 @@ public class ProjectService {
     }
 
     public void delete(Long id){
-        Long count = projectRepository.getCountProjecctSubjectByProjectId(id);
-        if(count > 0){
-            throw new BadRequestAlertException("项目引用题目后不能删除",this.getClass().getName(),"不能删除");
+        Project project = projectRepository.findOne(id);
+        if(project == null){
+            return;
+        }
+        if(project.getStatus() == Status.PUBLISH){
+            throw new BadRequestAlertException("项目发布后不能删除",this.getClass().getName(),"不能删除");
         }else{
             projectRepository.deleteProjectSubject(id);
             projectRepository.delete(id);

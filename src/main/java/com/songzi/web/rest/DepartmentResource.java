@@ -97,17 +97,16 @@ public class DepartmentResource {
     /**
      * GET  /departments : get all the departments.
      *
-     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of departments in body
      */
     @GetMapping("/departments")
     @Timed
     @ApiOperation(value = "查询所有机构")
-    public ResponseEntity<List<DepartmentDTO>> getAllDepartments(DepartmentQueryVM departmentQueryVM, Pageable pageable) {
-        log.debug("REST request to get a page of Departments {}{}",departmentQueryVM,pageable);
-        Page<DepartmentDTO> page = departmentSerivce.getAll(departmentQueryVM,pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartments(DepartmentQueryVM departmentQueryVM) {
+        log.debug("REST request to get a page of Departments {}",departmentQueryVM);
+        List<DepartmentDTO> page = departmentSerivce.getAll(departmentQueryVM);
+        //HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
+        return new ResponseEntity<>(page,HttpStatus.OK);
     }
 
     /**

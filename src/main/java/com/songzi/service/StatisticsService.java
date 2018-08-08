@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,8 @@ public class StatisticsService {
 
 
     public List<StatisticsDTO> getStatisticsDepartment(Long departmentId){
-        List<StatisticsDTO> statisticsDTOList = statisticsRepository.getStatisticsDepartment(departmentId).stream().map(objects -> {
+        String year = LocalDate.now().getYear()+"";
+        List<StatisticsDTO> statisticsDTOList = examineSubjectRepository.findAllByYearGroupByMonthOrderByWrongTimeDesc(year,departmentId).stream().map(objects -> {
             StatisticsDTO statisticsDTO = new StatisticsDTO();
             statisticsDTO.setScore(Integer.parseInt(objects[0]+""));
             statisticsDTO.setMonth(objects[1]+"");
@@ -63,7 +65,10 @@ public class StatisticsService {
 
 
     public List<StatisticsDTO> getStatisticsSortDepartment(String compareTime){
-        List<StatisticsDTO> statisticsDTOList = statisticsRepository.getStatisticsSortDepartment(compareTime).stream().map(objects -> {
+        String[] yearMonthArray = compareTime.split("-");
+        String year = yearMonthArray[0];
+        String month = yearMonthArray[1];
+        List<StatisticsDTO> statisticsDTOList = examineSubjectRepository.findAllByYearAndMonthGroupByDepartmentOrderByWrongTimeDesc(year,month).stream().map(objects -> {
             StatisticsDTO statisticsDTO = new StatisticsDTO();
             statisticsDTO.setScore(Integer.parseInt(objects[0]+""));
             Department department = departmentRepository.findOne(Long.parseLong(objects[1]+""));
