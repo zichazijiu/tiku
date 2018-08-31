@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +44,17 @@ public class StatisticsResource {
     @GetMapping("/statistics/sortdepartment")
     @ApiOperation(value = "单位考评排名")
     @Timed
-    public ResponseEntity<?> getStatisticsSortDepartment(@RequestParam(value = "compareTime") String compareTime) {
+    public ResponseEntity<?> getStatisticsSortDepartment(@RequestParam(value = "type", required = false) String type,
+                                                         @RequestParam(value = "order", required = false) String order,
+                                                         @RequestParam(value = "compareTime") String compareTime) {
         log.debug("REST request to get 单位考评排名");
-        List<StatisticsDTO> result = statisticsService.getStatisticsSortDepartment(compareTime);
+        List<StatisticsDTO> result;
+        if ("wrong-times".equals(type))
+            result = statisticsService.getStatisticsSortDepartment(compareTime);
+        else
+            result = statisticsService.getStatisticsSortDepartmentAVGScore(compareTime, order);
+
+
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
@@ -54,18 +63,21 @@ public class StatisticsResource {
     @Timed
     public ResponseEntity<?> getStatisticsDepartment(@RequestParam(value = "departmentId") Long departmentId) {
         log.debug("REST request to get 单位自查月份对比数据");
-        List<StatisticsDTO> result = statisticsService.getStatisticsDepartment(departmentId);
+        // List<StatisticsDTO> result = statisticsService.getStatisticsDepartment(departmentId);
+        List<StatisticsDTO> result = statisticsService.getStatisticsAVGScoreWith6MonthByDepartment(departmentId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
     @GetMapping("/statistics/weakness")
     @ApiOperation(value = "薄弱环节分析")
     @Timed
-    public ResponseEntity<?> getStatisticsWeakness(@RequestParam(value = "compareTime") String compareTime,@RequestParam(value = "departmentId",required = false) Long departmentId) {
+    public ResponseEntity<?> getStatisticsWeakness(@RequestParam(value = "compareTime") String compareTime, @RequestParam(value = "departmentId", required = false) Long departmentId) {
         log.debug("REST request to get 薄弱环节分析");
         WeaknessDTO weaknessDTO = new WeaknessDTO();
-        weaknessDTO.setProblemPercentDTO(statisticsService.getProblemPercentDTO(compareTime,departmentId));
-        weaknessDTO.setAnswerTimePercentDTO(statisticsService.getAnswerTimePercentDTO(compareTime,departmentId));
+        // 薄弱问题排行
+        weaknessDTO.setProblemPercentDTO(statisticsService.getProblemPercentDTO(compareTime, departmentId));
+        // 薄弱问题占比
+        weaknessDTO.setAnswerTimePercentDTO(statisticsService.getAnswerTimePercentDTO(compareTime, departmentId));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(weaknessDTO));
     }
 

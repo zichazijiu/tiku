@@ -35,7 +35,7 @@ public class ProjectDTO {
     private Long examineId;
 
     @ApiModelProperty(value = "分数")
-    private Integer score;
+    private Float score;
 
     @ApiModelProperty(value = "用户是否答过题标志")
     private boolean hasExamineFlag;
@@ -55,7 +55,7 @@ public class ProjectDTO {
 
     }
 
-    public ProjectDTO(Long id,String name, String description, Instant date, Long examineId, Integer score,Instant createdDate,String createdBy,Integer duration,ExamineStatus examineStatus) {
+    public ProjectDTO(Long id,String name, String description, Instant date, Long examineId, Float score,Instant createdDate,String createdBy,Integer duration,ExamineStatus examineStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -108,11 +108,11 @@ public class ProjectDTO {
         this.examineId = examineId;
     }
 
-    public Integer getScore() {
+    public Float getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Float score) {
         this.score = score;
     }
 

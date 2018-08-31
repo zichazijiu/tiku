@@ -1,5 +1,7 @@
 package com.songzi.service.dto;
 
+import java.util.List;
+
 public class ExamineSubjectDTO {
 
     private Long id;
@@ -13,6 +15,12 @@ public class ExamineSubjectDTO {
     private String status;
 
     private String type;
+
+    private String totalPoint;
+
+    private String options;
+
+    private List<MultipleChoice> multipleChoices;
 
     public Long getId() {
         return id;
@@ -60,5 +68,29 @@ public class ExamineSubjectDTO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTotalPoint() {
+        return totalPoint;
+    }
+
+    public void setTotalPoint(String totalPoint) {
+        this.totalPoint = totalPoint;
+    }
+
+    public List<MultipleChoice> getMultipleChoices() {
+        return multipleChoices;
+    }
+
+    public void setMultipleChoices(List<MultipleChoice> multipleChoices) {
+        this.multipleChoices = multipleChoices;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 }

@@ -19,12 +19,15 @@ import org.springframework.core.env.Environment;
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
-@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class,LogbackProperties.class})
+@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class, LogbackProperties.class})
 public class TikuApp {
 
     private static final Logger log = LoggerFactory.getLogger(TikuApp.class);

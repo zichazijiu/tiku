@@ -6,6 +6,8 @@ public class QuestionVM {
 
     private Long right;
 
+    private String[] multipleChoiceAnswers;
+
     public Long getSubjectId() {
         return subjectId;
     }
@@ -20,5 +22,13 @@ public class QuestionVM {
 
     public void setRight(Long right) {
         this.right = right;
+    }
+
+    public String[] getMultipleChoiceAnswers() {
+        return multipleChoiceAnswers;
+    }
+
+    public void setMultipleChoiceAnswers(String[] multipleChoiceAnswers) {
+        this.multipleChoiceAnswers = multipleChoiceAnswers;
     }
 }

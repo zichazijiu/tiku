@@ -48,6 +48,12 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
     @Column(name = "del_flag", nullable = false)
     private DeleteFlag delFlag;
 
+    @Column(name = "total_point")
+    private String totalPoint;
+
+    @Column(name = "options")
+    private String options;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -148,6 +154,19 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public String getTotalPoint() {
+        return totalPoint;
+    }
+
+    public Subject totalPoint(String totalPoint) {
+        this.totalPoint = totalPoint;
+        return this;
+    }
+
+    public void setTotalPoint(String totalPoint) {
+        this.totalPoint = totalPoint;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -181,6 +200,16 @@ public class Subject extends AbstractAuditingEntity implements Serializable {
             ", type='" + type + '\'' +
             ", right=" + right +
             ", delFlag=" + delFlag +
+            ", totalPoint=" + getTotalPoint() +
+            ", options=" + getOptions() +
             '}';
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 }

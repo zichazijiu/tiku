@@ -1,7 +1,7 @@
 package com.songzi.security;
 
 /**
- * Constants for Spring Security authorities.
+ * TikuConstants for Spring Security authorities.
  */
 public final class AuthoritiesConstants {
 

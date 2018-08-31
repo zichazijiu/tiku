@@ -74,7 +74,7 @@ public class AnswerMonthOutScheduledTask implements Runnable {
         examine.setDepartmentId(examiner.getDepartmentId());
         Department department = departmentRepository.findOne(examiner.getDepartmentId());
         examine.setName(department.getName()+"-"+examiner.getName()+ project.getName() + "-" +"的考试");
-        examine.setScore(0);
+        examine.setScore(0f);
         examine.setDuration(project.getDuration());
         examine.setStatus(ExamineStatus.FINISHED);
         examine.setResult("{}");

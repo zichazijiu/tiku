@@ -16,11 +16,29 @@ public class SubjectVM {
 
     private Long right;
 
+    private String totalPoint;
+
+    private String options;
+
+    /**
+	 * @return the totalPoint
+	 */
+	public String getTotalPoint() {
+		return totalPoint;
+	}
+
+	/**
+	 * @param totalPoint the totalPoint to set
+	 */
+	public void setTotalPoint(String totalPoint) {
+		this.totalPoint = totalPoint;
+    }
+    
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+	public void setId(Long id) {
         this.id = id;
     }
 
@@ -70,5 +88,13 @@ public class SubjectVM {
 
     public void setRight(Long right) {
         this.right = right;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 }

@@ -1,6 +1,7 @@
 package com.songzi.service.dto;
 
 import com.songzi.domain.enumeration.ExamineStatus;
+import com.songzi.domain.enumeration.ExamineType;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ExamineDTO {
 
     private Integer remaining;
 
-    private Integer score;
+    private Float score;
 
     private Long userId;
 
@@ -36,6 +37,8 @@ public class ExamineDTO {
     private String lastModifiedBy;
 
     private Instant lastModifiedDate;
+
+    private ExamineType type;
 
     public Long getId() {
         return id;
@@ -77,11 +80,11 @@ public class ExamineDTO {
         this.duration = duration;
     }
 
-    public Integer getScore() {
+    public Float getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Float score) {
         this.score = score;
     }
 
@@ -160,5 +163,13 @@ public class ExamineDTO {
             }
             return Math.toIntExact(this.duration - time);
         }
+    }
+
+    public ExamineType getType() {
+        return type;
+    }
+
+    public void setType(ExamineType type) {
+        this.type = type;
     }
 }

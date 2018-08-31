@@ -1,7 +1,6 @@
 package com.songzi.service.dto;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 public class SubjectDTO {
@@ -20,7 +19,13 @@ public class SubjectDTO {
 
     private Long right;
 
+    private String totalPoint;
+
     List<String> projectList;
+
+    private String options;
+
+    private List<MultipleChoice> multipleChoices;
 
     private String createdBy;
 
@@ -104,5 +109,29 @@ public class SubjectDTO {
 
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getTotalPoint() {
+        return totalPoint;
+    }
+
+    public void setTotalPoint(String totalPoint) {
+        this.totalPoint = totalPoint;
+    }
+
+    public List<MultipleChoice> getMultipleChoices() {
+        return multipleChoices;
+    }
+
+    public void setMultipleChoices(List<MultipleChoice> multipleChoices) {
+        this.multipleChoices = multipleChoices;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 }

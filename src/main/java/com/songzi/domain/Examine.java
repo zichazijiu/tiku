@@ -3,6 +3,7 @@ package com.songzi.domain;
 
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.ExamineStatus;
+import com.songzi.domain.enumeration.ExamineType;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -46,7 +47,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     private Integer duration;
 
     @Column(name = "score")
-    private Integer score;
+    private Float score;
 
     @Column(name = "user_id", nullable = false)
     @NotNull
@@ -55,11 +56,16 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
     @Column(name = "project_id")
     private Long projectId;
 
-    @JoinColumn(name = "result",nullable = true)
+    @JoinColumn(name = "result", nullable = true)
     private String result;
 
     @Column(name = "actual_duration", nullable = false)
     private Integer actualDuration;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private ExamineType type;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -135,16 +141,16 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.duration = duration;
     }
 
-    public Integer getScore() {
+    public Float getScore() {
         return score;
     }
 
-    public Examine score(Integer score) {
+    public Examine score(Float score) {
         this.score = score;
         return this;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Float score) {
         this.score = score;
     }
 
@@ -154,6 +160,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.userId = userId;
         return this;
     }
+
     public Long getUserId() {
         return userId;
     }
@@ -186,6 +193,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
         this.actualDuration = actualDuration;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -212,6 +220,7 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
             "id=" + id +
             ", name='" + name + '\'' +
             ", status=" + status +
+            ", type=" + getType() +
             ", delFlag=" + delFlag +
             ", departmentId=" + departmentId +
             ", duration=" + duration +
@@ -221,5 +230,15 @@ public class Examine extends AbstractAuditingEntity implements Serializable {
             ", result='" + result + '\'' +
             ", actualDuration=" + actualDuration +
             '}';
+    }
+
+
+    @NotNull
+    public ExamineType getType() {
+        return type;
+    }
+
+    public void setType(@NotNull ExamineType type) {
+        this.type = type;
     }
 }

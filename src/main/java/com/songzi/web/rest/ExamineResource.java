@@ -6,6 +6,7 @@ import com.songzi.repository.ExamineRepository;
 import com.songzi.service.ExamineService;
 import com.songzi.service.dto.ExamineDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.errors.CustomParameterizedException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.ExamineVM;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -78,18 +80,17 @@ public class ExamineResource {
      * or with status 500 (Internal Server Error) if the examine couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
 
-    @PutMapping("/examines")
-    @Timed
-    public ResponseEntity<Examine> updateExamine(@Valid @RequestBody ExamineVM examineVM) throws URISyntaxException {
-        log.debug("REST request to update Examine : {}", examineVM);
-        if (examineVM.getId() == null) {
-            throw new BadRequestAlertException("更新考试ID不能为空", ENTITY_NAME, "ID不能为空");
-        }
-        Examine result = examineService.update(examineVM);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }*/
+     @PutMapping("/examines")
+     @Timed public ResponseEntity<Examine> updateExamine(@Valid @RequestBody ExamineVM examineVM) throws URISyntaxException {
+     log.debug("REST request to update Examine : {}", examineVM);
+     if (examineVM.getId() == null) {
+     throw new BadRequestAlertException("更新考试ID不能为空", ENTITY_NAME, "ID不能为空");
+     }
+     Examine result = examineService.update(examineVM);
+     return ResponseEntity.ok()
+     .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+     .body(result);
+     }*/
 
     /**
      * GET  /examines : get all the examines.
@@ -139,8 +140,11 @@ public class ExamineResource {
     @PutMapping("/examines/{examineId}/questions/{submit}")
     @Timed
     @ApiOperation(value = "答题")
-    public ResponseEntity<?> answer(@PathVariable(value = "examineId") Long examineId,@PathVariable(value = "submit") String submit,@RequestBody List<QuestionVM> questionVMList){
-        ExamineDTO examineDTO = examineService.answer(examineId,submit,questionVMList);
+    public ResponseEntity<?> answer(@PathVariable(value = "examineId") Long examineId, @PathVariable(value = "submit") String submit, @RequestBody List<QuestionVM> questionVMList) {
+        ExamineDTO examineDTO = null;
+        if (!StringUtils.isEmpty(submit)) {
+            examineDTO = examineService.answer(examineId, submit, questionVMList);
+        }
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(examineDTO));
     }
 }
