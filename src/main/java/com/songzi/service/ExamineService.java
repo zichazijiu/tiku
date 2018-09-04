@@ -95,7 +95,7 @@ public class ExamineService {
         Project project = projectRepository.findOne(examineVM.getProjectId());
         if (project == null)
             throw new BadRequestAlertException("项目ID[" + examineVM.getProjectId() + "]不不存在，请联系管理员", this.getClass().getName(), "项目不存在");
-        examine.setName(department.getName() + "-" + examiner.getName() + project.getName() + "-" + "的考试");
+        examine.setName(department.getName() + "-" + examiner.getName() + project.getName() + "-" + "的考评");
         examine.setScore(null);
         examine.setDuration(project.getDuration());
         examine.setStatus(ExamineStatus.NORMAL);
@@ -293,7 +293,7 @@ public class ExamineService {
      * 答题时间结束  定时任务
      */
 //    @Scheduled(cron = "0 */1 * * * ?")
-//    public void answerTimeOut() {
+//    public void answerTimeOut() {hadDoneProjectIds
 //        if (threadPoolExecutor.getActiveCount() > 0) {
 //            log.info("---------------------有答题时间结束定时任务执行中，本次不执行--------------");
 //            return;
