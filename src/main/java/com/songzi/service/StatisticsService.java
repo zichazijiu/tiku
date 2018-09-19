@@ -54,9 +54,8 @@ public class StatisticsService {
                 String month = ((String) objects[0]).substring(5);
                 statisticsDTO.setMonth(month);
                 // 分数
-                String grades = "0";
-                if (objects[1] != null)
-                    grades = (String) objects[1];
+                String grades = (String) objects[1];
+                if (StringUtils.isEmpty(grades)) grades = "0";
                 Integer score = (int) Float.parseFloat(grades);
                 statisticsDTO.setScore(score);
 
@@ -96,7 +95,10 @@ public class StatisticsService {
                 String date = (String) objects[0];
                 statisticsDTO.setMonth(date);
                 // 平均分
-                int avgScore = (int) Float.parseFloat((String) objects[1]);
+                String avgScoreStr = (String) objects[1];
+                if (StringUtils.isEmpty(avgScoreStr))
+                    avgScoreStr = "0";
+                int avgScore = (int) Float.parseFloat(avgScoreStr);
                 statisticsDTO.setScore(avgScore);
 
                 return statisticsDTO;
@@ -119,7 +121,10 @@ public class StatisticsService {
             .findAllByYearAndMonthGroupByDepartmentOrderByWrongTimeDesc(year, month)
             .stream().map(objects -> {
                 StatisticsDTO statisticsDTO = new StatisticsDTO();
-                statisticsDTO.setScore(Integer.parseInt(objects[0] + ""));
+                String score = (String) objects[0];
+                if (StringUtils.isEmpty(score))
+                    score = "0";
+                statisticsDTO.setScore(Integer.parseInt( score));
                 Department department = departmentRepository.findOne(Long.parseLong(objects[1] + ""));
                 if (department != null) {
                     statisticsDTO.setDepartmentName(department.getName());
@@ -148,8 +153,11 @@ public class StatisticsService {
         List<StatisticsDTO> statisticsDTOList = objectList
             .stream().map(objects -> {
                 StatisticsDTO statisticsDTO = new StatisticsDTO();
-                statisticsDTO.setDepartmentName((String) objects[0]); // 部门名称
-                statisticsDTO.setScore((int) Float.parseFloat((String) objects[1])); // 部门平均分数
+                String departmentName = (String) objects[0]; // 部门名称
+                statisticsDTO.setDepartmentName(departmentName);
+                String score = ((String) objects[1]); // 部门平均分数
+                if (StringUtils.isEmpty(score)) score = "0";
+                statisticsDTO.setScore((int) Float.parseFloat(score));
 
                 return statisticsDTO;
             }).collect(Collectors.toList());
