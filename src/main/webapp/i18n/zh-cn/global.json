@@ -14,6 +14,7 @@
                 "statistics": "Statistics",
                 "logBackup": "Log Backup",
                 "department": "Department",
+                "office": "Office",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

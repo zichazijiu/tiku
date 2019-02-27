@@ -1,0 +1,52 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "department",
+            "otherEntityName": "department",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "office"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "office_status",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "del_flag",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "office_type",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "created_date",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "created_by",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "last_modified_date",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "last_modified_by",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20190227065038",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "office",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}

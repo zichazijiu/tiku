@@ -7,6 +7,7 @@ import { TikuExaminerModule } from './examiner/examiner.module';
 import { TikuStatisticsModule } from './statistics/statistics.module';
 import { TikuLogBackupModule } from './log-backup/log-backup.module';
 import { TikuDepartmentModule } from './department/department.module';
+import { TikuOfficeModule } from './office/office.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -18,6 +19,7 @@ import { TikuDepartmentModule } from './department/department.module';
         TikuStatisticsModule,
         TikuLogBackupModule,
         TikuDepartmentModule,
+        TikuOfficeModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
