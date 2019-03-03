@@ -1,0 +1,37 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "url",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "label",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "parentId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "delFlag",
+            "fieldType": "DeleteFlag",
+            "fieldValues": "DELETE,NORMAL"
+        },
+        {
+            "fieldName": "menuStatus",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20190303041255",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "menu",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

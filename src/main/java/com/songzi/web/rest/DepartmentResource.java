@@ -136,4 +136,14 @@ public class DepartmentResource {
         departmentSerivce.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * GET 获取子部门信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/departments/{id}/child")
+    public ResponseEntity<List<Department>> getChildDepartment(@PathVariable Long id){
+        return null;
+    }
 }
