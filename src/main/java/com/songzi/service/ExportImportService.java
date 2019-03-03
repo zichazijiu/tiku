@@ -406,8 +406,9 @@ public class ExportImportService {
             multipleChoice1.setNo("1");
             multipleChoice1.setContent(row.getCell(cellIndex) == null ? "" : row.getCell(cellIndex++).getStringCellValue());
             multipleChoice1.setPoint(row.getCell(cellIndex) == null ? "" : String.valueOf(row.getCell(cellIndex++).getStringCellValue()));
-            if (!"".equals(multipleChoice1.getContent()) && !"".equals(multipleChoice1.getPoint()))
+            if (!"".equals(multipleChoice1.getContent()) && !"".equals(multipleChoice1.getPoint())) {
                 multipleChoiceList.add(multipleChoice1);
+            }
             // 选项2
             MultipleChoice multipleChoice2 = new MultipleChoice();
             multipleChoice2.setNo("2");

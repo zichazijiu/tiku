@@ -38,5 +38,15 @@
                   separator=";"
                   tableName="examiner">
         </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/menu.csv"
+                  separator=";"
+                  tableName="menu">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/menu_authorities.csv"
+                  separator=";"
+                  tableName="menu_authority">
+        </loadData>
     </changeSet>
 </databaseChangeLog>

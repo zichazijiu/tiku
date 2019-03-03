@@ -12,13 +12,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 @Aspect
@@ -54,9 +51,9 @@ public class LogbackAspect {
         String[] classNameArray = joinPoint.getSignature().getDeclaringTypeName().split("\\.");
         String className = classNameArray[classNameArray.length-1];
         String methodName = joinPoint.getSignature().getName();
-        Map<String, Map<String,String>> needlogbakmethod = logbackProperties.getNeedlogbakmethod();
-        if(needlogbakmethod.containsKey(className)){
-            Map<String,String> methodList = needlogbakmethod.get(className);
+        Map<String, Map<String,String>> needLogbakmethod = logbackProperties.getNeedlogbakmethod();
+        if(needLogbakmethod != null && needLogbakmethod.containsKey(className)){
+            Map<String,String> methodList = needLogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
                 //获取输入输出参数
                 Object[] objects = joinPoint.getArgs();
@@ -86,10 +83,10 @@ public class LogbackAspect {
         String[] classNameArray = joinPoint.getSignature().getDeclaringTypeName().split("\\.");
         String className = classNameArray[classNameArray.length-1];
         String methodName = joinPoint.getSignature().getName();
-        Map<String, Map<String,String>> needlogbakmethod = logbackProperties.getNeedlogbakmethod();
+        Map<String, Map<String,String>> needLogbakmethod = logbackProperties.getNeedlogbakmethod();
         Object object = joinPoint.proceed();
-        if(needlogbakmethod.containsKey(className)){
-            Map<String,String> methodList = needlogbakmethod.get(className);
+        if(needLogbakmethod != null && needLogbakmethod.containsKey(className)){
+            Map<String,String> methodList = needLogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
                 Object[] objects = joinPoint.getArgs();
                 String primaryKey = "";

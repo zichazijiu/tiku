@@ -1,0 +1,9 @@
+{
+    "tikuApp": {
+        "CheckItemType" : {
+            "null": "",
+            "MAIN": "MAIN",
+            "SUB": "SUB"
+        }
+    }
+}

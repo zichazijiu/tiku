@@ -15,6 +15,8 @@
     <include file="config/liquibase/changelog/20180717142450_modify_entity_LogBackup_description.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180728044943_added_entity_ExamineSubject.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190303041255_added_entity_Menu.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190303080300_added_entity_CheckItem.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190303081726_added_entity_CheckItemAnswer.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/load_data.xml" relativeToChangelogFile="false"/>
@@ -24,5 +26,4 @@
     <include file="config/liquibase/changelog/20180804044943_added_department_wrongtimes_ExamineSubject.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180824233455_modify_entity_Examine.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180829141022_modify_entity_Subject.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20190214185911_add_auth_data_jhi_authority.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

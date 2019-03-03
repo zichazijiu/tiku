@@ -1,0 +1,36 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "itemId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "yiliuProblems",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "zhenggaiInfo",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "result",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "changelogDate": "20190303081726",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "check_item_answer",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

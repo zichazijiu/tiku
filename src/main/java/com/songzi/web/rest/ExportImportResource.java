@@ -83,7 +83,7 @@ public class ExportImportResource {
 
     @GetMapping("/exportModelExcel")
     @Timed
-    @ApiOperation(value = "导入模板",httpMethod = "GET",response = Void.class ,notes = "导入模板")
+    @ApiOperation(value = "导出模板",httpMethod = "GET",response = Void.class ,notes = "导入模板")
     public void exportModelExcel(@RequestParam String modelType, HttpServletRequest request, HttpServletResponse response) throws IOException {
         exportImportService.exportModleXls(modelType,response);
     }

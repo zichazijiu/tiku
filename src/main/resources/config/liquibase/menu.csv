@@ -1,0 +1,16 @@
+id;name;url;jhi_label;parent_id;del_flag;menu_status
+1;homepage;/homepage;首页;0;NORMAL;1
+2;wodeziping;/wodeziping;我的自评;0;NORMAL;1
+3;baobiao;/baobiao;报表;0;NORMAL;1
+4;zhengtijieguo;/zhengtijieguo;整体结果;3;NORMAL;1
+5;danweiwentifenbu;/danweiwentifenbu;单位问题分布;3;NORMAL;1
+6;zipingxiangwentifenbu;/zipingxiangwentifenbu;自评项问题分布;3;NORMAL;1
+7;zhenggaifenxi;/zhenggaifenxi;整改分析;3;NORMAL;1
+8;xitongguanli;/xitongguanli;系统管理;0;NORMAL;1
+9;kaopingyuanguanli;/kaopingyuanguanli;考评员管理;8;NORMAL;1
+10;zuzhijigouguanli;/zuzhijigouguanli;组织结构管理;8;NORMAL;1
+11;jueseguanli;/jueseguanli;角色管理;8;NORMAL;1
+12;zipingxiangmu;/zipingxiangmu;自评项目;8;NORMAL;1
+13;anquanguanli;/anquanguanli;安全管理;0;NORMAL;1
+14;rizhichakan;/rizhichakan;日志查看;13;NORMAL;1
+15;shujubeifen;/shujubeifen;数据备份查看;13;NORMAL;1

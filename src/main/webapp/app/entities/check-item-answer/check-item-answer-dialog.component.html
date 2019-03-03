@@ -1,0 +1,60 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myCheckItemAnswerLabel" jhiTranslate="tikuApp.checkItemAnswer.home.createOrEditLabel">Create or edit a Check Item Answer</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!checkItemAnswer.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="checkItemAnswer.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.itemId" for="field_itemId">Item Id</label>
+            <input type="number" class="form-control" name="itemId" id="field_itemId"
+                [(ngModel)]="checkItemAnswer.itemId" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.yiliuProblems" for="field_yiliuProblems">Yiliu Problems</label>
+            <input type="text" class="form-control" name="yiliuProblems" id="field_yiliuProblems"
+                [(ngModel)]="checkItemAnswer.yiliuProblems" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.zhenggaiInfo" for="field_zhenggaiInfo">Zhenggai Info</label>
+            <input type="text" class="form-control" name="zhenggaiInfo" id="field_zhenggaiInfo"
+                [(ngModel)]="checkItemAnswer.zhenggaiInfo" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.result" for="field_result">Result</label>
+            <input type="text" class="form-control" name="result" id="field_result"
+                [(ngModel)]="checkItemAnswer.result" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.createdBy" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                [(ngModel)]="checkItemAnswer.createdBy" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItemAnswer.createdDate" for="field_createdDate">Created Date</label>
+            <div class="input-group">
+                <input id="field_createdDate" type="text" class="form-control" name="createdDate" ngbDatepicker  #createdDateDp="ngbDatepicker" [(ngModel)]="checkItemAnswer.createdDate"
+                />
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-secondary" (click)="createdDateDp.toggle()"><i class="fa fa-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

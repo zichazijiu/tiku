@@ -1,0 +1,69 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myCheckItemLabel" jhiTranslate="tikuApp.checkItem.home.createOrEditLabel">Create or edit a Check Item</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!checkItem.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="checkItem.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.content" for="field_content">Content</label>
+            <input type="text" class="form-control" name="content" id="field_content"
+                [(ngModel)]="checkItem.content" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.description" for="field_description">Description</label>
+            <input type="text" class="form-control" name="description" id="field_description"
+                [(ngModel)]="checkItem.description" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.parentId" for="field_parentId">Parent Id</label>
+            <input type="number" class="form-control" name="parentId" id="field_parentId"
+                [(ngModel)]="checkItem.parentId" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.itemType" for="field_itemType">Item Type</label>
+            <select class="form-control" name="itemType" [(ngModel)]="checkItem.itemType" id="field_itemType" >
+                <option value="MAIN">{{'tikuApp.CheckItemType.MAIN' | translate}}</option>
+                <option value="SUB">{{'tikuApp.CheckItemType.SUB' | translate}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.delFlag" for="field_delFlag">Del Flag</label>
+            <select class="form-control" name="delFlag" [(ngModel)]="checkItem.delFlag" id="field_delFlag" >
+                <option value="NORMAL">{{'tikuApp.DeleteFlag.NORMAL' | translate}}</option>
+                <option value="DELETE">{{'tikuApp.DeleteFlag.DELETE' | translate}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.createdBy" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                [(ngModel)]="checkItem.createdBy" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.checkItem.createdDate" for="field_createdDate">Created Date</label>
+            <div class="input-group">
+                <input id="field_createdDate" type="text" class="form-control" name="createdDate" ngbDatepicker  #createdDateDp="ngbDatepicker" [(ngModel)]="checkItem.createdDate"
+                />
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-secondary" (click)="createdDateDp.toggle()"><i class="fa fa-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,50 @@
+
+<div *ngIf="checkItem">
+    <h2><span jhiTranslate="tikuApp.checkItem.detail.title">Check Item</span> {{checkItem.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="tikuApp.checkItem.content">Content</span></dt>
+        <dd>
+            <span>{{checkItem.content}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.description">Description</span></dt>
+        <dd>
+            <span>{{checkItem.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.parentId">Parent Id</span></dt>
+        <dd>
+            <span>{{checkItem.parentId}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.itemType">Item Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.CheckItemType.' + checkItem.itemType}}">{{checkItem.itemType}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.delFlag">Del Flag</span></dt>
+        <dd>
+            <span jhiTranslate="{{'tikuApp.DeleteFlag.' + checkItem.delFlag}}">{{checkItem.delFlag}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{checkItem.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.checkItem.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{checkItem.createdDate | date:'mediumDate'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'check-item/'+ checkItem.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,42 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "content",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "parentId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "itemType",
+            "fieldType": "CheckItemType",
+            "fieldValues": "MAIN,SUB"
+        },
+        {
+            "fieldName": "delFlag",
+            "fieldType": "DeleteFlag",
+            "fieldValues": "NORMAL,DELETE"
+        },
+        {
+            "fieldName": "createdBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "changelogDate": "20190303080300",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "check_item",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}
