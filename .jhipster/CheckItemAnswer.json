@@ -7,14 +7,6 @@
             "fieldType": "Long"
         },
         {
-            "fieldName": "yiliuProblems",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "zhenggaiInfo",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "result",
             "fieldType": "String"
         },
@@ -23,8 +15,18 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "deptId",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
             "fieldName": "createdDate",
-            "fieldType": "LocalDate"
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20190303081726",

@@ -1,23 +1,21 @@
 package com.songzi.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.criterion.Example;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.HashSet;
+import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A CheckItemAnswer.
  */
 @Entity
 @Table(name = "check_item_answer")
-public class CheckItemAnswer implements Serializable {
+public class CheckItemAnswer extends Example implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,20 +26,29 @@ public class CheckItemAnswer implements Serializable {
     @Column(name = "item_id")
     private Long itemId;
 
-    @Column(name = "yiliu_problems")
-    private String yiliuProblems;
-
-    @Column(name = "zhenggai_info")
-    private String zhenggaiInfo;
-
     @Column(name = "result")
     private String result;
 
     @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "created_date")
-    private LocalDate createdDate;
+    @NotNull
+    @Column(name = "dept_id", nullable = false)
+    private Long deptId;
+
+    @NotNull
+    @Column(name = "created_date", nullable = false)
+    private ZonedDateTime createdDate;
+
+    /**
+     * Allow subclasses to instantiate as needed.
+     *
+     * @param exampleEntity The example bean
+     * @param selector      The property selector to use
+     */
+    protected CheckItemAnswer(Object exampleEntity, PropertySelector selector) {
+        super(exampleEntity, selector);
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -63,32 +70,6 @@ public class CheckItemAnswer implements Serializable {
 
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-    }
-
-    public String getYiliuProblems() {
-        return yiliuProblems;
-    }
-
-    public CheckItemAnswer yiliuProblems(String yiliuProblems) {
-        this.yiliuProblems = yiliuProblems;
-        return this;
-    }
-
-    public void setYiliuProblems(String yiliuProblems) {
-        this.yiliuProblems = yiliuProblems;
-    }
-
-    public String getZhenggaiInfo() {
-        return zhenggaiInfo;
-    }
-
-    public CheckItemAnswer zhenggaiInfo(String zhenggaiInfo) {
-        this.zhenggaiInfo = zhenggaiInfo;
-        return this;
-    }
-
-    public void setZhenggaiInfo(String zhenggaiInfo) {
-        this.zhenggaiInfo = zhenggaiInfo;
     }
 
     public String getResult() {
@@ -117,16 +98,29 @@ public class CheckItemAnswer implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public LocalDate getCreatedDate() {
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public CheckItemAnswer deptId(Long deptId) {
+        this.deptId = deptId;
+        return this;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
+    }
+
+    public ZonedDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public CheckItemAnswer createdDate(LocalDate createdDate) {
+    public CheckItemAnswer createdDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
         return this;
     }
 
-    public void setCreatedDate(LocalDate createdDate) {
+    public void setCreatedDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
@@ -156,12 +150,10 @@ public class CheckItemAnswer implements Serializable {
         return "CheckItemAnswer{" +
             "id=" + getId() +
             ", itemId=" + getItemId() +
-            ", yiliuProblems='" + getYiliuProblems() + "'" +
-            ", zhenggaiInfo='" + getZhenggaiInfo() + "'" +
             ", result='" + getResult() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
+            ", deptId=" + getDeptId() +
             ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }
-
 }

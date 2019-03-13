@@ -65,14 +65,9 @@ public class HomePageService {
 
             // 封装部门
             List<Department> departmentList;
-            if (roles.contains(AuthoritiesConstants.ADMIN)) {
-                // 管理员
-                // 能够看所有删除状态是NORMAL的部门
-                departmentList = departmentRepository.findAllByDelFlagIs(DeleteFlag.NORMAL);
-            } else if (roles.contains(AuthoritiesConstants.BU_ADMIN)) {
-                // 部级管理员
-                // 能够看所有删除状态是NORMAL的部门
-                departmentList = departmentRepository.findAllByDelFlagIs(DeleteFlag.NORMAL);
+            if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
+                // 管理员、部级管理员展现一级部门
+                departmentList = departmentRepository.findAllByDelFlagIsAndCodeLessThanEqual(DeleteFlag.NORMAL.toString(), 65);
             } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
                 || roles.contains(AuthoritiesConstants.JU_ADMIN)) {
                 // 厅、局
@@ -87,7 +82,6 @@ public class HomePageService {
                 // 查看该机构下的所有子部门
                 departmentList = departmentRepository.findAllByDelFlagIsAndCodeStartingWith(DeleteFlag.NORMAL, childCode);
             } else { // 普通用户
-
                 departmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
             }
 

@@ -9,6 +9,7 @@ import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.vm.CheckItemAnswerVM;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -119,10 +120,12 @@ public class CheckItemAnswerResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    @GetMapping("/{user}/check-item-answers")
+    @GetMapping("/user/check-item-detail")
     @Timed
-    public List<CheckItemAnswerDTO> getUserCheckItemAnswer(@PathVariable String user) {
-        log.debug("REST request to get userCheckItemAnswer : {}",user);
-        return checkItemAnswerService.findAllByUser(user);
+    @ApiOperation("用户查询提报详情")
+    public List<CheckItemAnswerDTO> getUserCheckItemAnswer(@RequestParam String login) {
+        log.debug("REST request to get userCheckItemAnswer : {}", login);
+        return checkItemAnswerService.findAllByUser(login);
     }
+
 }

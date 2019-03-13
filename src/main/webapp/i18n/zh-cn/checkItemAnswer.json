@@ -17,10 +17,9 @@
                 "title": "Check Item Answer"
             },
             "itemId": "Item Id",
-            "yiliuProblems": "Yiliu Problems",
-            "zhenggaiInfo": "Zhenggai Info",
             "result": "Result",
             "createdBy": "Created By",
+            "deptId": "Dept Id",
             "createdDate": "Created Date"
         }
     }

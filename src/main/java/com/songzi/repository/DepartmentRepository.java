@@ -45,4 +45,13 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
      * @return
      */
     List<Department> findAllByDelFlagIsAndCodeStartingWith(DeleteFlag deleteFlag, String code);
+
+    /**
+     * 查找省份编码
+     * @param deleteFlag
+     * @param code
+     * @return
+     */
+    @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code <= ?2", nativeQuery = true)
+    List<Department> findAllByDelFlagIsAndCodeLessThanEqual(String deleteFlag, int code);
 }

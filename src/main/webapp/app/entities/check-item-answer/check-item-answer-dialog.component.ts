@@ -18,7 +18,6 @@ export class CheckItemAnswerDialogComponent implements OnInit {
 
     checkItemAnswer: CheckItemAnswer;
     isSaving: boolean;
-    createdDateDp: any;
 
     constructor(
         public activeModal: NgbActiveModal,

@@ -64,7 +64,7 @@ export class CheckItemAnswerService {
     private convertItemFromServer(checkItemAnswer: CheckItemAnswer): CheckItemAnswer {
         const copy: CheckItemAnswer = Object.assign({}, checkItemAnswer);
         copy.createdDate = this.dateUtils
-            .convertLocalDateFromServer(checkItemAnswer.createdDate);
+            .convertDateTimeFromServer(checkItemAnswer.createdDate);
         return copy;
     }
 
@@ -73,8 +73,8 @@ export class CheckItemAnswerService {
      */
     private convert(checkItemAnswer: CheckItemAnswer): CheckItemAnswer {
         const copy: CheckItemAnswer = Object.assign({}, checkItemAnswer);
-        copy.createdDate = this.dateUtils
-            .convertLocalDateToServer(checkItemAnswer.createdDate);
+
+        copy.createdDate = this.dateUtils.toDate(checkItemAnswer.createdDate);
         return copy;
     }
 }

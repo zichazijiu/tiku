@@ -1,12 +1,15 @@
 package com.songzi.service;
 
 import com.songzi.domain.CheckItemAnswer;
+import com.songzi.domain.User;
 import com.songzi.repository.CheckItemAnswerRepository;
 import com.songzi.service.dto.CheckItemAnswerDTO;
 import com.songzi.web.rest.vm.CheckItemAnswerVM;
 import liquibase.util.StringUtils;
+import org.hibernate.criterion.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,8 @@ public class CheckItemAnswerService {
     private final Logger log = LoggerFactory.getLogger(CheckItemAnswerService.class);
 
     private final CheckItemAnswerRepository checkItemAnswerRepository;
+
+    @Autowired private UserService userService;
 
     public CheckItemAnswerService(CheckItemAnswerRepository checkItemAnswerRepository) {
         this.checkItemAnswerRepository = checkItemAnswerRepository;
@@ -72,11 +77,16 @@ public class CheckItemAnswerService {
         checkItemAnswerRepository.delete(id);
     }
 
-    public List<CheckItemAnswerDTO> findAllByUser(String user) {
-        return checkItemAnswerRepository.listCheckAnswerWithItem(user)
-            .stream()
-            .map(
-                answer->new CheckItemAnswerDTO(answer.getItemId(),answer.getAnswerId(),answer.getYiliuProblem(),answer.getZhenggai(),answer.getAnswerUser(),answer.getContent(),answer.getDescription(),answer.getResult()))
-            .collect(Collectors.toList());
+    /**
+     * @param login
+     * @return
+     */
+    public List<CheckItemAnswerDTO> findAllByUser(String login) {
+        if (StringUtils.isNotEmpty(login)){
+            User user = userService.getUserWithAuthoritiesByLogin(login).get();
+
+            checkItemAnswerRepository.findAll();
+        }
+        return null;
     }
 }

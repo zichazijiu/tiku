@@ -22,10 +22,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
+import static com.songzi.web.rest.TestUtil.sameInstant;
 import static com.songzi.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -44,20 +47,17 @@ public class CheckItemAnswerResourceIntTest {
     private static final Long DEFAULT_ITEM_ID = 1L;
     private static final Long UPDATED_ITEM_ID = 2L;
 
-    private static final String DEFAULT_YILIU_PROBLEMS = "AAAAAAAAAA";
-    private static final String UPDATED_YILIU_PROBLEMS = "BBBBBBBBBB";
-
-    private static final String DEFAULT_ZHENGGAI_INFO = "AAAAAAAAAA";
-    private static final String UPDATED_ZHENGGAI_INFO = "BBBBBBBBBB";
-
     private static final String DEFAULT_RESULT = "AAAAAAAAAA";
     private static final String UPDATED_RESULT = "BBBBBBBBBB";
 
     private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
     private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
 
-    private static final LocalDate DEFAULT_CREATED_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final Long DEFAULT_DEPT_ID = 1L;
+    private static final Long UPDATED_DEPT_ID = 2L;
+
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private CheckItemAnswerRepository checkItemAnswerRepository;
@@ -101,10 +101,9 @@ public class CheckItemAnswerResourceIntTest {
     public static CheckItemAnswer createEntity(EntityManager em) {
         CheckItemAnswer checkItemAnswer = new CheckItemAnswer()
             .itemId(DEFAULT_ITEM_ID)
-            .yiliuProblems(DEFAULT_YILIU_PROBLEMS)
-            .zhenggaiInfo(DEFAULT_ZHENGGAI_INFO)
             .result(DEFAULT_RESULT)
             .createdBy(DEFAULT_CREATED_BY)
+            .deptId(DEFAULT_DEPT_ID)
             .createdDate(DEFAULT_CREATED_DATE);
         return checkItemAnswer;
     }
@@ -130,10 +129,9 @@ public class CheckItemAnswerResourceIntTest {
         assertThat(checkItemAnswerList).hasSize(databaseSizeBeforeCreate + 1);
         CheckItemAnswer testCheckItemAnswer = checkItemAnswerList.get(checkItemAnswerList.size() - 1);
         assertThat(testCheckItemAnswer.getItemId()).isEqualTo(DEFAULT_ITEM_ID);
-        assertThat(testCheckItemAnswer.getYiliuProblems()).isEqualTo(DEFAULT_YILIU_PROBLEMS);
-        assertThat(testCheckItemAnswer.getZhenggaiInfo()).isEqualTo(DEFAULT_ZHENGGAI_INFO);
         assertThat(testCheckItemAnswer.getResult()).isEqualTo(DEFAULT_RESULT);
         assertThat(testCheckItemAnswer.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
+        assertThat(testCheckItemAnswer.getDeptId()).isEqualTo(DEFAULT_DEPT_ID);
         assertThat(testCheckItemAnswer.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
     }
 
@@ -158,6 +156,42 @@ public class CheckItemAnswerResourceIntTest {
 
     @Test
     @Transactional
+    public void checkDeptIdIsRequired() throws Exception {
+        int databaseSizeBeforeTest = checkItemAnswerRepository.findAll().size();
+        // set the field null
+        checkItemAnswer.setDeptId(null);
+
+        // Create the CheckItemAnswer, which fails.
+
+        restCheckItemAnswerMockMvc.perform(post("/api/check-item-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(checkItemAnswer)))
+            .andExpect(status().isBadRequest());
+
+        List<CheckItemAnswer> checkItemAnswerList = checkItemAnswerRepository.findAll();
+        assertThat(checkItemAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkCreatedDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = checkItemAnswerRepository.findAll().size();
+        // set the field null
+        checkItemAnswer.setCreatedDate(null);
+
+        // Create the CheckItemAnswer, which fails.
+
+        restCheckItemAnswerMockMvc.perform(post("/api/check-item-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(checkItemAnswer)))
+            .andExpect(status().isBadRequest());
+
+        List<CheckItemAnswer> checkItemAnswerList = checkItemAnswerRepository.findAll();
+        assertThat(checkItemAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllCheckItemAnswers() throws Exception {
         // Initialize the database
         checkItemAnswerRepository.saveAndFlush(checkItemAnswer);
@@ -168,11 +202,10 @@ public class CheckItemAnswerResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(checkItemAnswer.getId().intValue())))
             .andExpect(jsonPath("$.[*].itemId").value(hasItem(DEFAULT_ITEM_ID.intValue())))
-            .andExpect(jsonPath("$.[*].yiliuProblems").value(hasItem(DEFAULT_YILIU_PROBLEMS.toString())))
-            .andExpect(jsonPath("$.[*].zhenggaiInfo").value(hasItem(DEFAULT_ZHENGGAI_INFO.toString())))
             .andExpect(jsonPath("$.[*].result").value(hasItem(DEFAULT_RESULT.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())));
+            .andExpect(jsonPath("$.[*].deptId").value(hasItem(DEFAULT_DEPT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     @Test
@@ -187,11 +220,10 @@ public class CheckItemAnswerResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(checkItemAnswer.getId().intValue()))
             .andExpect(jsonPath("$.itemId").value(DEFAULT_ITEM_ID.intValue()))
-            .andExpect(jsonPath("$.yiliuProblems").value(DEFAULT_YILIU_PROBLEMS.toString()))
-            .andExpect(jsonPath("$.zhenggaiInfo").value(DEFAULT_ZHENGGAI_INFO.toString()))
             .andExpect(jsonPath("$.result").value(DEFAULT_RESULT.toString()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()))
-            .andExpect(jsonPath("$.createdDate").value(DEFAULT_CREATED_DATE.toString()));
+            .andExpect(jsonPath("$.deptId").value(DEFAULT_DEPT_ID.intValue()))
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)));
     }
 
     @Test
@@ -216,10 +248,9 @@ public class CheckItemAnswerResourceIntTest {
         em.detach(updatedCheckItemAnswer);
         updatedCheckItemAnswer
             .itemId(UPDATED_ITEM_ID)
-            .yiliuProblems(UPDATED_YILIU_PROBLEMS)
-            .zhenggaiInfo(UPDATED_ZHENGGAI_INFO)
             .result(UPDATED_RESULT)
             .createdBy(UPDATED_CREATED_BY)
+            .deptId(UPDATED_DEPT_ID)
             .createdDate(UPDATED_CREATED_DATE);
 
         restCheckItemAnswerMockMvc.perform(put("/api/check-item-answers")
@@ -232,10 +263,9 @@ public class CheckItemAnswerResourceIntTest {
         assertThat(checkItemAnswerList).hasSize(databaseSizeBeforeUpdate);
         CheckItemAnswer testCheckItemAnswer = checkItemAnswerList.get(checkItemAnswerList.size() - 1);
         assertThat(testCheckItemAnswer.getItemId()).isEqualTo(UPDATED_ITEM_ID);
-        assertThat(testCheckItemAnswer.getYiliuProblems()).isEqualTo(UPDATED_YILIU_PROBLEMS);
-        assertThat(testCheckItemAnswer.getZhenggaiInfo()).isEqualTo(UPDATED_ZHENGGAI_INFO);
         assertThat(testCheckItemAnswer.getResult()).isEqualTo(UPDATED_RESULT);
         assertThat(testCheckItemAnswer.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testCheckItemAnswer.getDeptId()).isEqualTo(UPDATED_DEPT_ID);
         assertThat(testCheckItemAnswer.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
     }
 

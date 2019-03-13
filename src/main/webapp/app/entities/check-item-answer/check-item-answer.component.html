@@ -18,10 +18,9 @@
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="tikuApp.checkItemAnswer.itemId">Item Id</span></th>
-            <th><span jhiTranslate="tikuApp.checkItemAnswer.yiliuProblems">Yiliu Problems</span></th>
-            <th><span jhiTranslate="tikuApp.checkItemAnswer.zhenggaiInfo">Zhenggai Info</span></th>
             <th><span jhiTranslate="tikuApp.checkItemAnswer.result">Result</span></th>
             <th><span jhiTranslate="tikuApp.checkItemAnswer.createdBy">Created By</span></th>
+            <th><span jhiTranslate="tikuApp.checkItemAnswer.deptId">Dept Id</span></th>
             <th><span jhiTranslate="tikuApp.checkItemAnswer.createdDate">Created Date</span></th>
             <th></th>
             </tr>
@@ -30,11 +29,10 @@
             <tr *ngFor="let checkItemAnswer of checkItemAnswers ;trackBy: trackId">
                 <td><a [routerLink]="['../check-item-answer', checkItemAnswer.id ]">{{checkItemAnswer.id}}</a></td>
                 <td>{{checkItemAnswer.itemId}}</td>
-                <td>{{checkItemAnswer.yiliuProblems}}</td>
-                <td>{{checkItemAnswer.zhenggaiInfo}}</td>
                 <td>{{checkItemAnswer.result}}</td>
                 <td>{{checkItemAnswer.createdBy}}</td>
-                <td>{{checkItemAnswer.createdDate | date:'mediumDate'}}</td>
+                <td>{{checkItemAnswer.deptId}}</td>
+                <td>{{checkItemAnswer.createdDate | date:'medium'}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

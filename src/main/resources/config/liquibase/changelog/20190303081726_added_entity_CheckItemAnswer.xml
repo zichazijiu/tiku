@@ -26,14 +26,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="yiliu_problems" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="zhenggai_info" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
             <column name="result" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -42,14 +34,17 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="dept_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
-        <addUniqueConstraint columnNames="item_id, created_by" tableName="check_item_answer"/>
+        <dropDefaultValue tableName="check_item_answer" columnName="created_date" columnDataType="datetime"/>
 
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
