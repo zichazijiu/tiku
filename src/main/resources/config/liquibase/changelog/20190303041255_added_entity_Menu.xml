@@ -58,9 +58,6 @@
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="menu_id, authority_name" tableName="menu_authority"/>
-
-
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

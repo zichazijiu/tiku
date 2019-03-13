@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,7 +30,9 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -49,10 +52,11 @@ public class DepartmentSerivce {
 
     /**
      * 新建机构部门
+     *
      * @param departmentVM
      * @return
      */
-    public DepartmentDTO insert(DepartmentVM departmentVM){
+    public DepartmentDTO insert(DepartmentVM departmentVM) {
         Department department = departmentVMMapper.toEntity(departmentVM);
         department.setDepartmentStatus("NORMAL");
         department.setDepartmentType("部门");
@@ -63,10 +67,11 @@ public class DepartmentSerivce {
 
     /**
      * 更新机构部门
+     *
      * @param departmentVM
      * @return
      */
-    public DepartmentDTO update(DepartmentVM departmentVM){
+    public DepartmentDTO update(DepartmentVM departmentVM) {
         Department department = departmentRepository.findOne(departmentVM.getId());
 
         department.setCode(departmentVM.getCode());
@@ -81,38 +86,68 @@ public class DepartmentSerivce {
 
     /**
      * 根据条件查询机构部门
+     *
      * @param departmentQueryVM
      * @return
      */
-    public List<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM){
+    public List<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM) {
 
         return departmentRepository.findAll(new Specification<Department>() {
             @Override
             public Predicate toPredicate(Root<Department> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
-                if(departmentQueryVM.getName() != null && !"".equals(departmentQueryVM.getName())){
-                    list.add(cb.like(root.get("name").as(String.class), "%"+departmentQueryVM.getName()+"%"));
+                if (departmentQueryVM.getName() != null && !"".equals(departmentQueryVM.getName())) {
+                    list.add(cb.like(root.get("name").as(String.class), "%" + departmentQueryVM.getName() + "%"));
                 }
-                if(departmentQueryVM.getParentId() != null){
+                if (departmentQueryVM.getParentId() != null) {
                     list.add(cb.equal(root.get("parentId").as(Long.class), departmentQueryVM.getParentId()));
                 }
                 list.add(cb.equal(root.get("delFlag").as(String.class), DeleteFlag.NORMAL.name()));
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        }).stream().map(departmentMapper :: toDto).collect(Collectors.toList());
+        }).stream().map(departmentMapper::toDto).collect(Collectors.toList());
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         List<Examiner> examinerList = examinerRepository.findAllByDepartmentId(id);
-        if(examinerList != null && examinerList.size() >0){
-            throw new BadRequestAlertException("本机构下有考察员不允许删除",this.getClass().getName(),"不能删除");
+        if (examinerList != null && examinerList.size() > 0) {
+            throw new BadRequestAlertException("本机构下有考察员不允许删除", this.getClass().getName(), "不能删除");
         }
 
-        List<Department> departmentList = departmentRepository.findAllByParentIdAndDelFlag(id,DeleteFlag.NORMAL);
-        if(departmentList != null && departmentList.size() >0){
-            throw new BadRequestAlertException("本机构下有其他机构不允许删除",this.getClass().getName(),"不能删除");
+        List<Department> departmentList = departmentRepository.findAllByParentIdAndDelFlag(id, DeleteFlag.NORMAL);
+        if (departmentList != null && departmentList.size() > 0) {
+            throw new BadRequestAlertException("本机构下有其他机构不允许删除", this.getClass().getName(), "不能删除");
         }
         departmentRepository.delete(id);
+    }
+
+    /**
+     * 根据用户ID查找部门树
+     *
+     * @param userId
+     * @return
+     */
+    public List<Department> getDepartmentTreeByUserId(Long userId) {
+        Department department = this.getDepartmentByUserId(userId);
+        if (department != null) {
+            String[] szParentCodes = department.getParentCodes().split(",");
+            Set<String> parentCodes = Stream.of(szParentCodes).collect(Collectors.toSet());
+            return departmentRepository.findDepartmentTreeByCodes(parentCodes);
+        }
+        return null;
+    }
+
+    /**
+     * 根据用户ID获取部门信息
+     *
+     * @param userId
+     * @return
+     */
+    public Department getDepartmentByUserId(Long userId) {
+        if (userId != null) {
+            return departmentRepository.findOneByUserId(userId);
+        }
+        return null;
     }
 }

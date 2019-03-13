@@ -2,13 +2,11 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Department;
-
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.service.DepartmentSerivce;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
-import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
 import com.songzi.web.rest.vm.DepartmentVM;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -16,17 +14,18 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -117,6 +116,7 @@ public class DepartmentResource {
      */
     @GetMapping("/departments/{id}")
     @Timed
+    @ApiOperation(value = "查询指定机构")
     public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
         log.debug("REST request to get Department : {}", id);
         Department department = departmentRepository.findOne(id);
@@ -131,6 +131,7 @@ public class DepartmentResource {
      */
     @DeleteMapping("/departments/{id}")
     @Timed
+    @ApiOperation(value = "删除指定机构")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
         log.debug("REST request to delete Department : {}", id);
         departmentSerivce.delete(id);
@@ -143,7 +144,28 @@ public class DepartmentResource {
      * @return
      */
     @GetMapping("/departments/{id}/child")
+    @ApiOperation(value = "查询子机构")
     public ResponseEntity<List<Department>> getChildDepartment(@PathVariable Long id){
+        return null;
+    }
+
+    /**
+     * UPDATE
+     * @param departmentId
+     * @param userIds
+     * @return
+     */
+    @PutMapping("/departments/{departmentId}/users")
+    @Timed
+    @ApiOperation(value = "更新用户机构")
+    public ResponseEntity<Void> updateDepartmentUser(@Valid @PathVariable Long departmentId, @Valid @RequestBody Long[] userIds){
+        // 1. 检查该部门是否有该员工
+        departmentRepository.findOne(new Specification<Department>() {
+            @Override
+            public Predicate toPredicate(Root<Department> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                return null;
+            }
+        });
         return null;
     }
 }

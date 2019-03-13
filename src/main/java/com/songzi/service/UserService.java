@@ -1,16 +1,14 @@
 package com.songzi.service;
 
-import com.songzi.config.CacheConfiguration;
+import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
-import com.songzi.config.Constants;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
-import com.songzi.service.util.RandomUtil;
 import com.songzi.service.dto.UserDTO;
-
+import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -246,6 +247,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthoritiesWithDepartmentByLogin(String login) {
+        return userRepository.findOneWithAuthoritiesByLogin(login);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities(Long id) {
         return userRepository.findOneWithAuthoritiesById(id);
     }
@@ -316,5 +322,9 @@ public class UserService {
 
     public User findOne(Long id){
         return userRepository.findOne(id);
+    }
+
+    public User findOne(String login){
+        return userRepository.findOneByLogin(login).get();
     }
 }

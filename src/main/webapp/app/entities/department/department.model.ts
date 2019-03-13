@@ -9,6 +9,7 @@ export class Department implements BaseEntity {
         public departmentStatus?: string,
         public departmentType?: string,
         public delFlag?: string,
+        public parentCodes?: string,
     ) {
     }
 }

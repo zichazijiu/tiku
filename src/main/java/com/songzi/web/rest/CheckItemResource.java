@@ -7,6 +7,9 @@ import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -122,5 +125,18 @@ public class CheckItemResource {
         log.debug("REST request to delete CheckItem : {}", id);
         checkItemService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * 获取用户的自评项
+     * @param login
+     * @return
+     */
+    @GetMapping("/user/check-items")
+    @Timed
+    @ApiOperation("获取用户的自评项")
+    public ResponseEntity<List<CheckItem>> getAllCheckItemsByUser(@RequestParam String login) {
+        List<CheckItem> checkItemList = checkItemService.findAllByUser(login);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(checkItemList));
     }
 }

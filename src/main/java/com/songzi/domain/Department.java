@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "department")
-public class Department extends AbstractAuditingEntity implements Serializable {
+public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,6 +45,9 @@ public class Department extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "del_flag", nullable = false)
     private DeleteFlag delFlag = DeleteFlag.NORMAL;
+
+    @Column(name = "parent_codes")
+    private String parentCodes;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -132,6 +135,19 @@ public class Department extends AbstractAuditingEntity implements Serializable {
     public void setDelFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
     }
+
+    public String getParentCodes() {
+        return parentCodes;
+    }
+
+    public Department parentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
+        return this;
+    }
+
+    public void setParentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -164,6 +180,7 @@ public class Department extends AbstractAuditingEntity implements Serializable {
             ", departmentStatus='" + getDepartmentStatus() + "'" +
             ", departmentType='" + getDepartmentType() + "'" +
             ", delFlag='" + getDelFlag() + "'" +
+            ", parentCodes='" + getParentCodes() + "'" +
             "}";
     }
 }

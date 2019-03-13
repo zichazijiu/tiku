@@ -86,7 +86,7 @@ public class MenuResource {
     public List<Menu> getAllMenus() {
         log.debug("REST request to get all Menus");
         return menuService.findAll();
-        }
+    }
 
     /**
      * GET  /menus/:id : get the "id" menu.

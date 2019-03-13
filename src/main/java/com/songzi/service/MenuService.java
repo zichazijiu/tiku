@@ -4,6 +4,7 @@ import com.songzi.domain.Menu;
 import com.songzi.repository.MenuRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,5 +67,14 @@ public class MenuService {
     public void delete(Long id) {
         log.debug("Request to delete Menu : {}", id);
         menuRepository.delete(id);
+    }
+
+    /**
+     *
+     * @param authority
+     * @return
+     */
+    public List<Menu> getMenuListByAuthority(String authority){
+        return menuRepository.findAllWithAuthority(authority);
     }
 }

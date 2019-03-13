@@ -21,7 +21,8 @@
             "parentId": "Parent Id",
             "departmentStatus": "Department Status",
             "departmentType": "Department Type",
-            "delFlag": "Del Flag"
+            "delFlag": "Del Flag",
+            "parentCodes": "Parent Codes"
         }
     }
 }

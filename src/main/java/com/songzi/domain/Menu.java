@@ -4,9 +4,13 @@ package com.songzi.domain;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.songzi.domain.enumeration.DeleteFlag;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * A Menu.
