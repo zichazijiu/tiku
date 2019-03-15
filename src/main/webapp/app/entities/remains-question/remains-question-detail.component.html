@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="remainsQuestion">
+            <h2><span jhiTranslate="tikuApp.remainsQuestion.detail.title">Remains Question</span> {{remainsQuestion.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="tikuApp.remainsQuestion.questionType">Question Type</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'tikuApp.QuestionType.' + remainsQuestion.questionType}}">{{remainsQuestion.questionType}}</span>
+                </dd>
+                <dt><span jhiTranslate="tikuApp.remainsQuestion.createdTime">Created Time</span></dt>
+                <dd>
+                    <span>{{remainsQuestion.createdTime}}</span>
+                </dd>
+                <dt><span jhiTranslate="tikuApp.remainsQuestion.description">Description</span></dt>
+                <dd>
+                    <span>{{remainsQuestion.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="tikuApp.remainsQuestion.itemAnswerId">Item Answer Id</span></dt>
+                <dd>
+                    <span>{{remainsQuestion.itemAnswerId}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/remains-question', remainsQuestion.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

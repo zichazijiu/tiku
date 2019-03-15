@@ -1,0 +1,25 @@
+
+{
+    "tikuApp": {
+        "rectification" : {
+            "home": {
+                "title": "Rectifications",
+                "createLabel": "创建新 Rectification",
+                "createOrEditLabel": "创建或编辑 Rectification"
+            },
+            "created": "Rectification {{ param }} 创建成功",
+            "updated": "Rectification {{ param }} 更新成功",
+            "deleted": "Rectification {{ param }} 删除成功",
+            "delete": {
+                "question": "你确定要删除 Rectification {{ id }} 吗？"
+            },
+            "detail": {
+                "title": "Rectification"
+            },
+            "measure": "Measure",
+            "result": "Result",
+            "rectificationTime": "Rectification Time",
+            "remainsQuestionId": "Remains Question Id"
+        }
+    }
+}

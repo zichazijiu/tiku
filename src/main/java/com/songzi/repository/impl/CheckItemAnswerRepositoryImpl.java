@@ -2,7 +2,7 @@ package com.songzi.repository.impl;
 
 import com.songzi.domain.CheckItemAnswer;
 import com.songzi.repository.CheckItemAnswerRepositoryCustom;
-import com.songzi.service.dto.CheckItemAnswerDTO;
+import com.songzi.service.dto.CheckItemWithAnswerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +30,7 @@ public class CheckItemAnswerRepositoryImpl implements CheckItemAnswerRepositoryC
      * @return
      */
     @Override
-    public List<CheckItemAnswerDTO> findAll(String login, Long deptId) {
+    public List<CheckItemWithAnswerDTO> findAll(String login, Long deptId) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<CheckItemAnswer> cq = cb.createQuery(CheckItemAnswer.class);
 

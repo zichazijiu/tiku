@@ -1,6 +1,6 @@
 package com.songzi.repository;
 
-import com.songzi.service.dto.CheckItemAnswerDTO;
+import com.songzi.service.dto.CheckItemWithAnswerDTO;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface CheckItemAnswerRepositoryCustom {
      * @param deptId
      * @return
      */
-    List<CheckItemAnswerDTO> findAll(String login, Long deptId);
+    List<CheckItemWithAnswerDTO> findAll(String login, Long deptId);
 }

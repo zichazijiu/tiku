@@ -18,6 +18,8 @@
                 "checkItem": "Check Item",
                 "checkSubItem": "Check Sub Item",
                 "checkItemAnswer": "Check Item Answer",
+                "remainsQuestion": "Remains Question",
+                "rectification": "Rectification",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

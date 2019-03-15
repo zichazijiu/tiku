@@ -10,25 +10,27 @@ import { TikuDepartmentModule } from './department/department.module';
 import { TikuMenuModule } from './menu/menu.module';
 import { TikuCheckItemModule } from './check-item/check-item.module';
 import { TikuCheckItemAnswerModule } from './check-item-answer/check-item-answer.module';
+import { TikuRemainsQuestionModule } from './remains-question/remains-question.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
-    imports: [
-        TikuProjectModule,
-        TikuSubjectModule,
-        TikuExamineModule,
-        TikuExaminerModule,
-        TikuStatisticsModule,
-        TikuLogBackupModule,
-        TikuDepartmentModule,
-        TikuMenuModule,
-        TikuCheckItemModule,
-        TikuCheckItemAnswerModule,
-        /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
-    ],
-    declarations: [],
-    entryComponents: [],
-    providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [
+    TikuProjectModule,
+    TikuSubjectModule,
+    TikuExamineModule,
+    TikuExaminerModule,
+    TikuStatisticsModule,
+    TikuLogBackupModule,
+    TikuDepartmentModule,
+    TikuMenuModule,
+    TikuCheckItemModule,
+    TikuCheckItemAnswerModule,
+    TikuRemainsQuestionModule
+    /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
+  ],
+  declarations: [],
+  entryComponents: [],
+  providers: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class TikuEntityModule {}

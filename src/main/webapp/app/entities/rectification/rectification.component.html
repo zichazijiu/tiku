@@ -1,0 +1,60 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="tikuApp.rectification.home.title">Rectifications</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-rectification" [routerLink]="['/rectification/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span  jhiTranslate="tikuApp.rectification.home.createLabel">
+            Create new Rectification
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="rectifications">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span jhiTranslate="global.field.id">ID</span></th>
+            <th><span jhiTranslate="tikuApp.rectification.measure">Measure</span></th>
+            <th><span jhiTranslate="tikuApp.rectification.result">Result</span></th>
+            <th><span jhiTranslate="tikuApp.rectification.rectificationTime">Rectification Time</span></th>
+            <th><span jhiTranslate="tikuApp.rectification.remainsQuestionId">Remains Question Id</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let rectification of rectifications ;trackBy: trackId">
+                <td><a [routerLink]="['/rectification', rectification.id, 'view' ]">{{rectification.id}}</a></td>
+                <td>{{rectification.measure}}</td>
+                <td>{{rectification.result}}</td>
+                <td>{{rectification.rectificationTime | date:'medium'}}</td>
+                <td>{{rectification.remainsQuestionId}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/rectification', rectification.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/rectification', rectification.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'rectification/'+ rectification.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

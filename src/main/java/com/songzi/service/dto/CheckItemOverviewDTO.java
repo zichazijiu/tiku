@@ -1,5 +1,7 @@
 package com.songzi.service.dto;
 
+import com.songzi.domain.Rectification;
+
 import java.util.Date;
 import java.util.List;
 
@@ -16,11 +18,11 @@ public class CheckItemOverviewDTO {
 
     private String createdDate;
 
-    private List<String> zhenggaiList;
-
     private Date checkDate;
 
     private List<String> checkDescription;
+
+    private List<Rectification> rectificationList;
 
     public String getDeptName() {
         return deptName;
@@ -54,14 +56,6 @@ public class CheckItemOverviewDTO {
         this.createdDate = createdDate;
     }
 
-    public List<String> getZhenggaiList() {
-        return zhenggaiList;
-    }
-
-    public void setZhenggaiList(List<String> zhenggaiList) {
-        this.zhenggaiList = zhenggaiList;
-    }
-
     public Date getCheckDate() {
         return checkDate;
     }
@@ -76,5 +70,13 @@ public class CheckItemOverviewDTO {
 
     public void setCheckDescription(List<String> checkDescription) {
         this.checkDescription = checkDescription;
+    }
+
+    public List<Rectification> getRectificationList() {
+        return rectificationList;
+    }
+
+    public void setRectificationList(List<Rectification> rectificationList) {
+        this.rectificationList = rectificationList;
     }
 }

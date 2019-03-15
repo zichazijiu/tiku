@@ -1,0 +1,10 @@
+{
+    "tikuApp": {
+        "QuestionType" : {
+            "null": "",
+            "LESS_MANAGE": "LESS_MANAGE",
+            "SECRET_RISK": "SECRET_RISK",
+            "LEAKING_EVENT": "LEAKING_EVENT"
+        }
+    }
+}
