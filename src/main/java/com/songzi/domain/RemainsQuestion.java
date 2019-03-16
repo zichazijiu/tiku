@@ -8,13 +8,14 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.songzi.domain.enumeration.QuestionType;
 
 /**
  * A RemainsQuestion.
  */
 @Entity
-@Table(name = "check_item_answer_remains")
+@Table(name = "remains_question")
 public class RemainsQuestion implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,9 +36,10 @@ public class RemainsQuestion implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @ManyToOne(optional = false)
     @NotNull
-    @Column(name = "item_answer_id", nullable = false)
-    private Long itemAnswerId;
+    @JsonIgnore
+    private ReportItems reportItems;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -87,17 +89,17 @@ public class RemainsQuestion implements Serializable {
         this.description = description;
     }
 
-    public Long getItemAnswerId() {
-        return itemAnswerId;
+    public ReportItems getReportItems() {
+        return reportItems;
     }
 
-    public RemainsQuestion itemAnswerId(Long itemAnswerId) {
-        this.itemAnswerId = itemAnswerId;
+    public RemainsQuestion reportItems(ReportItems reportItems) {
+        this.reportItems = reportItems;
         return this;
     }
 
-    public void setItemAnswerId(Long itemAnswerId) {
-        this.itemAnswerId = itemAnswerId;
+    public void setReportItems(ReportItems reportItems) {
+        this.reportItems = reportItems;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -128,7 +130,6 @@ public class RemainsQuestion implements Serializable {
             ", questionType='" + getQuestionType() + "'" +
             ", createdTime='" + getCreatedTime() + "'" +
             ", description='" + getDescription() + "'" +
-            ", itemAnswerId=" + getItemAnswerId() +
             "}";
     }
 }

@@ -19,7 +19,7 @@
             "measure": "Measure",
             "result": "Result",
             "rectificationTime": "Rectification Time",
-            "remainsQuestionId": "Remains Question Id"
+            "remainsQuestion": "Remains Question"
         }
     }
 }

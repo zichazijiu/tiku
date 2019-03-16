@@ -1,58 +1,57 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { IRectification } from 'app/shared/model/rectification.model';
-import { Principal } from 'app/core';
+import { Rectification } from './rectification.model';
 import { RectificationService } from './rectification.service';
+import { Principal } from '../../shared';
 
 @Component({
-  selector: 'jhi-rectification',
-  templateUrl: './rectification.component.html'
+    selector: 'jhi-rectification',
+    templateUrl: './rectification.component.html'
 })
 export class RectificationComponent implements OnInit, OnDestroy {
-  rectifications: IRectification[];
-  currentAccount: any;
-  eventSubscriber: Subscription;
+rectifications: Rectification[];
+    currentAccount: any;
+    eventSubscriber: Subscription;
 
-  constructor(
-    private rectificationService: RectificationService,
-    private jhiAlertService: JhiAlertService,
-    private eventManager: JhiEventManager,
-    private principal: Principal
-  ) {}
+    constructor(
+        private rectificationService: RectificationService,
+        private jhiAlertService: JhiAlertService,
+        private eventManager: JhiEventManager,
+        private principal: Principal
+    ) {
+    }
 
-  loadAll() {
-    this.rectificationService.query().subscribe(
-      (res: HttpResponse<IRectification[]>) => {
-        this.rectifications = res.body;
-      },
-      (res: HttpErrorResponse) => this.onError(res.message)
-    );
-  }
+    loadAll() {
+        this.rectificationService.query().subscribe(
+            (res: HttpResponse<Rectification[]>) => {
+                this.rectifications = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+    ngOnInit() {
+        this.loadAll();
+        this.principal.identity().then((account) => {
+            this.currentAccount = account;
+        });
+        this.registerChangeInRectifications();
+    }
 
-  ngOnInit() {
-    this.loadAll();
-    this.principal.identity().then(account => {
-      this.currentAccount = account;
-    });
-    this.registerChangeInRectifications();
-  }
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
+    }
 
-  ngOnDestroy() {
-    this.eventManager.destroy(this.eventSubscriber);
-  }
+    trackId(index: number, item: Rectification) {
+        return item.id;
+    }
+    registerChangeInRectifications() {
+        this.eventSubscriber = this.eventManager.subscribe('rectificationListModification', (response) => this.loadAll());
+    }
 
-  trackId(index: number, item: IRectification) {
-    return item.id;
-  }
-
-  registerChangeInRectifications() {
-    this.eventSubscriber = this.eventManager.subscribe('rectificationListModification', response => this.loadAll());
-  }
-
-  private onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
-  }
+    private onError(error) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
 }

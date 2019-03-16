@@ -1,12 +1,13 @@
 package com.songzi.repository;
 
 import com.songzi.domain.RemainsQuestion;
-import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.jpa.repository.*;
 
 
 /**
- * Spring Data  repository for the RemainsQuestion entity.
+ * Spring Data JPA repository for the RemainsQuestion entity.
  */
 @SuppressWarnings("unused")
 @Repository

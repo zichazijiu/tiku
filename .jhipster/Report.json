@@ -1,0 +1,45 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "report"
+        },
+        {
+            "relationshipName": "reportItems",
+            "otherEntityName": "reportItems",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "report"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "createdTime",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "reportStatus",
+            "fieldType": "ReportStatus",
+            "fieldValues": "FINISH,HALT",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20190315142352",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "report",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

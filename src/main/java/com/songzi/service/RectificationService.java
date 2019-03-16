@@ -4,13 +4,11 @@ import com.songzi.domain.Rectification;
 import com.songzi.repository.RectificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
-import java.util.Optional;
+
 /**
  * Service Implementation for managing Rectification.
  */
@@ -33,7 +31,8 @@ public class RectificationService {
      * @return the persisted entity
      */
     public Rectification save(Rectification rectification) {
-        log.debug("Request to save Rectification : {}", rectification);        return rectificationRepository.save(rectification);
+        log.debug("Request to save Rectification : {}", rectification);
+        return rectificationRepository.save(rectification);
     }
 
     /**
@@ -47,7 +46,6 @@ public class RectificationService {
         return rectificationRepository.findAll();
     }
 
-
     /**
      * Get one rectification by id.
      *
@@ -55,9 +53,9 @@ public class RectificationService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Rectification> findOne(Long id) {
+    public Rectification findOne(Long id) {
         log.debug("Request to get Rectification : {}", id);
-        return rectificationRepository.findById(id);
+        return rectificationRepository.findOne(id);
     }
 
     /**
@@ -67,6 +65,6 @@ public class RectificationService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Rectification : {}", id);
-        rectificationRepository.deleteById(id);
+        rectificationRepository.delete(id);
     }
 }

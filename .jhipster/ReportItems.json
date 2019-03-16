@@ -1,0 +1,40 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "report",
+            "otherEntityName": "report",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "checkItem",
+            "otherEntityName": "checkItem",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "reportItems"
+        },
+        {
+            "relationshipName": "remainsQuestion",
+            "otherEntityName": "remainsQuestion",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "reportItems"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "level",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20190315144246",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "report_items",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

@@ -3,6 +3,7 @@ package com.songzi.web.rest;
 import com.songzi.TikuApp;
 
 import com.songzi.domain.RemainsQuestion;
+import com.songzi.domain.ReportItems;
 import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.service.RemainsQuestionService;
 import com.songzi.web.rest.errors.ExceptionTranslator;
@@ -27,7 +28,6 @@ import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
-
 
 import static com.songzi.web.rest.TestUtil.sameInstant;
 import static com.songzi.web.rest.TestUtil.createFormattingConversionService;
@@ -55,13 +55,8 @@ public class RemainsQuestionResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final Long DEFAULT_ITEM_ANSWER_ID = 1L;
-    private static final Long UPDATED_ITEM_ANSWER_ID = 2L;
-
     @Autowired
     private RemainsQuestionRepository remainsQuestionRepository;
-
-
 
     @Autowired
     private RemainsQuestionService remainsQuestionService;
@@ -103,8 +98,12 @@ public class RemainsQuestionResourceIntTest {
         RemainsQuestion remainsQuestion = new RemainsQuestion()
             .questionType(DEFAULT_QUESTION_TYPE)
             .createdTime(DEFAULT_CREATED_TIME)
-            .description(DEFAULT_DESCRIPTION)
-            .itemAnswerId(DEFAULT_ITEM_ANSWER_ID);
+            .description(DEFAULT_DESCRIPTION);
+        // Add required entity
+        ReportItems reportItems = ReportItemsResourceIntTest.createEntity(em);
+        em.persist(reportItems);
+        em.flush();
+        remainsQuestion.setReportItems(reportItems);
         return remainsQuestion;
     }
 
@@ -131,7 +130,6 @@ public class RemainsQuestionResourceIntTest {
         assertThat(testRemainsQuestion.getQuestionType()).isEqualTo(DEFAULT_QUESTION_TYPE);
         assertThat(testRemainsQuestion.getCreatedTime()).isEqualTo(DEFAULT_CREATED_TIME);
         assertThat(testRemainsQuestion.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testRemainsQuestion.getItemAnswerId()).isEqualTo(DEFAULT_ITEM_ANSWER_ID);
     }
 
     @Test
@@ -191,24 +189,6 @@ public class RemainsQuestionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkItemAnswerIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = remainsQuestionRepository.findAll().size();
-        // set the field null
-        remainsQuestion.setItemAnswerId(null);
-
-        // Create the RemainsQuestion, which fails.
-
-        restRemainsQuestionMockMvc.perform(post("/api/remains-questions")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(remainsQuestion)))
-            .andExpect(status().isBadRequest());
-
-        List<RemainsQuestion> remainsQuestionList = remainsQuestionRepository.findAll();
-        assertThat(remainsQuestionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllRemainsQuestions() throws Exception {
         // Initialize the database
         remainsQuestionRepository.saveAndFlush(remainsQuestion);
@@ -220,10 +200,8 @@ public class RemainsQuestionResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(remainsQuestion.getId().intValue())))
             .andExpect(jsonPath("$.[*].questionType").value(hasItem(DEFAULT_QUESTION_TYPE.toString())))
             .andExpect(jsonPath("$.[*].createdTime").value(hasItem(sameInstant(DEFAULT_CREATED_TIME))))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].itemAnswerId").value(hasItem(DEFAULT_ITEM_ANSWER_ID.intValue())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
-
 
     @Test
     @Transactional
@@ -238,9 +216,9 @@ public class RemainsQuestionResourceIntTest {
             .andExpect(jsonPath("$.id").value(remainsQuestion.getId().intValue()))
             .andExpect(jsonPath("$.questionType").value(DEFAULT_QUESTION_TYPE.toString()))
             .andExpect(jsonPath("$.createdTime").value(sameInstant(DEFAULT_CREATED_TIME)))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.itemAnswerId").value(DEFAULT_ITEM_ANSWER_ID.intValue()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
     }
+
     @Test
     @Transactional
     public void getNonExistingRemainsQuestion() throws Exception {
@@ -264,8 +242,7 @@ public class RemainsQuestionResourceIntTest {
         updatedRemainsQuestion
             .questionType(UPDATED_QUESTION_TYPE)
             .createdTime(UPDATED_CREATED_TIME)
-            .description(UPDATED_DESCRIPTION)
-            .itemAnswerId(UPDATED_ITEM_ANSWER_ID);
+            .description(UPDATED_DESCRIPTION);
 
         restRemainsQuestionMockMvc.perform(put("/api/remains-questions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -279,7 +256,6 @@ public class RemainsQuestionResourceIntTest {
         assertThat(testRemainsQuestion.getQuestionType()).isEqualTo(UPDATED_QUESTION_TYPE);
         assertThat(testRemainsQuestion.getCreatedTime()).isEqualTo(UPDATED_CREATED_TIME);
         assertThat(testRemainsQuestion.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testRemainsQuestion.getItemAnswerId()).isEqualTo(UPDATED_ITEM_ANSWER_ID);
     }
 
     @Test
@@ -293,11 +269,11 @@ public class RemainsQuestionResourceIntTest {
         restRemainsQuestionMockMvc.perform(put("/api/remains-questions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(remainsQuestion)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isCreated());
 
         // Validate the RemainsQuestion in the database
         List<RemainsQuestion> remainsQuestionList = remainsQuestionRepository.findAll();
-        assertThat(remainsQuestionList).hasSize(databaseSizeBeforeUpdate);
+        assertThat(remainsQuestionList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test

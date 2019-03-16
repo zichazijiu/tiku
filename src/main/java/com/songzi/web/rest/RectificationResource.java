@@ -2,12 +2,16 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Rectification;
+import com.songzi.domain.RemainsQuestion;
 import com.songzi.service.RectificationService;
+import com.songzi.service.RemainsQuestionService;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,9 @@ import java.util.Optional;
 public class RectificationResource {
 
     private final Logger log = LoggerFactory.getLogger(RectificationResource.class);
+
+    @Autowired
+    private RemainsQuestionService remainsQuestionService;
 
     private static final String ENTITY_NAME = "rectification";
 
@@ -69,7 +76,7 @@ public class RectificationResource {
     public ResponseEntity<Rectification> updateRectification(@Valid @RequestBody Rectification rectification) throws URISyntaxException {
         log.debug("REST request to update Rectification : {}", rectification);
         if (rectification.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return createRectification(rectification);
         }
         Rectification result = rectificationService.save(rectification);
         return ResponseEntity.ok()
@@ -99,8 +106,8 @@ public class RectificationResource {
     @Timed
     public ResponseEntity<Rectification> getRectification(@PathVariable Long id) {
         log.debug("REST request to get Rectification : {}", id);
-        Optional<Rectification> rectification = rectificationService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(rectification);
+        Rectification rectification = rectificationService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(rectification));
     }
 
     /**
@@ -115,5 +122,21 @@ public class RectificationResource {
         log.debug("REST request to delete Rectification : {}", id);
         rectificationService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PutMapping("/rectifications/save")
+    @Timed
+    @ApiOperation("保留整改信息")
+    public ResponseEntity<Rectification> saveRectification(@Valid @RequestParam Long remainsQuestionId,
+                                                           @RequestBody Rectification rectification)
+        throws URISyntaxException {
+        RemainsQuestion remainsQuestion = remainsQuestionService.findOne(remainsQuestionId);
+        if (remainsQuestion == null) {
+            log.error("没有找到ID是{}的遗留问题", remainsQuestionId);
+            return ResponseEntity.notFound().build();
+        }
+        rectification.setRemainsQuestion(remainsQuestion);
+        return updateRectification(rectification);
+
     }
 }

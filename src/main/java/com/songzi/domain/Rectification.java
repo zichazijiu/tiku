@@ -1,6 +1,8 @@
 package com.songzi.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -12,7 +14,7 @@ import java.util.Objects;
  * A Rectification.
  */
 @Entity
-@Table(name = "check_item_answer_rectification")
+@Table(name = "rectification")
 public class Rectification implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,9 +33,10 @@ public class Rectification implements Serializable {
     @Column(name = "rectification_time", nullable = false)
     private ZonedDateTime rectificationTime;
 
+    @OneToOne(optional = false)
     @NotNull
-    @Column(name = "remains_question_id", nullable = false)
-    private Long remainsQuestionId;
+    @JoinColumn(unique = true)
+    private RemainsQuestion remainsQuestion;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -83,17 +86,18 @@ public class Rectification implements Serializable {
         this.rectificationTime = rectificationTime;
     }
 
-    public Long getRemainsQuestionId() {
-        return remainsQuestionId;
+    @JsonIgnore
+    public RemainsQuestion getRemainsQuestion() {
+        return remainsQuestion;
     }
 
-    public Rectification remainsQuestionId(Long remainsQuestionId) {
-        this.remainsQuestionId = remainsQuestionId;
+    public Rectification remainsQuestion(RemainsQuestion remainsQuestion) {
+        this.remainsQuestion = remainsQuestion;
         return this;
     }
 
-    public void setRemainsQuestionId(Long remainsQuestionId) {
-        this.remainsQuestionId = remainsQuestionId;
+    public void setRemainsQuestion(RemainsQuestion remainsQuestion) {
+        this.remainsQuestion = remainsQuestion;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -124,7 +128,6 @@ public class Rectification implements Serializable {
             ", measure='" + getMeasure() + "'" +
             ", result='" + getResult() + "'" +
             ", rectificationTime='" + getRectificationTime() + "'" +
-            ", remainsQuestionId=" + getRemainsQuestionId() +
             "}";
     }
 }

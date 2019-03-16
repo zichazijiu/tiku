@@ -2,14 +2,19 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.RemainsQuestion;
+import com.songzi.domain.ReportItems;
 import com.songzi.service.RemainsQuestionService;
+import com.songzi.service.ReportItemsService;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -26,6 +31,9 @@ import java.util.Optional;
 public class RemainsQuestionResource {
 
     private final Logger log = LoggerFactory.getLogger(RemainsQuestionResource.class);
+
+    @Autowired
+    private ReportItemsService reportItemsService;
 
     private static final String ENTITY_NAME = "remainsQuestion";
 
@@ -69,7 +77,7 @@ public class RemainsQuestionResource {
     public ResponseEntity<RemainsQuestion> updateRemainsQuestion(@Valid @RequestBody RemainsQuestion remainsQuestion) throws URISyntaxException {
         log.debug("REST request to update RemainsQuestion : {}", remainsQuestion);
         if (remainsQuestion.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return createRemainsQuestion(remainsQuestion);
         }
         RemainsQuestion result = remainsQuestionService.save(remainsQuestion);
         return ResponseEntity.ok()
@@ -99,8 +107,8 @@ public class RemainsQuestionResource {
     @Timed
     public ResponseEntity<RemainsQuestion> getRemainsQuestion(@PathVariable Long id) {
         log.debug("REST request to get RemainsQuestion : {}", id);
-        Optional<RemainsQuestion> remainsQuestion = remainsQuestionService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(remainsQuestion);
+        RemainsQuestion remainsQuestion = remainsQuestionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(remainsQuestion));
     }
 
     /**
@@ -116,4 +124,21 @@ public class RemainsQuestionResource {
         remainsQuestionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    @PutMapping("/remains-questions/save")
+    @Timed
+    @ApiOperation("保存遗留问题")
+    public ResponseEntity<RemainsQuestion> saveRemainsQuestion(@Valid @RequestParam Long reportItemId,
+                                                               @RequestBody RemainsQuestion remainsQuestion)
+        throws URISyntaxException {
+
+        ReportItems reportItems = reportItemsService.findOne(reportItemId);
+        if (reportItems == null) {
+            log.error("没有找到ID是{}的提报项目", reportItemId);
+            return ResponseEntity.notFound().build();
+        }
+        remainsQuestion.setReportItems(reportItems);
+        return updateRemainsQuestion(remainsQuestion);
+    }
+
 }

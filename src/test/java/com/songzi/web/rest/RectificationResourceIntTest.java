@@ -3,6 +3,7 @@ package com.songzi.web.rest;
 import com.songzi.TikuApp;
 
 import com.songzi.domain.Rectification;
+import com.songzi.domain.RemainsQuestion;
 import com.songzi.repository.RectificationRepository;
 import com.songzi.service.RectificationService;
 import com.songzi.web.rest.errors.ExceptionTranslator;
@@ -27,7 +28,6 @@ import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
-
 
 import static com.songzi.web.rest.TestUtil.sameInstant;
 import static com.songzi.web.rest.TestUtil.createFormattingConversionService;
@@ -54,13 +54,8 @@ public class RectificationResourceIntTest {
     private static final ZonedDateTime DEFAULT_RECTIFICATION_TIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_RECTIFICATION_TIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Long DEFAULT_REMAINS_QUESTION_ID = 1L;
-    private static final Long UPDATED_REMAINS_QUESTION_ID = 2L;
-
     @Autowired
     private RectificationRepository rectificationRepository;
-
-
 
     @Autowired
     private RectificationService rectificationService;
@@ -102,8 +97,12 @@ public class RectificationResourceIntTest {
         Rectification rectification = new Rectification()
             .measure(DEFAULT_MEASURE)
             .result(DEFAULT_RESULT)
-            .rectificationTime(DEFAULT_RECTIFICATION_TIME)
-            .remainsQuestionId(DEFAULT_REMAINS_QUESTION_ID);
+            .rectificationTime(DEFAULT_RECTIFICATION_TIME);
+        // Add required entity
+        RemainsQuestion remainsQuestion = RemainsQuestionResourceIntTest.createEntity(em);
+        em.persist(remainsQuestion);
+        em.flush();
+        rectification.setRemainsQuestion(remainsQuestion);
         return rectification;
     }
 
@@ -130,7 +129,6 @@ public class RectificationResourceIntTest {
         assertThat(testRectification.getMeasure()).isEqualTo(DEFAULT_MEASURE);
         assertThat(testRectification.getResult()).isEqualTo(DEFAULT_RESULT);
         assertThat(testRectification.getRectificationTime()).isEqualTo(DEFAULT_RECTIFICATION_TIME);
-        assertThat(testRectification.getRemainsQuestionId()).isEqualTo(DEFAULT_REMAINS_QUESTION_ID);
     }
 
     @Test
@@ -172,24 +170,6 @@ public class RectificationResourceIntTest {
 
     @Test
     @Transactional
-    public void checkRemainsQuestionIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = rectificationRepository.findAll().size();
-        // set the field null
-        rectification.setRemainsQuestionId(null);
-
-        // Create the Rectification, which fails.
-
-        restRectificationMockMvc.perform(post("/api/rectifications")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rectification)))
-            .andExpect(status().isBadRequest());
-
-        List<Rectification> rectificationList = rectificationRepository.findAll();
-        assertThat(rectificationList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllRectifications() throws Exception {
         // Initialize the database
         rectificationRepository.saveAndFlush(rectification);
@@ -201,10 +181,8 @@ public class RectificationResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(rectification.getId().intValue())))
             .andExpect(jsonPath("$.[*].measure").value(hasItem(DEFAULT_MEASURE.toString())))
             .andExpect(jsonPath("$.[*].result").value(hasItem(DEFAULT_RESULT.toString())))
-            .andExpect(jsonPath("$.[*].rectificationTime").value(hasItem(sameInstant(DEFAULT_RECTIFICATION_TIME))))
-            .andExpect(jsonPath("$.[*].remainsQuestionId").value(hasItem(DEFAULT_REMAINS_QUESTION_ID.intValue())));
+            .andExpect(jsonPath("$.[*].rectificationTime").value(hasItem(sameInstant(DEFAULT_RECTIFICATION_TIME))));
     }
-
 
     @Test
     @Transactional
@@ -219,9 +197,9 @@ public class RectificationResourceIntTest {
             .andExpect(jsonPath("$.id").value(rectification.getId().intValue()))
             .andExpect(jsonPath("$.measure").value(DEFAULT_MEASURE.toString()))
             .andExpect(jsonPath("$.result").value(DEFAULT_RESULT.toString()))
-            .andExpect(jsonPath("$.rectificationTime").value(sameInstant(DEFAULT_RECTIFICATION_TIME)))
-            .andExpect(jsonPath("$.remainsQuestionId").value(DEFAULT_REMAINS_QUESTION_ID.intValue()));
+            .andExpect(jsonPath("$.rectificationTime").value(sameInstant(DEFAULT_RECTIFICATION_TIME)));
     }
+
     @Test
     @Transactional
     public void getNonExistingRectification() throws Exception {
@@ -245,8 +223,7 @@ public class RectificationResourceIntTest {
         updatedRectification
             .measure(UPDATED_MEASURE)
             .result(UPDATED_RESULT)
-            .rectificationTime(UPDATED_RECTIFICATION_TIME)
-            .remainsQuestionId(UPDATED_REMAINS_QUESTION_ID);
+            .rectificationTime(UPDATED_RECTIFICATION_TIME);
 
         restRectificationMockMvc.perform(put("/api/rectifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -260,7 +237,6 @@ public class RectificationResourceIntTest {
         assertThat(testRectification.getMeasure()).isEqualTo(UPDATED_MEASURE);
         assertThat(testRectification.getResult()).isEqualTo(UPDATED_RESULT);
         assertThat(testRectification.getRectificationTime()).isEqualTo(UPDATED_RECTIFICATION_TIME);
-        assertThat(testRectification.getRemainsQuestionId()).isEqualTo(UPDATED_REMAINS_QUESTION_ID);
     }
 
     @Test
@@ -274,11 +250,11 @@ public class RectificationResourceIntTest {
         restRectificationMockMvc.perform(put("/api/rectifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(rectification)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isCreated());
 
         // Validate the Rectification in the database
         List<Rectification> rectificationList = rectificationRepository.findAll();
-        assertThat(rectificationList).hasSize(databaseSizeBeforeUpdate);
+        assertThat(rectificationList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test

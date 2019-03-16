@@ -15,12 +15,7 @@
             },
             "detail": {
                 "title": "Check Item Answer"
-            },
-            "itemId": "Item Id",
-            "result": "Result",
-            "createdBy": "Created By",
-            "deptId": "Dept Id",
-            "createdDate": "Created Date"
+            }
         }
     }
 }

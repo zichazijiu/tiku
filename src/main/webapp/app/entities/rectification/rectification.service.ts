@@ -1,73 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+import { SERVER_API_URL } from '../../app.constants';
 
-import { SERVER_API_URL } from 'app/app.constants';
-import { createRequestOption } from 'app/shared';
-import { IRectification } from 'app/shared/model/rectification.model';
+import { JhiDateUtils } from 'ng-jhipster';
 
-type EntityResponseType = HttpResponse<IRectification>;
-type EntityArrayResponseType = HttpResponse<IRectification[]>;
+import { Rectification } from './rectification.model';
+import { createRequestOption } from '../../shared';
 
-@Injectable({ providedIn: 'root' })
+export type EntityResponseType = HttpResponse<Rectification>;
+
+@Injectable()
 export class RectificationService {
-  private resourceUrl = SERVER_API_URL + 'api/rectifications';
 
-  constructor(private http: HttpClient) {}
+    private resourceUrl =  SERVER_API_URL + 'api/rectifications';
 
-  create(rectification: IRectification): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(rectification);
-    return this.http
-      .post<IRectification>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
 
-  update(rectification: IRectification): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(rectification);
-    return this.http
-      .put<IRectification>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    create(rectification: Rectification): Observable<EntityResponseType> {
+        const copy = this.convert(rectification);
+        return this.http.post<Rectification>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  find(id: number): Observable<EntityResponseType> {
-    return this.http
-      .get<IRectification>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    update(rectification: Rectification): Observable<EntityResponseType> {
+        const copy = this.convert(rectification);
+        return this.http.put<Rectification>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  query(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http
-      .get<IRectification[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-  }
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<Rectification>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  delete(id: number): Observable<HttpResponse<any>> {
-    return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
+    query(req?: any): Observable<HttpResponse<Rectification[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<Rectification[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Rectification[]>) => this.convertArrayResponse(res));
+    }
 
-  private convertDateFromClient(rectification: IRectification): IRectification {
-    const copy: IRectification = Object.assign({}, rectification, {
-      rectificationTime:
-        rectification.rectificationTime != null && rectification.rectificationTime.isValid()
-          ? rectification.rectificationTime.toJSON()
-          : null
-    });
-    return copy;
-  }
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+    }
 
-  private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    res.body.rectificationTime = res.body.rectificationTime != null ? moment(res.body.rectificationTime) : null;
-    return res;
-  }
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: Rectification = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
 
-  private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    res.body.forEach((rectification: IRectification) => {
-      rectification.rectificationTime = rectification.rectificationTime != null ? moment(rectification.rectificationTime) : null;
-    });
-    return res;
-  }
+    private convertArrayResponse(res: HttpResponse<Rectification[]>): HttpResponse<Rectification[]> {
+        const jsonResponse: Rectification[] = res.body;
+        const body: Rectification[] = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            body.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return res.clone({body});
+    }
+
+    /**
+     * Convert a returned JSON object to Rectification.
+     */
+    private convertItemFromServer(rectification: Rectification): Rectification {
+        const copy: Rectification = Object.assign({}, rectification);
+        copy.rectificationTime = this.dateUtils
+            .convertDateTimeFromServer(rectification.rectificationTime);
+        return copy;
+    }
+
+    /**
+     * Convert a Rectification to a JSON which can be sent to the server.
+     */
+    private convert(rectification: Rectification): Rectification {
+        const copy: Rectification = Object.assign({}, rectification);
+
+        copy.rectificationTime = this.dateUtils.toDate(rectification.rectificationTime);
+        return copy;
+    }
 }

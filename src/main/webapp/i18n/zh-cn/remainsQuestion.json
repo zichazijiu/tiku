@@ -19,7 +19,7 @@
             "questionType": "Question Type",
             "createdTime": "Created Time",
             "description": "Description",
-            "itemAnswerId": "Item Answer Id"
+            "reportItems": "Report Items"
         }
     }
 }

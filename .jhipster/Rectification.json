@@ -1,7 +1,18 @@
 {
     "fluentMethods": true,
-    "clientRootFolder": "",
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "remainsQuestion",
+            "otherEntityName": "remainsQuestion",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "rectification"
+        }
+    ],
     "fields": [
         {
             "fieldName": "measure",
@@ -17,20 +28,12 @@
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "remainsQuestionId",
-            "fieldType": "Long",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20190314111702",
     "dto": "no",
-    "searchEngine": false,
     "service": "serviceClass",
-    "entityTableName": "check_item_answer_rectification",
+    "entityTableName": "rectification",
     "jpaMetamodelFiltering": false,
     "pagination": "no"
 }

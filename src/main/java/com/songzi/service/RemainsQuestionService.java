@@ -4,13 +4,11 @@ import com.songzi.domain.RemainsQuestion;
 import com.songzi.repository.RemainsQuestionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
-import java.util.Optional;
+
 /**
  * Service Implementation for managing RemainsQuestion.
  */
@@ -33,7 +31,8 @@ public class RemainsQuestionService {
      * @return the persisted entity
      */
     public RemainsQuestion save(RemainsQuestion remainsQuestion) {
-        log.debug("Request to save RemainsQuestion : {}", remainsQuestion);        return remainsQuestionRepository.save(remainsQuestion);
+        log.debug("Request to save RemainsQuestion : {}", remainsQuestion);
+        return remainsQuestionRepository.save(remainsQuestion);
     }
 
     /**
@@ -47,7 +46,6 @@ public class RemainsQuestionService {
         return remainsQuestionRepository.findAll();
     }
 
-
     /**
      * Get one remainsQuestion by id.
      *
@@ -55,9 +53,9 @@ public class RemainsQuestionService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<RemainsQuestion> findOne(Long id) {
+    public RemainsQuestion findOne(Long id) {
         log.debug("Request to get RemainsQuestion : {}", id);
-        return remainsQuestionRepository.findById(id);
+        return remainsQuestionRepository.findOne(id);
     }
 
     /**
@@ -67,6 +65,6 @@ public class RemainsQuestionService {
      */
     public void delete(Long id) {
         log.debug("Request to delete RemainsQuestion : {}", id);
-        remainsQuestionRepository.deleteById(id);
+        remainsQuestionRepository.delete(id);
     }
 }

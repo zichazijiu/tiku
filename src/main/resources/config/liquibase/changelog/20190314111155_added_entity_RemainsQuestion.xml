@@ -18,7 +18,7 @@
         Added the entity RemainsQuestion.
     -->
     <changeSet id="20190314111155-1" author="jhipster">
-        <createTable tableName="check_item_answer_remains">
+        <createTable tableName="remains_question">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -26,7 +26,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="created_time" type="datetime">
+            <column name="created_time" type="timestamp">
                 <constraints nullable="false" />
             </column>
 
@@ -34,13 +34,13 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="item_answer_id" type="bigint">
+            <column name="report_items_id" type="bigint">
                 <constraints nullable="false" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        <dropDefaultValue tableName="check_item_answer_remains" columnName="created_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="remains_question" columnName="created_time" columnDataType="datetime"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

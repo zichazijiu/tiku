@@ -1,0 +1,9 @@
+{
+    "tikuApp": {
+        "ReportStatus" : {
+            "null": "",
+            "FINISH": "FINISH",
+            "HALT": "HALT"
+        }
+    }
+}

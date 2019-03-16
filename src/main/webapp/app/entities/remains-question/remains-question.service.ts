@@ -1,71 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+import { SERVER_API_URL } from '../../app.constants';
 
-import { SERVER_API_URL } from 'app/app.constants';
-import { createRequestOption } from 'app/shared';
-import { IRemainsQuestion } from 'app/shared/model/remains-question.model';
+import { JhiDateUtils } from 'ng-jhipster';
 
-type EntityResponseType = HttpResponse<IRemainsQuestion>;
-type EntityArrayResponseType = HttpResponse<IRemainsQuestion[]>;
+import { RemainsQuestion } from './remains-question.model';
+import { createRequestOption } from '../../shared';
 
-@Injectable({ providedIn: 'root' })
+export type EntityResponseType = HttpResponse<RemainsQuestion>;
+
+@Injectable()
 export class RemainsQuestionService {
-  private resourceUrl = SERVER_API_URL + 'api/remains-questions';
 
-  constructor(private http: HttpClient) {}
+    private resourceUrl =  SERVER_API_URL + 'api/remains-questions';
 
-  create(remainsQuestion: IRemainsQuestion): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(remainsQuestion);
-    return this.http
-      .post<IRemainsQuestion>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
 
-  update(remainsQuestion: IRemainsQuestion): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(remainsQuestion);
-    return this.http
-      .put<IRemainsQuestion>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    create(remainsQuestion: RemainsQuestion): Observable<EntityResponseType> {
+        const copy = this.convert(remainsQuestion);
+        return this.http.post<RemainsQuestion>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  find(id: number): Observable<EntityResponseType> {
-    return this.http
-      .get<IRemainsQuestion>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-  }
+    update(remainsQuestion: RemainsQuestion): Observable<EntityResponseType> {
+        const copy = this.convert(remainsQuestion);
+        return this.http.put<RemainsQuestion>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  query(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http
-      .get<IRemainsQuestion[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-  }
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<RemainsQuestion>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
 
-  delete(id: number): Observable<HttpResponse<any>> {
-    return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
+    query(req?: any): Observable<HttpResponse<RemainsQuestion[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<RemainsQuestion[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<RemainsQuestion[]>) => this.convertArrayResponse(res));
+    }
 
-  private convertDateFromClient(remainsQuestion: IRemainsQuestion): IRemainsQuestion {
-    const copy: IRemainsQuestion = Object.assign({}, remainsQuestion, {
-      createdTime:
-        remainsQuestion.createdTime != null && remainsQuestion.createdTime.isValid() ? remainsQuestion.createdTime.toJSON() : null
-    });
-    return copy;
-  }
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+    }
 
-  private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    res.body.createdTime = res.body.createdTime != null ? moment(res.body.createdTime) : null;
-    return res;
-  }
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: RemainsQuestion = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
 
-  private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    res.body.forEach((remainsQuestion: IRemainsQuestion) => {
-      remainsQuestion.createdTime = remainsQuestion.createdTime != null ? moment(remainsQuestion.createdTime) : null;
-    });
-    return res;
-  }
+    private convertArrayResponse(res: HttpResponse<RemainsQuestion[]>): HttpResponse<RemainsQuestion[]> {
+        const jsonResponse: RemainsQuestion[] = res.body;
+        const body: RemainsQuestion[] = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            body.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return res.clone({body});
+    }
+
+    /**
+     * Convert a returned JSON object to RemainsQuestion.
+     */
+    private convertItemFromServer(remainsQuestion: RemainsQuestion): RemainsQuestion {
+        const copy: RemainsQuestion = Object.assign({}, remainsQuestion);
+        copy.createdTime = this.dateUtils
+            .convertDateTimeFromServer(remainsQuestion.createdTime);
+        return copy;
+    }
+
+    /**
+     * Convert a RemainsQuestion to a JSON which can be sent to the server.
+     */
+    private convert(remainsQuestion: RemainsQuestion): RemainsQuestion {
+        const copy: RemainsQuestion = Object.assign({}, remainsQuestion);
+
+        copy.createdTime = this.dateUtils.toDate(remainsQuestion.createdTime);
+        return copy;
+    }
 }

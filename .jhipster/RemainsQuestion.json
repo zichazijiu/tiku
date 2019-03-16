@@ -1,7 +1,16 @@
 {
     "fluentMethods": true,
-    "clientRootFolder": "",
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "reportItems",
+            "otherEntityName": "reportItems",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
     "fields": [
         {
             "fieldName": "questionType",
@@ -21,20 +30,12 @@
         {
             "fieldName": "description",
             "fieldType": "String"
-        },
-        {
-            "fieldName": "itemAnswerId",
-            "fieldType": "Long",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20190314111155",
     "dto": "no",
-    "searchEngine": false,
     "service": "serviceClass",
-    "entityTableName": "check_item_answer_remains",
+    "entityTableName": "remains_question",
     "jpaMetamodelFiltering": false,
     "pagination": "no"
 }

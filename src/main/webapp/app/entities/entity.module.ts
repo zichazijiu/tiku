@@ -11,6 +11,9 @@ import { TikuMenuModule } from './menu/menu.module';
 import { TikuCheckItemModule } from './check-item/check-item.module';
 import { TikuCheckItemAnswerModule } from './check-item-answer/check-item-answer.module';
 import { TikuRemainsQuestionModule } from './remains-question/remains-question.module';
+import { TikuReportModule } from './report/report.module';
+import { TikuReportItemsModule } from './report-items/report-items.module';
+import { TikuRectificationModule } from './rectification/rectification.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -25,7 +28,10 @@ import { TikuRemainsQuestionModule } from './remains-question/remains-question.m
     TikuMenuModule,
     TikuCheckItemModule,
     TikuCheckItemAnswerModule,
-    TikuRemainsQuestionModule
+    TikuReportModule,
+    TikuReportItemsModule,
+    TikuRemainsQuestionModule,
+    TikuRectificationModule,
     /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
   ],
   declarations: [],

@@ -20,6 +20,8 @@
                 "checkItemAnswer": "Check Item Answer",
                 "remainsQuestion": "Remains Question",
                 "rectification": "Rectification",
+                "report": "Report",
+                "reportItems": "Report Items",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

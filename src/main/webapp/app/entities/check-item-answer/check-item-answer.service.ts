@@ -3,8 +3,6 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
-
 import { CheckItemAnswer } from './check-item-answer.model';
 import { createRequestOption } from '../../shared';
 
@@ -15,7 +13,7 @@ export class CheckItemAnswerService {
 
     private resourceUrl =  SERVER_API_URL + 'api/check-item-answers';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient) { }
 
     create(checkItemAnswer: CheckItemAnswer): Observable<EntityResponseType> {
         const copy = this.convert(checkItemAnswer);
@@ -63,8 +61,6 @@ export class CheckItemAnswerService {
      */
     private convertItemFromServer(checkItemAnswer: CheckItemAnswer): CheckItemAnswer {
         const copy: CheckItemAnswer = Object.assign({}, checkItemAnswer);
-        copy.createdDate = this.dateUtils
-            .convertDateTimeFromServer(checkItemAnswer.createdDate);
         return copy;
     }
 
@@ -73,8 +69,6 @@ export class CheckItemAnswerService {
      */
     private convert(checkItemAnswer: CheckItemAnswer): CheckItemAnswer {
         const copy: CheckItemAnswer = Object.assign({}, checkItemAnswer);
-
-        copy.createdDate = this.dateUtils.toDate(checkItemAnswer.createdDate);
         return copy;
     }
 }

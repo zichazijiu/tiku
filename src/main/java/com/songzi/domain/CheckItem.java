@@ -1,17 +1,13 @@
 package com.songzi.domain;
 
 
-import javax.persistence.*;
+import com.songzi.domain.enumeration.CheckItemType;
+import com.songzi.domain.enumeration.DeleteFlag;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.songzi.domain.enumeration.CheckItemType;
-
-import com.songzi.domain.enumeration.DeleteFlag;
-import org.hibernate.annotations.BatchSize;
+import java.util.Objects;
 
 /**
  * A CheckItem.

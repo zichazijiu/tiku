@@ -1,0 +1,74 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myRemainsQuestionLabel" jhiTranslate="tikuApp.remainsQuestion.home.createOrEditLabel">Create or edit a Remains Question</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!remainsQuestion.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="remainsQuestion.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.remainsQuestion.questionType" for="field_questionType">Question Type</label>
+            <select class="form-control" name="questionType" [(ngModel)]="remainsQuestion.questionType" id="field_questionType"  required>
+                <option value="LESS_MANAGE">{{'tikuApp.QuestionType.LESS_MANAGE' | translate}}</option>
+                <option value="SECRET_RISK">{{'tikuApp.QuestionType.SECRET_RISK' | translate}}</option>
+                <option value="LEAKING_EVENT">{{'tikuApp.QuestionType.LEAKING_EVENT' | translate}}</option>
+            </select>
+            <div [hidden]="!(editForm.controls.questionType?.dirty && editForm.controls.questionType?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.questionType?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.remainsQuestion.createdTime" for="field_createdTime">Created Time</label>
+            <div class="d-flex">
+                <input id="field_createdTime" type="datetime-local" class="form-control" name="createdTime" [(ngModel)]="remainsQuestion.createdTime"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.createdTime?.dirty && editForm.controls.createdTime?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.createdTime?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.createdTime?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.remainsQuestion.description" for="field_description">Description</label>
+            <input type="text" class="form-control" name="description" id="field_description"
+                [(ngModel)]="remainsQuestion.description" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.remainsQuestion.reportItems" for="field_reportItems">Report Items</label>
+            <select class="form-control" id="field_reportItems" name="reportItems" [(ngModel)]="remainsQuestion.reportItems"  required>
+                <option *ngIf="!editForm.value.reportItems" [ngValue]="null" selected></option>
+                <option [ngValue]="reportItemsOption.id === remainsQuestion.reportItems?.id ? remainsQuestion.reportItems : reportItemsOption" *ngFor="let reportItemsOption of reportitems; trackBy: trackReportItemsById">{{reportItemsOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.reportItems?.dirty && editForm.controls.reportItems?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.reportItems?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

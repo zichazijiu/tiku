@@ -1,69 +1,64 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { IRemainsQuestion } from 'app/shared/model/remains-question.model';
+import { RemainsQuestion } from './remains-question.model';
+import { RemainsQuestionPopupService } from './remains-question-popup.service';
 import { RemainsQuestionService } from './remains-question.service';
 
 @Component({
-  selector: 'jhi-remains-question-delete-dialog',
-  templateUrl: './remains-question-delete-dialog.component.html'
+    selector: 'jhi-remains-question-delete-dialog',
+    templateUrl: './remains-question-delete-dialog.component.html'
 })
 export class RemainsQuestionDeleteDialogComponent {
-  remainsQuestion: IRemainsQuestion;
 
-  constructor(
-    private remainsQuestionService: RemainsQuestionService,
-    public activeModal: NgbActiveModal,
-    private eventManager: JhiEventManager
-  ) {}
+    remainsQuestion: RemainsQuestion;
 
-  clear() {
-    this.activeModal.dismiss('cancel');
-  }
+    constructor(
+        private remainsQuestionService: RemainsQuestionService,
+        public activeModal: NgbActiveModal,
+        private eventManager: JhiEventManager
+    ) {
+    }
 
-  confirmDelete(id: number) {
-    this.remainsQuestionService.delete(id).subscribe(response => {
-      this.eventManager.broadcast({
-        name: 'remainsQuestionListModification',
-        content: 'Deleted an remainsQuestion'
-      });
-      this.activeModal.dismiss(true);
-    });
-  }
+    clear() {
+        this.activeModal.dismiss('cancel');
+    }
+
+    confirmDelete(id: number) {
+        this.remainsQuestionService.delete(id).subscribe((response) => {
+            this.eventManager.broadcast({
+                name: 'remainsQuestionListModification',
+                content: 'Deleted an remainsQuestion'
+            });
+            this.activeModal.dismiss(true);
+        });
+    }
 }
 
 @Component({
-  selector: 'jhi-remains-question-delete-popup',
-  template: ''
+    selector: 'jhi-remains-question-delete-popup',
+    template: ''
 })
 export class RemainsQuestionDeletePopupComponent implements OnInit, OnDestroy {
-  private ngbModalRef: NgbModalRef;
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
+    routeSub: any;
 
-  ngOnInit() {
-    this.activatedRoute.data.subscribe(({ remainsQuestion }) => {
-      setTimeout(() => {
-        this.ngbModalRef = this.modalService.open(RemainsQuestionDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
-        this.ngbModalRef.componentInstance.remainsQuestion = remainsQuestion;
-        this.ngbModalRef.result.then(
-          result => {
-            this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
-            this.ngbModalRef = null;
-          },
-          reason => {
-            this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
-            this.ngbModalRef = null;
-          }
-        );
-      }, 0);
-    });
-  }
+    constructor(
+        private route: ActivatedRoute,
+        private remainsQuestionPopupService: RemainsQuestionPopupService
+    ) {}
 
-  ngOnDestroy() {
-    this.ngbModalRef = null;
-  }
+    ngOnInit() {
+        this.routeSub = this.route.params.subscribe((params) => {
+            this.remainsQuestionPopupService
+                .open(RemainsQuestionDeleteDialogComponent as Component, params['id']);
+        });
+    }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
+    }
 }
