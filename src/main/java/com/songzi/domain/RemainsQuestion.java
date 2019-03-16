@@ -41,6 +41,10 @@ public class RemainsQuestion implements Serializable {
     @JsonIgnore
     private ReportItems reportItems;
 
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Rectification rectification;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -100,6 +104,19 @@ public class RemainsQuestion implements Serializable {
 
     public void setReportItems(ReportItems reportItems) {
         this.reportItems = reportItems;
+    }
+
+    public Rectification getRectification() {
+        return rectification;
+    }
+
+    public RemainsQuestion rectification(Rectification rectification) {
+        this.rectification = rectification;
+        return this;
+    }
+
+    public void setRectification(Rectification rectification) {
+        this.rectification = rectification;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

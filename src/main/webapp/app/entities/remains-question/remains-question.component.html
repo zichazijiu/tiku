@@ -21,6 +21,7 @@
             <th><span jhiTranslate="tikuApp.remainsQuestion.createdTime">Created Time</span></th>
             <th><span jhiTranslate="tikuApp.remainsQuestion.description">Description</span></th>
             <th><span jhiTranslate="tikuApp.remainsQuestion.reportItems">Report Items</span></th>
+            <th><span jhiTranslate="tikuApp.remainsQuestion.rectification">Rectification</span></th>
             <th></th>
             </tr>
             </thead>
@@ -33,6 +34,11 @@
                 <td>
                     <div *ngIf="remainsQuestion.reportItems">
                         <a [routerLink]="['../report-items', remainsQuestion.reportItems?.id ]" >{{remainsQuestion.reportItems?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="remainsQuestion.rectification">
+                        <a [routerLink]="['../rectification', remainsQuestion.rectification?.id ]" >{{remainsQuestion.rectification?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

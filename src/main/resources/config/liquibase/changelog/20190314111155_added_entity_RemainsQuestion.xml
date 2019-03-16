@@ -37,7 +37,9 @@
             <column name="report_items_id" type="bigint">
                 <constraints nullable="false" />
             </column>
-
+            <column name="rectification_id" type="bigint">
+                <constraints unique="true" nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="remains_question" columnName="created_time" columnDataType="datetime"/>

@@ -16,12 +16,6 @@
         <dd>
             <span>{{rectification.rectificationTime | date:'medium'}}</span>
         </dd>
-        <dt><span jhiTranslate="tikuApp.rectification.remainsQuestion">Remains Question</span></dt>
-        <dd>
-            <div *ngIf="rectification.remainsQuestion">
-                <a [routerLink]="['/remains-question', rectification.remainsQuestion?.id]">{{rectification.remainsQuestion?.id}}</a>
-            </div>
-        </dd>
     </dl>
 
     <button type="submit"

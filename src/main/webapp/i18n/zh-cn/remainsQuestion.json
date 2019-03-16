@@ -19,7 +19,8 @@
             "questionType": "Question Type",
             "createdTime": "Created Time",
             "description": "Description",
-            "reportItems": "Report Items"
+            "reportItems": "Report Items",
+            "rectification": "Rectification"
         }
     }
 }

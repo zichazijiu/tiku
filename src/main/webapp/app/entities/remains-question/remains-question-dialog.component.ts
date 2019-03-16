@@ -10,6 +10,7 @@ import { RemainsQuestion } from './remains-question.model';
 import { RemainsQuestionPopupService } from './remains-question-popup.service';
 import { RemainsQuestionService } from './remains-question.service';
 import { ReportItems, ReportItemsService } from '../report-items';
+import { Rectification, RectificationService } from '../rectification';
 
 @Component({
     selector: 'jhi-remains-question-dialog',
@@ -22,11 +23,14 @@ export class RemainsQuestionDialogComponent implements OnInit {
 
     reportitems: ReportItems[];
 
+    rectifications: Rectification[];
+
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private remainsQuestionService: RemainsQuestionService,
         private reportItemsService: ReportItemsService,
+        private rectificationService: RectificationService,
         private eventManager: JhiEventManager
     ) {
     }
@@ -35,6 +39,19 @@ export class RemainsQuestionDialogComponent implements OnInit {
         this.isSaving = false;
         this.reportItemsService.query()
             .subscribe((res: HttpResponse<ReportItems[]>) => { this.reportitems = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.rectificationService
+            .query({filter: 'remainsquestion-is-null'})
+            .subscribe((res: HttpResponse<Rectification[]>) => {
+                if (!this.remainsQuestion.rectification || !this.remainsQuestion.rectification.id) {
+                    this.rectifications = res.body;
+                } else {
+                    this.rectificationService
+                        .find(this.remainsQuestion.rectification.id)
+                        .subscribe((subRes: HttpResponse<Rectification>) => {
+                            this.rectifications = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -72,6 +89,10 @@ export class RemainsQuestionDialogComponent implements OnInit {
     }
 
     trackReportItemsById(index: number, item: ReportItems) {
+        return item.id;
+    }
+
+    trackRectificationById(index: number, item: Rectification) {
         return item.id;
     }
 }

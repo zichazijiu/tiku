@@ -18,8 +18,7 @@
             },
             "measure": "Measure",
             "result": "Result",
-            "rectificationTime": "Rectification Time",
-            "remainsQuestion": "Remains Question"
+            "rectificationTime": "Rectification Time"
         }
     }
 }

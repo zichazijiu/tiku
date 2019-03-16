@@ -22,6 +22,12 @@
                 <a [routerLink]="['/report-items', remainsQuestion.reportItems?.id]">{{remainsQuestion.reportItems?.id}}</a>
             </div>
         </dd>
+        <dt><span jhiTranslate="tikuApp.remainsQuestion.rectification">Rectification</span></dt>
+        <dd>
+            <div *ngIf="remainsQuestion.rectification">
+                <a [routerLink]="['/rectification', remainsQuestion.rectification?.id]">{{remainsQuestion.rectification?.id}}</a>
+            </div>
+        </dd>
     </dl>
 
     <button type="submit"

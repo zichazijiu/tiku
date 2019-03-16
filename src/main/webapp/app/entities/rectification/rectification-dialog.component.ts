@@ -4,12 +4,11 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { Rectification } from './rectification.model';
 import { RectificationPopupService } from './rectification-popup.service';
 import { RectificationService } from './rectification.service';
-import { RemainsQuestion, RemainsQuestionService } from '../remains-question';
 
 @Component({
     selector: 'jhi-rectification-dialog',
@@ -20,32 +19,15 @@ export class RectificationDialogComponent implements OnInit {
     rectification: Rectification;
     isSaving: boolean;
 
-    remainsquestions: RemainsQuestion[];
-
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiAlertService: JhiAlertService,
         private rectificationService: RectificationService,
-        private remainsQuestionService: RemainsQuestionService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.remainsQuestionService
-            .query({filter: 'rectification-is-null'})
-            .subscribe((res: HttpResponse<RemainsQuestion[]>) => {
-                if (!this.rectification.remainsQuestion || !this.rectification.remainsQuestion.id) {
-                    this.remainsquestions = res.body;
-                } else {
-                    this.remainsQuestionService
-                        .find(this.rectification.remainsQuestion.id)
-                        .subscribe((subRes: HttpResponse<RemainsQuestion>) => {
-                            this.remainsquestions = [subRes.body].concat(res.body);
-                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
-                }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -76,14 +58,6 @@ export class RectificationDialogComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    private onError(error: any) {
-        this.jhiAlertService.error(error.message, null, null);
-    }
-
-    trackRemainsQuestionById(index: number, item: RemainsQuestion) {
-        return item.id;
     }
 }
 

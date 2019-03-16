@@ -14,5 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="report_items"/>
 
+        <addForeignKeyConstraint baseColumnNames="rectification_id"
+                                 baseTableName="remains_question"
+                                 constraintName="fk_remains_question_rectification_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="rectification"/>
+
     </changeSet>
 </databaseChangeLog>

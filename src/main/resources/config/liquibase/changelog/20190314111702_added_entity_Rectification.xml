@@ -33,9 +33,7 @@
             <column name="rectification_time" type="timestamp">
                 <constraints nullable="false" />
             </column>
-            <column name="remains_question_id" type="bigint">
-                <constraints unique="true" nullable="false" />
-            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="rectification" columnName="rectification_time" columnDataType="datetime"/>

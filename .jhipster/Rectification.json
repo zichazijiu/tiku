@@ -1,18 +1,6 @@
 {
     "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipName": "remainsQuestion",
-            "otherEntityName": "remainsQuestion",
-            "relationshipType": "one-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "rectification"
-        }
-    ],
+    "relationships": [],
     "fields": [
         {
             "fieldName": "measure",

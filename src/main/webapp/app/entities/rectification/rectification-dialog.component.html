@@ -40,19 +40,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="tikuApp.rectification.remainsQuestion" for="field_remainsQuestion">Remains Question</label>
-            <select class="form-control" id="field_remainsQuestion" name="remainsQuestion" [(ngModel)]="rectification.remainsQuestion" required>
-                <option *ngIf="!editForm.value.remainsQuestion" [ngValue]="null" selected></option>
-                <option [ngValue]="remainsQuestionOption.id === rectification.remainsQuestion?.id ? rectification.remainsQuestion : remainsQuestionOption" *ngFor="let remainsQuestionOption of remainsquestions; trackBy: trackRemainsQuestionById">{{remainsQuestionOption.id}}</option>
-            </select>
-        </div>
-        <div [hidden]="!(editForm.controls.remainsQuestion?.dirty && editForm.controls.remainsQuestion?.invalid)">
-            <small class="form-text text-danger"
-                [hidden]="!editForm.controls.remainsQuestion?.errors?.required" jhiTranslate="entity.validation.required">
-                This field is required.
-            </small>
-        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

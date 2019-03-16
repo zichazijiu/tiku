@@ -1,8 +1,6 @@
 package com.songzi.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -32,11 +30,6 @@ public class Rectification implements Serializable {
     @NotNull
     @Column(name = "rectification_time", nullable = false)
     private ZonedDateTime rectificationTime;
-
-    @OneToOne(optional = false)
-    @NotNull
-    @JoinColumn(unique = true)
-    private RemainsQuestion remainsQuestion;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -84,20 +77,6 @@ public class Rectification implements Serializable {
 
     public void setRectificationTime(ZonedDateTime rectificationTime) {
         this.rectificationTime = rectificationTime;
-    }
-
-    @JsonIgnore
-    public RemainsQuestion getRemainsQuestion() {
-        return remainsQuestion;
-    }
-
-    public Rectification remainsQuestion(RemainsQuestion remainsQuestion) {
-        this.remainsQuestion = remainsQuestion;
-        return this;
-    }
-
-    public void setRemainsQuestion(RemainsQuestion remainsQuestion) {
-        this.remainsQuestion = remainsQuestion;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

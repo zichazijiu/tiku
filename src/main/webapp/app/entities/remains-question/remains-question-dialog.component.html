@@ -62,6 +62,13 @@
                 This field is required.
             </small>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.remainsQuestion.rectification" for="field_rectification">Rectification</label>
+            <select class="form-control" id="field_rectification" name="rectification" [(ngModel)]="remainsQuestion.rectification">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="rectificationOption.id === remainsQuestion.rectification?.id ? remainsQuestion.rectification : rectificationOption" *ngFor="let rectificationOption of rectifications; trackBy: trackRectificationById">{{rectificationOption.id}}</option>
+            </select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

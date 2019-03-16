@@ -9,6 +9,14 @@
                 "required"
             ],
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "rectification",
+            "otherEntityName": "rectification",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "remainsQuestion"
         }
     ],
     "fields": [

@@ -6,7 +6,6 @@ export class Rectification implements BaseEntity {
         public measure?: string,
         public result?: string,
         public rectificationTime?: any,
-        public remainsQuestion?: BaseEntity,
     ) {
     }
 }

@@ -13,6 +13,7 @@ export class RemainsQuestion implements BaseEntity {
         public createdTime?: any,
         public description?: string,
         public reportItems?: BaseEntity,
+        public rectification?: BaseEntity,
     ) {
     }
 }
