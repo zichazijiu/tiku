@@ -128,15 +128,11 @@ public class RectificationResource {
     @Timed
     @ApiOperation("保留整改信息")
     public ResponseEntity<Rectification> saveRectification(@Valid @RequestParam Long remainsQuestionId,
-                                                           @RequestBody Rectification rectification)
-        throws URISyntaxException {
-        RemainsQuestion remainsQuestion = remainsQuestionService.findOne(remainsQuestionId);
-        if (remainsQuestion == null) {
-            log.error("没有找到ID是{}的遗留问题", remainsQuestionId);
-            return ResponseEntity.notFound().build();
-        }
-        rectification.setRemainsQuestion(remainsQuestion);
-        return updateRectification(rectification);
+                                                           @RequestBody Rectification rectification) {
+
+        Rectification obj = rectificationService.save(remainsQuestionId, rectification);
+
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(obj));
 
     }
 }

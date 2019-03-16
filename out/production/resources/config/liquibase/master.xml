@@ -24,7 +24,6 @@
     <include file="config/liquibase/changelog/20190315142352_added_entity_constraints_Report.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190315144246_added_entity_constraints_ReportItems.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190314111155_added_entity_constraints_RemainsQuestion.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20190314111702_added_entity_constraints_Rectification.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/load_data.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180714141021_modify_entity_Examiner.xml" relativeToChangelogFile="false"/>
