@@ -5,17 +5,16 @@ import com.songzi.domain.Report;
 import com.songzi.domain.ReportItems;
 import com.songzi.service.ReportItemsService;
 import com.songzi.service.ReportService;
+import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.rmi.runtime.Log;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -138,6 +137,20 @@ public class ReportResource {
     public ResponseEntity<Report> gerUserReport(@RequestParam String login) {
         log.debug("获取用户的提报信息：{}", login);
         Report report = reportService.getUserReport(login);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
+    }
+
+    /**
+     * 获取用户的提报概览信息
+     * @param login
+     * @return
+     */
+    @GetMapping("/reports/overview/users")
+    @Timed
+    @ApiOperation("获取用户的提报概览信息")
+    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam String login) {
+        log.debug("获取用户的提报信息：{}", login);
+        List<ReportOverviewDTO> report = reportService.getUserReportOverview(login);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
     }
 

@@ -1,24 +1,22 @@
 package com.songzi.service;
 
-import com.songzi.domain.CheckItem;
-import com.songzi.domain.Report;
-import com.songzi.domain.ReportItems;
-import com.songzi.domain.User;
+import com.songzi.domain.*;
 import com.songzi.domain.enumeration.ReportStatus;
 import com.songzi.repository.ReportRepository;
+import com.songzi.service.dto.ReportOverviewDTO;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -154,5 +152,32 @@ public class ReportService {
             reportRepository.save(report);
         }
         return report;
+    }
+
+    /**
+     * 获取用户的提报概览信息
+     *
+     * @param login
+     * @return
+     */
+    public List<ReportOverviewDTO> getUserReportOverview(String login) {
+        Report report = getUserReport(login);
+        List<Object[]> objectList = reportRepository.findAllReportOverview(report.getId());
+        List<ReportOverviewDTO> reportOverviewDTOList = objectList
+            .stream()
+            .map(objects -> {
+                LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
+                String reportUsername = report.getUser().getFirstName();
+                Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
+                String checkItemContent = objects[1] == null ? "" : (String) objects[1];
+                LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
+                LocalDate rectificationTiem = objects[3] == null? null: ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
+                String measure = objects[4] == null? "": (String)objects[4];
+                String result = objects[5] == null? "":(String)objects[5];
+                return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
+                    checkItemCreatedTime, rectificationTiem, measure, result);
+            })
+            .collect(Collectors.toList());
+        return reportOverviewDTOList;
     }
 }
