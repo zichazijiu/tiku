@@ -15,6 +15,8 @@ import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -82,7 +84,7 @@ public class UserResource {
      *
      * @param userDTO the user to create
      * @return the ResponseEntity with status 201 (Created) and with body the new user, or with status 400 (Bad Request) if the login or email is already in use
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @throws URISyntaxException       if the Location URI syntax is incorrect
      * @throws BadRequestAlertException 400 (Bad Request) if the login or email is already in use
      */
     @PostMapping("/users")
@@ -102,7 +104,7 @@ public class UserResource {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getLogin()))
+                .headers(HeaderUtil.createAlert("userManagement.created", newUser.getLogin()))
                 .body(newUser);
         }
     }
@@ -185,6 +187,20 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
+    }
+
+    /**
+     * 根据部门ID获取用户信息
+     * @param pageable
+     * @param deptId
+     * @return
+     */
+    @GetMapping("/users/department")
+    @ApiOperation("根据部门ID获取用户信息")
+    public ResponseEntity<List<UserDTO>> getAllUsersByDepartment(Pageable pageable,@RequestParam Long deptId) {
+        final Page<UserDTO> page = userService.findAllByDepartment(pageable,deptId);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/department");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

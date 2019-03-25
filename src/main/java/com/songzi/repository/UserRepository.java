@@ -1,5 +1,6 @@
 package com.songzi.repository;
 
+import com.songzi.domain.Department;
 import com.songzi.domain.User;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 import java.time.Instant;
@@ -32,16 +34,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByLogin(String login);
 
-    @EntityGraph(attributePaths = {"authorities","department"})
+    @EntityGraph(attributePaths = {"authorities", "department"})
     Optional<User> findOneWithAuthoritiesById(Long id);
 
-    @EntityGraph(attributePaths = {"authorities","department"})
+    @EntityGraph(attributePaths = {"authorities", "department"})
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneWithAuthoritiesByLogin(String login);
 
-    @EntityGraph(attributePaths = {"authorities","department"})
+    @EntityGraph(attributePaths = {"authorities", "department"})
     @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
     Optional<User> findOneWithAuthoritiesByEmail(String email);
 
     Page<User> findAllByLoginNot(Pageable pageable, String login);
+
+    /**
+     * 根据部门查询用户列表
+     * @param department
+     * @return
+     */
+    Page<User> findAllByDepartment(Pageable pageable, Department department);
 }

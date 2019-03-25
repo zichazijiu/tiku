@@ -25,6 +25,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
     /**
      * 根据用户ID查部门
+     *
      * @param userId
      * @return
      */
@@ -33,6 +34,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
     /**
      * 根据DelFlag查询所有记录
+     *
      * @param deleteFlag
      * @return
      */
@@ -40,6 +42,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
     /**
      * 根据模糊查询code
+     *
      * @param deleteFlag
      * @param code
      * @return
@@ -48,10 +51,20 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
     /**
      * 查找省份编码
+     *
      * @param deleteFlag
      * @param code
      * @return
      */
     @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code <= ?2", nativeQuery = true)
     List<Department> findAllByDelFlagIsAndCodeLessThanEqual(String deleteFlag, int code);
+
+    /**
+     * 查询一级子部门
+     * @param deleteFlag
+     * @param code
+     * @return
+     */
+    @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code LIKE ?2__", nativeQuery = true)
+    List<Department> findFirstLevelChildDepartmentByDepartmentCode(String deleteFlag, String code);
 }

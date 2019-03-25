@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -142,6 +143,7 @@ public class ReportResource {
 
     /**
      * 获取用户的提报概览信息
+     *
      * @param login
      * @return
      */
@@ -169,6 +171,7 @@ public class ReportResource {
 
     /**
      * 提交报告
+     *
      * @param reportId
      * @param reportItemsList
      * @return
@@ -180,5 +183,14 @@ public class ReportResource {
         log.debug("更新报告{}的详情", reportId);
         Report report = reportService.updateReportItems(reportId, reportItemsList);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
+    }
+
+    @PutMapping("/reports/submit-check")
+    @Timed
+    @ApiOperation("提报项目检查")
+    public ResponseEntity<List<Map>> reportCheck(@RequestParam Long deptId, @RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
+        log.debug("检查{}报告,部门{}", reportId, deptId);
+        reportService.checkReport(deptId, reportId, reportItemsList);
+        return null;
     }
 }

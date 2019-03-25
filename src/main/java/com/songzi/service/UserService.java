@@ -2,8 +2,10 @@ package com.songzi.service;
 
 import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
+import com.songzi.domain.Department;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
+import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
@@ -12,6 +14,7 @@ import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +45,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     private final CacheManager cacheManager;
 
@@ -78,18 +84,18 @@ public class UserService {
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
+        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByResetKey(key)
-           .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
-           .map(user -> {
+        return userRepository.findOneByResetKey(key)
+            .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
+            .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
                 cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
                 cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -165,10 +171,10 @@ public class UserService {
      * Update basic information (first name, last name, email, language) for the current user.
      *
      * @param firstName first name of user
-     * @param lastName last name of user
-     * @param email email id of user
-     * @param langKey language key
-     * @param imageUrl image URL of user
+     * @param lastName  last name of user
+     * @param email     email id of user
+     * @param langKey   language key
+     * @param imageUrl  image URL of user
      */
     public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
         SecurityUtils.getCurrentUserLogin()
@@ -287,8 +293,8 @@ public class UserService {
 
     public User createUserByExaminer(UserDTO userDTO) {
         Optional<User> userByEmail = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if(userByEmail.isPresent()){
-            throw new BadRequestAlertException("邮箱已经存在",this.getClass().getName(),"邮箱已经存在");
+        if (userByEmail.isPresent()) {
+            throw new BadRequestAlertException("邮箱已经存在", this.getClass().getName(), "邮箱已经存在");
         }
         User user = new User();
         user.setLogin(userDTO.getLogin());
@@ -303,7 +309,7 @@ public class UserService {
                 .map(authorityRepository::findOne)
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
-        }else{
+        } else {
             Set<Authority> authorities = new HashSet<>();
             authorities.add(authorityRepository.findOne("ROLE_EXAMINER"));
             user.setAuthorities(authorities);
@@ -320,11 +326,22 @@ public class UserService {
         return user;
     }
 
-    public User findOne(Long id){
+    public User findOne(Long id) {
         return userRepository.findOne(id);
     }
 
-    public User findOne(String login){
+    public User findOne(String login) {
         return userRepository.findOneByLogin(login).get();
+    }
+
+    /**
+     * 根据部门ID获取用户信息
+     * @param pageable
+     * @param departmentId
+     * @return
+     */
+    public Page<UserDTO> findAllByDepartment(Pageable pageable, Long departmentId) {
+        Department department = departmentRepository.findOne(departmentId);
+        return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
     }
 }
