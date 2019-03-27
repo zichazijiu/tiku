@@ -65,6 +65,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
      * @param code
      * @return
      */
-    @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code LIKE ?2__", nativeQuery = true)
+    @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code LIKE ?2", nativeQuery = true)
     List<Department> findFirstLevelChildDepartmentByDepartmentCode(String deleteFlag, String code);
 }

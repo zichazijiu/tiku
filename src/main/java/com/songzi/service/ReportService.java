@@ -10,6 +10,7 @@ import com.songzi.repository.ReportItemsRepository;
 import com.songzi.repository.ReportRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.service.dto.ReportOverviewDTO;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,24 +216,30 @@ public class ReportService {
             || authorities.contains(AuthoritiesConstants.CHU_ADMIN)) {
             // 获取部门
             Department department = departmentRepository.findOne(deptId);
-            // 获取子部门
-            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode());
+            // 获取子部门,指获取下一级部门所以code后面添加"__"
+            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode() + "__");
+            final Map<Long, ReportItems> reportItemsCMap = new HashMap<>(16);
             // 遍历每个子部门提交的报告信息
             childDepartmentList.forEach(dept -> {
                 // 获取该部门的报告
                 List<ReportItems> reportItems = reportItemsRepository.findAllByDepartmentId(dept.getId());
                 // 遍历报告详情检查是否有"C"
-                List<ReportItems> reportItemsC = reportItems.stream()
-                    .filter(item -> "C".equals(item.getLevel()))
-                    .collect(Collectors.toList());
-                reportItemsC.forEach(System.out::println);
-                // 遍历C的信息汇总
-//                Map<Long,CheckItem> checkItemMap = new HashMap<>(16);
-//                reportItemsC.forEach(item->{
-//                    CheckItem checkItem = checkItemRepository.findOne(item.get)
-//                });
-
+                reportItems.forEach(x -> {
+                    if ("C".equals(x.getLevel())) {
+                        Long key = x.getCheckItem().getParentId();
+                        reportItemsCMap.put(key, x);
+                    }
+                });
             });
+            // 检查用户提交的评分信息
+            reportItemsList.forEach(item -> {
+                Long key = item.getCheckItem().getId();
+                // 子项目有C的项目
+                if (reportItemsCMap.get(key) != null) {
+                    throw new BadRequestAlertException("请注意考评项目[" + reportItemsCMap.get(key).getCheckItem().getContent() + "]的下级部门有评分C，您选择了评分A", this.getClass().getName(), "下级有C考评项目");
+                }
+            });
+
         }
     }
 }

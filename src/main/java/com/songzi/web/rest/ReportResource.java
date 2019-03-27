@@ -188,9 +188,9 @@ public class ReportResource {
     @PutMapping("/reports/submit-check")
     @Timed
     @ApiOperation("提报项目检查")
-    public ResponseEntity<List<Map>> reportCheck(@RequestParam Long deptId, @RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
+    public ResponseEntity<Void> reportCheck(@RequestParam Long deptId, @RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
         log.debug("检查{}报告,部门{}", reportId, deptId);
         reportService.checkReport(deptId, reportId, reportItemsList);
-        return null;
+        return ResponseEntity.ok().build();
     }
 }
