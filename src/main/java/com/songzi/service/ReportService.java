@@ -200,13 +200,16 @@ public class ReportService {
     /**
      * 检查部门报告
      *
-     * @param deptId
      * @param reportId
      * @param reportItemsList
      */
-    public void checkReport(Long deptId, Long reportId, List<ReportItems> reportItemsList) {
+    public void checkReport(Long reportId, List<ReportItems> reportItemsList) {
         // 根据报告获取用户信息
-        User reportUser = findOne(reportId).getUser();
+        Report report = this.findOne(reportId);
+        if (report == null) {
+            throw new BadRequestAlertException("报告[" + reportId + "]不存在", this.getClass().getName(), "报告不存在");
+        }
+        User reportUser = report.getUser();
         Set<String> authorities = reportUser.getAuthorities().stream().map(auth -> auth.getName()).collect(Collectors.toSet());
         // 管理员需要检查提报信息
         if (authorities.contains(AuthoritiesConstants.ADMIN)
@@ -215,9 +218,10 @@ public class ReportService {
             || authorities.contains(AuthoritiesConstants.JU_ADMIN)
             || authorities.contains(AuthoritiesConstants.CHU_ADMIN)) {
             // 获取部门
-            Department department = departmentRepository.findOne(deptId);
+            Department department = departmentRepository.findOne(reportUser.getDepartment().getId());
             // 获取子部门,指获取下一级部门所以code后面添加"__"
-            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode() + "__");
+            String code = department.getCode().substring(0, department.getCode().length() - 2);
+            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
             final Map<Long, ReportItems> reportItemsCMap = new HashMap<>(16);
             // 遍历每个子部门提交的报告信息
             childDepartmentList.forEach(dept -> {
@@ -227,6 +231,7 @@ public class ReportService {
                 reportItems.forEach(x -> {
                     if ("C".equals(x.getLevel())) {
                         Long key = x.getCheckItem().getParentId();
+
                         reportItemsCMap.put(key, x);
                     }
                 });
@@ -235,11 +240,59 @@ public class ReportService {
             reportItemsList.forEach(item -> {
                 Long key = item.getCheckItem().getId();
                 // 子项目有C的项目
-                if (reportItemsCMap.get(key) != null) {
-                    throw new BadRequestAlertException("请注意考评项目[" + reportItemsCMap.get(key).getCheckItem().getContent() + "]的下级部门有评分C，您选择了评分A", this.getClass().getName(), "下级有C考评项目");
+                ReportItems reportItems = reportItemsCMap.get(key);
+                if (reportItems != null && "A".equals(item.getLevel())) {
+                    throw new BadRequestAlertException("请注意考评项目[" + reportItemsCMap.get(key).getCheckItem().getContent() + "]的下级部门有评分C，您选择了评分" + item.getLevel(), this.getClass().getName(), "下级有C考评项目");
                 }
             });
 
+        }
+    }
+
+    /**
+     * 根据登录账号、自评选ID和评分检查
+     *
+     * @param login
+     * @param checkItemId
+     * @param level
+     */
+    public void checkReport(String login, Long checkItemId, String level) {
+        // 根据报告获取用户信息
+        User reportUser = userService.findOne(login);
+        Set<String> authorities = reportUser.getAuthorities().stream().map(auth -> auth.getName()).collect(Collectors.toSet());
+        // 管理员需要检查提报信息
+        if (authorities.contains(AuthoritiesConstants.ADMIN)
+            || authorities.contains(AuthoritiesConstants.BU_ADMIN)
+            || authorities.contains(AuthoritiesConstants.TING_ADMIN)
+            || authorities.contains(AuthoritiesConstants.JU_ADMIN)
+            || authorities.contains(AuthoritiesConstants.CHU_ADMIN)) {
+            // 获取部门
+            Department department = departmentRepository.findOne(reportUser.getDepartment().getId());
+            // 获取子部门,指获取下一级部门所以code后面添加"__"
+            String code = department.getCode().substring(0, department.getCode().length() - 2);
+            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
+            final Map<Long, String> reportItemsCMap = new HashMap<>(16);
+            // 遍历每个子部门提交的报告信息
+            childDepartmentList.forEach(dept -> {
+                // 获取该部门的报告
+                List<ReportItems> reportItems = reportItemsRepository.findAllByDepartmentId(dept.getId());
+                // 遍历报告详情检查是否有"C"
+                reportItems.forEach(x -> {
+                    if ("C".equals(x.getLevel())) {
+                        Long key = x.getCheckItem().getParentId();
+                        String value = x.getCheckItem().getId().toString();
+                        reportItemsCMap.put(key, value);
+                    }
+                });
+            });
+            // 检查用户提交的评分信息
+            Long key = checkItemId;
+            // 子项目有C的项目
+            String subCheckItemCId = reportItemsCMap.get(key);
+            if (subCheckItemCId != null && "A".equals(level)) {
+                CheckItem checkItem = checkItemRepository.findOne(key);
+                throw new BadRequestAlertException("请注意您的下级部门在考评项目[" + checkItem.getContent() + "]有评分C，您选择了评分" + level, this.getClass().getName(), "下级有C考评项目");
+            }
         }
     }
 }
