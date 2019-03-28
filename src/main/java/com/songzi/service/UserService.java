@@ -2,10 +2,8 @@ package com.songzi.service;
 
 import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
-import com.songzi.domain.Department;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
-import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
@@ -14,7 +12,6 @@ import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,9 +42,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
-
-    @Autowired
-    private DepartmentRepository departmentRepository;
 
     private final CacheManager cacheManager;
 
@@ -334,14 +328,4 @@ public class UserService {
         return userRepository.findOneByLogin(login).get();
     }
 
-    /**
-     * 根据部门ID获取用户信息
-     * @param pageable
-     * @param departmentId
-     * @return
-     */
-    public Page<UserDTO> findAllByDepartment(Pageable pageable, Long departmentId) {
-        Department department = departmentRepository.findOne(departmentId);
-        return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
-    }
 }

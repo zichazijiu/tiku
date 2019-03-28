@@ -189,18 +189,4 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
     }
-
-    /**
-     * 根据部门ID获取用户信息
-     * @param pageable
-     * @param deptId
-     * @return
-     */
-    @GetMapping("/users/department")
-    @ApiOperation("根据部门ID获取用户信息")
-    public ResponseEntity<List<UserDTO>> getAllUsersByDepartment(Pageable pageable,@RequestParam Long deptId) {
-        final Page<UserDTO> page = userService.findAllByDepartment(pageable,deptId);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/department");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
 }
