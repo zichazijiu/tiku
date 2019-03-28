@@ -2,13 +2,12 @@ package com.songzi.repository;
 
 import com.songzi.domain.Report;
 import com.songzi.domain.ReportItems;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
-
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,4 +27,13 @@ public interface ReportItemsRepository extends JpaRepository<ReportItems, Long> 
      */
     @Query(value = "SELECT * FROM report_items reportItems WHERE reportItems.report_id IN (SELECT report.id FROM report report LEFT JOIN jhi_user_department department ON report.user_id = department.user_id WHERE department.department_id = ?1)", nativeQuery = true)
     List<ReportItems> findAllByDepartmentId(Long departmentId);
+
+    /**
+     * 根据当前登录用户统计整体自评结果
+     * @param login
+     * @return
+     */
+    @Query(value = "SELECT report_items.jhi_level,COUNT(report_items.id) FROM report_items GROUP BY report_items.jhi_level", nativeQuery = true)
+    List<Map<String, Integer>> countByUser(String login);
+
 }

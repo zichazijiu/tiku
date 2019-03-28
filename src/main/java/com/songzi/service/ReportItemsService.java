@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Implementation for managing ReportItems.
@@ -76,5 +77,14 @@ public class ReportItemsService {
      */
     public List<ReportItems> findAllByReport(Report report) {
         return reportItemsRepository.findAllByReport(report);
+    }
+
+    /**
+     * 根据当前登录用户统计整体自评结果
+     * @param login
+     * @return
+     */
+    public List<Map<String, Integer>> countByUser(String login) {
+        return reportItemsRepository.countByUser(login);
     }
 }

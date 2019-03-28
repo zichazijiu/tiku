@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -139,6 +140,45 @@ public class RemainsQuestionResource {
         }
         remainsQuestion.setReportItems(reportItems);
         return updateRemainsQuestion(remainsQuestion);
+    }
+
+    /**
+     * Problem distribution statistics by organization
+     * @param departmentId
+     * @return
+     */
+    @GetMapping("/remains-questions/getCountByDepartmentId/{departmentId}")
+    @Timed
+    @ApiOperation("问题分布统计(按组织机构)")
+    public List<Map<String, Integer>> countByDepartmentId(Long departmentId) {
+        log.debug("REST request to count RemainsQuestion by departmentId : {}", departmentId);
+        return remainsQuestionService.countByDepartmentId(departmentId);
+    }
+
+    /**
+     * Problem distribution statistics by self evaluation
+     * @param checkItemId
+     * @return
+     */
+    @GetMapping("/remains-questions/getCountByCheckItemId/{checkItemId}")
+    @Timed
+    @ApiOperation("问题分布统计(按自评项)")
+    public List<Map<String, Integer>> getCountByCheckItemId(Long checkItemId) {
+        log.debug("REST request to count RemainsQuestion by checkItemId : {}", checkItemId);
+        return remainsQuestionService.countByCheckItemId(checkItemId);
+    }
+
+    /**
+     * Rectification analysis
+     * @param departmentId
+     * @return
+     */
+    @GetMapping("/remains-questions/getCountRectification/{departmentId}")
+    @Timed
+    @ApiOperation("整改分析")
+    public List<Map<String, Integer>> getCountRectification(Long departmentId) {
+        log.debug("Request to count Rectification by departmentId : {}", departmentId);
+        return remainsQuestionService.countRectification(departmentId);
     }
 
 }

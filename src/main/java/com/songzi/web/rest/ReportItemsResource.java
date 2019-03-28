@@ -6,6 +6,7 @@ import com.songzi.service.ReportItemsService;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -87,7 +89,7 @@ public class ReportItemsResource {
     public List<ReportItems> getAllReportItems() {
         log.debug("REST request to get all ReportItems");
         return reportItemsService.findAll();
-        }
+    }
 
     /**
      * GET  /report-items/:id : get the "id" reportItems.
@@ -115,5 +117,18 @@ public class ReportItemsResource {
         log.debug("REST request to delete ReportItems : {}", id);
         reportItemsService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     *  COUNT /report-items/getCountByUserId/:login : count based on current users
+     * @param login the login is the current logged-in user
+     * @return
+     */
+    @GetMapping("/report-items/getCountByUser")
+    @Timed
+    @ApiOperation("整体自评结果")
+    public List<Map<String, Integer>> getCountByUserId(String login) {
+        log.debug("REST request to count ReportItems : {}", login);
+        return reportItemsService.countByUser(login);
     }
 }
