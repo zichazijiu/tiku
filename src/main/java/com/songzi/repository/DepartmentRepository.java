@@ -106,4 +106,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
     @Modifying
     @Query(value = "INSERT INTO jhi_user_department (user_id, department_id) VALUES (:userId,:departmentId)", nativeQuery = true)
     void insertDepartmentIdAndUserId(@Param("userId") Long userId, @Param("departmentId") Long departmentId);
+
 }

@@ -10,6 +10,7 @@ import com.songzi.domain.enumeration.LogType;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ExaminerRepository;
 import com.songzi.repository.UserRepository;
+import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.dto.UserDTO;
@@ -220,5 +221,41 @@ public class DepartmentSerivce {
     public Page<UserDTO> findAllByDepartment(Pageable pageable, Long departmentId) {
         Department department = departmentRepository.findOne(departmentId);
         return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
+    }
+
+    /**
+     * 根据登录用户获取部门列表
+     *
+     * @return
+     */
+    public List<DepartmentDTO> finAllByUser() {
+        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
+        Set<String> roles = user.getAuthorities().stream().map(x -> x.getName()).collect(Collectors.toSet());
+        if (roles.contains(AuthoritiesConstants.ADMIN)) {
+            return departmentRepository.findAllByDelFlagIs(DeleteFlag.NORMAL)
+                .stream()
+                .map(departmentMapper::toDto)
+                .collect(Collectors.toList());
+        } else if (roles.contains(AuthoritiesConstants.BU_ADMIN)
+            || roles.contains(AuthoritiesConstants.TING_ADMIN)
+            || roles.contains(AuthoritiesConstants.JU_ADMIN)
+            || roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
+            Department department = user.getDepartment();
+            if (department == null) {
+                throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
+            }
+            // 替换code后四位为____
+            int position = department.getCode().length();
+            String code = new StringBuilder(department.getCode()).replace(position - 4, position, "----").toString();
+            return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code)
+                .stream().map(departmentMapper::toDto).collect(Collectors.toList());
+        } else {
+            Department department = user.getDepartment();
+            if (department == null) {
+                throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
+            }
+            return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode())
+                .stream().map(departmentMapper::toDto).collect(Collectors.toList());
+        }
     }
 }

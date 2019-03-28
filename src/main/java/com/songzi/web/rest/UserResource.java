@@ -5,20 +5,24 @@ import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.User;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
+import com.songzi.service.DepartmentSerivce;
 import com.songzi.service.MailService;
 import com.songzi.service.UserService;
+import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.errors.EmailAlreadyUsedException;
 import com.songzi.web.rest.errors.LoginAlreadyUsedException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
+import com.songzi.web.rest.vm.DepartmentQueryVM;
 import io.github.jhipster.web.util.ResponseUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -67,6 +71,8 @@ public class UserResource {
     private final UserService userService;
 
     private final MailService mailService;
+
+    @Autowired private DepartmentSerivce departmentSerivce;
 
     public UserResource(UserRepository userRepository, UserService userService, MailService mailService) {
 
@@ -188,5 +194,17 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
+    }
+
+    /**
+     * 查询用户的能访问的机构
+     * @return
+     */
+    @GetMapping("/users/departments/")
+    @Timed
+    @ApiOperation(value = "查询用户的机构")
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByUser() {
+        List<DepartmentDTO> page = departmentSerivce.finAllByUser();
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 }
