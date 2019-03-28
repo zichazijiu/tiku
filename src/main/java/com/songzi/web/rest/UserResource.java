@@ -198,9 +198,10 @@ public class UserResource {
 
     /**
      * 查询用户的能访问的机构
+     *
      * @return
      */
-    @GetMapping("/users/departments/")
+    @GetMapping("/users/departments")
     @Timed
     @ApiOperation(value = "查询用户的机构")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByUser() {

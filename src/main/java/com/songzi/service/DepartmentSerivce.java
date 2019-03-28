@@ -74,8 +74,7 @@ public class DepartmentSerivce {
     public DepartmentDTO insert(DepartmentVM departmentVM) {
         Department department = departmentVMMapper.toEntity(departmentVM);
         department.setDepartmentStatus("NORMAL");
-        department.setDepartmentType("部门");
-
+        department.setDepartmentType("NORMAL");
         department = departmentRepository.save(department);
         return departmentMapper.toDto(department);
     }
@@ -93,7 +92,7 @@ public class DepartmentSerivce {
         department.setName(departmentVM.getName());
         department.setDelFlag(departmentVM.getDelFlag());
         department.setDepartmentStatus("NORMAL");
-        department.setDepartmentType("部门");
+        department.setDepartmentType("NORMAL");
         department.setParentId(departmentVM.getParentId());
 
         return departmentMapper.toDto(departmentRepository.save(department));
@@ -175,8 +174,8 @@ public class DepartmentSerivce {
         if (department == null) {
             throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
         }
-        String codePrefix = "";
-        for (int i = 0; i < level; i++) {
+        String codePrefix = "__";
+        for (int i = 1; i < level; i++) {
             codePrefix += "__";
         }
         return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode() + codePrefix);
@@ -246,7 +245,7 @@ public class DepartmentSerivce {
             }
             // 替换code后四位为____
             int position = department.getCode().length();
-            String code = new StringBuilder(department.getCode()).replace(position - 4, position, "----").toString();
+            String code = new StringBuilder(department.getCode()).replace(position - 4, position, "____").toString();
             return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code)
                 .stream().map(departmentMapper::toDto).collect(Collectors.toList());
         } else {
@@ -258,4 +257,5 @@ public class DepartmentSerivce {
                 .stream().map(departmentMapper::toDto).collect(Collectors.toList());
         }
     }
+
 }

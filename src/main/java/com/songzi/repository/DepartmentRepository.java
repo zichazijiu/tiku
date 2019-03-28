@@ -94,6 +94,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
      * @param userId
      * @return
      */
+    @Modifying
     @Query(value = "UPDATE jhi_user_department SET department_id = ?1 WHERE user_id = ?2", nativeQuery = true)
     int updateDepartmentIdByUserId(Long departmentId, Long userId);
 

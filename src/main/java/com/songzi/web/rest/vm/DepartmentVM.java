@@ -10,6 +10,8 @@ public class DepartmentVM {
 
     private String code;
 
+    private String parentCodes;
+
     private Long parentId;
 
     private String departmentStatus;
@@ -72,5 +74,13 @@ public class DepartmentVM {
 
     public void setDelFlag(DeleteFlag delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getParentCodes() {
+        return parentCodes;
+    }
+
+    public void setParentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
     }
 }

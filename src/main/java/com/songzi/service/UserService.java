@@ -4,6 +4,7 @@ import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
+import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
@@ -12,6 +13,7 @@ import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +46,9 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
@@ -154,6 +159,10 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        // 添加部门
+        if (userDTO.getDepartment().getId() != null) {
+            user.setDepartment(departmentRepository.findOne(userDTO.getDepartment().getId()));
+        }
         userRepository.save(user);
         cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());

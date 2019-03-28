@@ -10,6 +10,7 @@ import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
+import com.songzi.web.rest.vm.DepartmentUserVM;
 import com.songzi.web.rest.vm.DepartmentVM;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
@@ -157,17 +158,15 @@ public class DepartmentResource {
     }
 
     /**
-     * UPDATE
-     *
-     * @param departmentId
-     * @param userIds
+     * 更新机构的用户
+     * @param departmentUserVM
      * @return
      */
     @PutMapping("/departments/users")
     @Timed
     @ApiOperation(value = "更新机构的用户")
-    public ResponseEntity<Void> updateDepartmentUser(@RequestParam Long departmentId, @RequestBody Long[] userIds) {
-        departmentSerivce.updateDepartmentUser(departmentId, userIds);
+    public ResponseEntity<Void> updateDepartmentUser(@RequestBody DepartmentUserVM departmentUserVM) {
+        departmentSerivce.updateDepartmentUser(departmentUserVM.getDepartmentId(), departmentUserVM.getUserIds());
         return ResponseEntity.ok().build();
     }
 

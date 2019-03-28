@@ -24,6 +24,8 @@ public class DepartmentDTO {
 
     private Instant createdDate;
 
+    private String parentCodes;
+
     public Long getId() {
         return id;
     }
@@ -94,5 +96,13 @@ public class DepartmentDTO {
 
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getParentCodes() {
+        return parentCodes;
+    }
+
+    public void setParentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
     }
 }
