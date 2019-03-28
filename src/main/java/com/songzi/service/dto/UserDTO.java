@@ -3,6 +3,7 @@ package com.songzi.service.dto;
 import com.songzi.config.Constants;
 
 import com.songzi.domain.Authority;
+import com.songzi.domain.Department;
 import com.songzi.domain.User;
 
 import org.hibernate.validator.constraints.Email;
@@ -53,6 +54,8 @@ public class UserDTO {
 
     private Set<String> authorities;
 
+    private Department department;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -73,6 +76,7 @@ public class UserDTO {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        this.department = user.getDepartment();
     }
 
     public Long getId() {
@@ -194,6 +198,15 @@ public class UserDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", department=" + department +
             "}";
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

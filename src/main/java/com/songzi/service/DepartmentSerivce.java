@@ -3,23 +3,34 @@ package com.songzi.service;
 import com.songzi.domain.Department;
 import com.songzi.domain.Examiner;
 import com.songzi.domain.LogBackup;
+import com.songzi.domain.User;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.Level;
 import com.songzi.domain.enumeration.LogType;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ExaminerRepository;
+import com.songzi.repository.UserRepository;
 import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.DepartmentDTO;
+import com.songzi.service.dto.UserDTO;
 import com.songzi.service.mapper.DepartmentMapper;
 import com.songzi.service.mapper.DepartmentVMMapper;
+import com.songzi.service.mapper.UserMapper;
 import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DepartmentQueryVM;
 import com.songzi.web.rest.vm.DepartmentVM;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import sun.rmi.runtime.Log;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -49,6 +60,9 @@ public class DepartmentSerivce {
 
     @Autowired
     private ExaminerRepository examinerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 新建机构部门
@@ -145,9 +159,66 @@ public class DepartmentSerivce {
      * @return
      */
     public Department getDepartmentByUserId(Long userId) {
-        if (userId != null) {
-            return departmentRepository.findOneByUserId(userId);
+        return departmentRepository.findOneByUserId(userId);
+    }
+
+    /**
+     * 根据部门ID查询子部门
+     *
+     * @param deptId
+     * @param level
+     * @return
+     */
+    public List<Department> getChildDepartmentById(Long deptId, int level) {
+        Department department = departmentRepository.findOne(deptId);
+        if (department == null) {
+            throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
         }
-        return null;
+        String codePrefix = "";
+        for (int i = 0; i < level; i++) {
+            codePrefix += "__";
+        }
+        return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), department.getCode() + codePrefix);
+    }
+
+    /**
+     * 更新部门用户
+     *
+     * @param departmentId
+     * @param userIds
+     * @return
+     */
+    public void updateDepartmentUser(Long departmentId, Long[] userIds) {
+        Department department = departmentRepository.findOne(departmentId);
+        if (department == null) {
+            throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
+        }
+        List<User> userList = new ArrayList<>(16);
+        for (int i = 0; i < userIds.length; i++) {
+            Long userId = userIds[i];
+
+            Long deptId = departmentRepository.findDepartmentIdByUserId(userId);
+            if (deptId == null) {
+                // 插入一条记录
+                departmentRepository.insertDepartmentIdAndUserId(userId, departmentId);
+            } else {
+                if (departmentId.longValue() != deptId.longValue()) {
+                    // 部门ID不同更新记录
+                    departmentRepository.updateDepartmentIdByUserId(departmentId, userId);
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据部门ID获取用户信息
+     *
+     * @param pageable
+     * @param departmentId
+     * @return
+     */
+    public Page<UserDTO> findAllByDepartment(Pageable pageable, Long departmentId) {
+        Department department = departmentRepository.findOne(departmentId);
+        return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
     }
 }

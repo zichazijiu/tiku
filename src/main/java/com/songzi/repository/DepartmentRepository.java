@@ -61,10 +61,49 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
     /**
      * 查询一级子部门
+     *
      * @param deleteFlag
      * @param code
      * @return
      */
     @Query(value = "SELECT d.* FROM department d WHERE d.del_flag = ?1 AND d.code LIKE ?2", nativeQuery = true)
-    List<Department> findFirstLevelChildDepartmentByDepartmentCode(String deleteFlag, String code);
+    List<Department> findChildDepartmentByDepartmentCode(String deleteFlag, String code);
+
+    /**
+     * 根据部门ID查用户ID
+     *
+     * @param departmentId
+     * @return
+     */
+    @Query(value = "SELECT user_id from jhi_user_department WHERE department_id = ?1", nativeQuery = true)
+    List<Long> findUserIdByDepartmentId(Long departmentId);
+
+    /**
+     * 根据用户ID查部门ID
+     *
+     * @param userId
+     * @return
+     */
+    @Query(value = "SELECT department_id from jhi_user_department WHERE user_id = ?1", nativeQuery = true)
+    Long findDepartmentIdByUserId(Long userId);
+
+    /**
+     * 根据用户ID更新部门ID
+     *
+     * @param departmentId
+     * @param userId
+     * @return
+     */
+    @Query(value = "UPDATE jhi_user_department SET department_id = ?1 WHERE user_id = ?2", nativeQuery = true)
+    int updateDepartmentIdByUserId(Long departmentId, Long userId);
+
+    /**
+     * 插入记录
+     * @param userId
+     * @param departmentId
+     * @return
+     */
+    @Modifying
+    @Query(value = "INSERT INTO jhi_user_department (user_id, department_id) VALUES (:userId,:departmentId)", nativeQuery = true)
+    void insertDepartmentIdAndUserId(@Param("userId") Long userId, @Param("departmentId") Long departmentId);
 }

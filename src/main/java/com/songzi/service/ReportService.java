@@ -221,7 +221,7 @@ public class ReportService {
             Department department = departmentRepository.findOne(reportUser.getDepartment().getId());
             // 获取子部门,指获取下一级部门所以code后面添加"__"
             String code = department.getCode().substring(0, department.getCode().length() - 2);
-            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
+            List<Department> childDepartmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
             final Map<Long, ReportItems> reportItemsCMap = new HashMap<>(16);
             // 遍历每个子部门提交的报告信息
             childDepartmentList.forEach(dept -> {
@@ -270,7 +270,7 @@ public class ReportService {
             Department department = departmentRepository.findOne(reportUser.getDepartment().getId());
             // 获取子部门,指获取下一级部门所以code后面添加"__"
             String code = department.getCode().substring(0, department.getCode().length() - 2);
-            List<Department> childDepartmentList = departmentRepository.findFirstLevelChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
+            List<Department> childDepartmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code + "__");
             final Map<Long, String> reportItemsCMap = new HashMap<>(16);
             // 遍历每个子部门提交的报告信息
             childDepartmentList.forEach(dept -> {
