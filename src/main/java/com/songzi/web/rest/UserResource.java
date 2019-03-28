@@ -196,6 +196,16 @@ public class UserResource {
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
     }
 
+    @DeleteMapping("/users")
+    @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
+    @ApiOperation("删除用户")
+    public ResponseEntity<Void> deleteUserQuery(@RequestParam String id) {
+        log.debug("REST request to delete User: {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", id)).build();
+    }
+
     /**
      * 查询用户的能访问的机构
      *

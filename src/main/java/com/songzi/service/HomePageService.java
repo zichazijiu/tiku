@@ -67,7 +67,7 @@ public class HomePageService {
             List<Department> departmentList;
             if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
                 // 管理员、部级管理员展现一级部门
-                departmentList = departmentRepository.findAllByDelFlagIsAndCodeLessThanEqual(DeleteFlag.NORMAL.toString(), 65);
+                departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(),"8602__");
             } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
                 || roles.contains(AuthoritiesConstants.JU_ADMIN)) {
                 // 厅、局

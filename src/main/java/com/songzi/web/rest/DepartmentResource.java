@@ -184,5 +184,4 @@ public class DepartmentResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/department");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
 }

@@ -35,7 +35,10 @@ public class ReportOverviewDTO {
     @ApiModelProperty("整改结果")
     private String result;
 
-    public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent, LocalDate checkItemCreatedTime, LocalDate rectificationTime, String measure, String result) {
+    @ApiModelProperty("报告条目ID")
+    private Long reportItemId;
+
+    public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent, LocalDate checkItemCreatedTime, LocalDate rectificationTime, String measure, String result, Long reportItemId) {
         this.reportCreatedTime = reportCreatedTime;
         this.reportUsername = reportUsername;
         this.reportId = reportId;
@@ -44,6 +47,7 @@ public class ReportOverviewDTO {
         this.rectificationTime = rectificationTime;
         this.measure = measure;
         this.result =result;
+        this.reportItemId = reportItemId;
     }
 
     public Long getReportId() {
@@ -108,5 +112,13 @@ public class ReportOverviewDTO {
 
     public void setCheckItemCreatedTime(LocalDate checkItemCreatedTime) {
         this.checkItemCreatedTime = checkItemCreatedTime;
+    }
+
+    public Long getReportItemId() {
+        return reportItemId;
+    }
+
+    public void setReportItemId(Long reportItemId) {
+        this.reportItemId = reportItemId;
     }
 }

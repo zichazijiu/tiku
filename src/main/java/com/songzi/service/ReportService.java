@@ -1,7 +1,6 @@
 package com.songzi.service;
 
 import com.songzi.domain.*;
-import com.songzi.domain.enumeration.AuthoritiesType;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.ReportStatus;
 import com.songzi.repository.CheckItemRepository;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -191,7 +189,7 @@ public class ReportService {
                 String measure = objects[4] == null ? "" : (String) objects[4];
                 String result = objects[5] == null ? "" : (String) objects[5];
                 return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                    checkItemCreatedTime, rectificationTiem, measure, result);
+                    checkItemCreatedTime, rectificationTiem, measure, result, reportId);
             })
             .collect(Collectors.toList());
         return reportOverviewDTOList;
