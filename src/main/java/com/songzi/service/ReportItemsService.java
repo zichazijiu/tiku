@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing ReportItems.
@@ -84,7 +85,7 @@ public class ReportItemsService {
      * @param login
      * @return
      */
-    public List<Map<String, Integer>> countByUser(String login) {
+    public List<Map<String, Integer>> countByUser(Optional<String> login) {
         return reportItemsRepository.countByUser(login);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -34,6 +35,6 @@ public interface ReportItemsRepository extends JpaRepository<ReportItems, Long> 
      * @return
      */
     @Query(value = "SELECT report_items.jhi_level,COUNT(report_items.id) FROM report_items GROUP BY report_items.jhi_level", nativeQuery = true)
-    List<Map<String, Integer>> countByUser(String login);
+    List<Map<String, Integer>> countByUser(Optional<String> login);
 
 }
