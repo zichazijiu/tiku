@@ -188,8 +188,9 @@ public class ReportService {
                 LocalDate rectificationTiem = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
                 String measure = objects[4] == null ? "" : (String) objects[4];
                 String result = objects[5] == null ? "" : (String) objects[5];
+                Long reportItemId = ((BigInteger)objects[6]).longValue();
                 return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                    checkItemCreatedTime, rectificationTiem, measure, result, reportId);
+                    checkItemCreatedTime, rectificationTiem, measure, result, reportItemId);
             })
             .collect(Collectors.toList());
         return reportOverviewDTOList;
