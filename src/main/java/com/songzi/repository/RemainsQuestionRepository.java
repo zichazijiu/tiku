@@ -37,7 +37,7 @@ public interface RemainsQuestionRepository extends JpaRepository<RemainsQuestion
      * @param checkItemId
      * @return
      */
-    @Query(value = "SELECT remains_question.question_type AS questionType, count(remains_question.rectification_id != NULL) AS completeQuantity, count(ISNULL(remains_question.rectification_id)) AS uncompleteQuantity FROM remains_question, report, report_items WHERE remains_question.report_items_id = report_items.id AND report.id = report_items.report_id AND report_items.check_item_id = ? GROUP BY remains_question.question_type", nativeQuery = true)
+    @Query(value = "SELECT remains_question.question_type AS questionType, SUM(if(ISNULL(remains_question.rectification_id) = 0, 1, 0)) AS completeQuantity, SUM(if(ISNULL(remains_question.rectification_id) = 1, 1, 0)) AS uncompleteQuantity FROM remains_question, report, report_items WHERE remains_question.report_items_id = report_items.id AND report.id = report_items.report_id AND report_items.check_item_id = ? GROUP BY remains_question.question_type", nativeQuery = true)
     List<Map<String, Integer>> countRectification(Long checkItemId);
 
 }
