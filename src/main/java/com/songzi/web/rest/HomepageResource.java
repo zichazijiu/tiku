@@ -43,9 +43,9 @@ public class HomepageResource {
     @GetMapping("/homepage/check-item-overview")
     @Timed
     @ApiOperation("根据部门获取提报信息")
-    public ResponseEntity<CheckItemOverviewDTO> getCheckItemOverview(@RequestParam String login,
-                                                                     @RequestParam String depId) {
-        return null;
+    public ResponseEntity<CheckItemOverviewDTO> getCheckItemOverview(@RequestParam Long departmentId) {
+        CheckItemOverviewDTO result = homePageService.getReportOverview(departmentId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
 }

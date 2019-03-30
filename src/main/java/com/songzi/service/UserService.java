@@ -226,6 +226,10 @@ public class UserService {
             .map(UserDTO::new);
     }
 
+    /**
+     * 根据用户登录账号删除用户
+     * @param login
+     */
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             userRepository.delete(user);
@@ -235,6 +239,10 @@ public class UserService {
         });
     }
 
+    /**
+     * 根据用户ID删除用户
+     * @param id
+     */
     public void deleteUser(Long id) {
         User user = userRepository.findOne(id);
         if (user != null) {

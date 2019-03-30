@@ -7,7 +7,9 @@ import com.songzi.domain.User;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.security.AuthoritiesConstants;
+import com.songzi.service.dto.CheckItemOverviewDTO;
 import com.songzi.service.dto.HomepageDTO;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +92,21 @@ public class HomePageService {
 
         }
         return homepageDTO;
+    }
+
+    /**
+     * 查询部门的提报信息
+     * @param departmentId
+     * @return
+     */
+    public CheckItemOverviewDTO getReportOverview(Long departmentId) {
+        Department department = departmentRepository.findOne(departmentId);
+        if (department == null)
+            throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
+        CheckItemOverviewDTO result = new CheckItemOverviewDTO();
+        result.setDeptName(department.getName()); // 部门名称
+
+        return result;
+
     }
 }
