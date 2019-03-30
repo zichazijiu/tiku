@@ -230,13 +230,12 @@ public class DepartmentSerivce {
     public List<DepartmentDTO> finAllByUser() {
         User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
         Set<String> roles = user.getAuthorities().stream().map(x -> x.getName()).collect(Collectors.toSet());
-        if (roles.contains(AuthoritiesConstants.ADMIN)) {
+        if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
             return departmentRepository.findAllByDelFlagIs(DeleteFlag.NORMAL)
                 .stream()
                 .map(departmentMapper::toDto)
                 .collect(Collectors.toList());
-        } else if (roles.contains(AuthoritiesConstants.BU_ADMIN)
-            || roles.contains(AuthoritiesConstants.TING_ADMIN)
+        } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
             || roles.contains(AuthoritiesConstants.JU_ADMIN)
             || roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
             Department department = user.getDepartment();
@@ -244,9 +243,10 @@ public class DepartmentSerivce {
                 throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
             }
             // 替换code后两位为____
-            int position = department.getCode().length();
-            String code = new StringBuilder(department.getCode()).replace(position - 2, position, "____").toString();
-            return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code)
+//            int position = department.getCode().length();
+//            String code = new StringBuilder(department.getCode()).replace(position - 2, position, "").toString();
+//            String code = department.getCode().substring(0,position-2);
+            return departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.name(), department.getCode())
                 .stream().map(departmentMapper::toDto).collect(Collectors.toList());
         } else {
             Department department = user.getDepartment();
