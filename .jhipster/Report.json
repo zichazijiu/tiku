@@ -34,6 +34,10 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "level",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20190315142352",

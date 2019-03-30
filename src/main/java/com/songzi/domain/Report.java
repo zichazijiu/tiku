@@ -35,6 +35,9 @@ public class Report implements Serializable {
     @Column(name = "report_status", nullable = false)
     private ReportStatus reportStatus;
 
+    @Column(name = "jhi_level")
+    private String level;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnore
@@ -77,6 +80,19 @@ public class Report implements Serializable {
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public Report level(String level) {
+        this.level = level;
+        return this;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public User getUser() {
@@ -144,6 +160,7 @@ public class Report implements Serializable {
             "id=" + getId() +
             ", createdTime='" + getCreatedTime() + "'" +
             ", reportStatus='" + getReportStatus() + "'" +
+            ", level='" + getLevel() + "'" +
             "}";
     }
 }

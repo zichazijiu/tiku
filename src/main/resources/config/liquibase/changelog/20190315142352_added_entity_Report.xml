@@ -30,6 +30,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="jhi_level" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="user_id" type="bigint">
                 <constraints nullable="false" />
             </column>

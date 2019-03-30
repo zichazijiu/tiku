@@ -1,12 +1,10 @@
 package com.songzi.service;
 
-import com.songzi.domain.Authority;
-import com.songzi.domain.Department;
-import com.songzi.domain.Menu;
-import com.songzi.domain.User;
+import com.songzi.domain.*;
 import com.songzi.domain.enumeration.DeleteFlag;
-import com.songzi.repository.DepartmentRepository;
+import com.songzi.repository.*;
 import com.songzi.security.AuthoritiesConstants;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.CheckItemOverviewDTO;
 import com.songzi.service.dto.HomepageDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
@@ -33,10 +31,23 @@ public class HomePageService {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private DepartmentSerivce departmentSerivce;
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
+
+    @Autowired
+    private ReportItemsRepository reportItemsRepository;
+
+    @Autowired
+    private RectificationRepository rectificationRepository;
+
 
     @Autowired
     private MenuService menuService;
@@ -69,7 +80,7 @@ public class HomePageService {
             List<Department> departmentList;
             if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
                 // 管理员、部级管理员展现一级部门
-                departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(),"8602__");
+                departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), "8602__");
             } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
                 || roles.contains(AuthoritiesConstants.JU_ADMIN)) {
                 // 厅、局
@@ -96,6 +107,7 @@ public class HomePageService {
 
     /**
      * 查询部门的提报信息
+     *
      * @param departmentId
      * @return
      */
@@ -103,10 +115,68 @@ public class HomePageService {
         Department department = departmentRepository.findOne(departmentId);
         if (department == null)
             throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
+        // 根据部门展现报告
         CheckItemOverviewDTO result = new CheckItemOverviewDTO();
-        result.setDeptName(department.getName()); // 部门名称
+        // 部门名称
+        result.setDeptName(department.getName());
+        // 当前用户是普通用户，展现用户自己的报告
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.USER)) {
+            List<Report> reports = reportRepository.findByUserIsCurrentUser();
+            if (reports != null && reports.size() > 0) {
+                Report report = reports.get(0);
+                User user = userRepository.findOne(report.getId());
+                // 提报人
+                result.setCreatedUser(user.getLastName() + user.getFirstName());
+                // 提报时间
+                result.setCreatedDate(report.getCreatedTime().toLocalDate().toString());
+                // 总的考评结果
+                result.setCheckResult(report.getLevel());
+                List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+                // 自查项目
+                List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+                // 整改结果
+                List<Rectification> rectificationList = new ArrayList<>(16);
+                reportItemsList.forEach(item -> {
+                    rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+                    checkDescriptionList.add(item.getCheckItem().getContent() + " " + item.getLevel());
+                });
 
+                // 更改
+                result.setRectificationList(rectificationList);
+                // 整改信息
+                result.setCheckDescription(checkDescriptionList);
+            }
+        } else {
+            // 根据部门查出用户
+            List<User> userList = userRepository.findAllByDepartment(department);
+            if (userList != null && userList.size() > 0) {
+                User user = userList.get(0);
+                List<Report> reports = reportRepository.findByUserId(user.getId());
+                if (reports != null && reports.size() > 0) {
+                    Report report = reports.get(0);
+                    // 提报人
+                    result.setCreatedUser(user.getLastName() + user.getFirstName());
+                    // 提报时间
+                    result.setCreatedDate(report.getCreatedTime().toLocalDate().toString());
+                    // 总的考评结果
+                    result.setCheckResult(report.getLevel());
+                    List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+                    // 自查项目
+                    List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+                    // 整改结果
+                    List<Rectification> rectificationList = new ArrayList<>(16);
+                    reportItemsList.forEach(item -> {
+                        rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+                        checkDescriptionList.add(item.getCheckItem().getContent() + " " + item.getLevel());
+                    });
+
+                    // 更改
+                    result.setRectificationList(rectificationList);
+                    // 整改信息
+                    result.setCheckDescription(checkDescriptionList);
+                }
+            }
+        }
         return result;
-
     }
 }

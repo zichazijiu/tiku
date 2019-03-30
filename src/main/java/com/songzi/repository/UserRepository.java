@@ -53,4 +53,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     Page<User> findAllByDepartment(Pageable pageable, Department department);
+
+    /**
+     * 根据部门查所有用户
+     * @param department
+     * @return
+     */
+    List<User> findAllByDepartment(Department department);
 }

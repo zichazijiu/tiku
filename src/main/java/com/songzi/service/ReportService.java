@@ -108,12 +108,12 @@ public class ReportService {
      * @return
      */
     public Report getUserReport(String login) {
+        Report report = null;
         if (StringUtils.isNotEmpty(login)) {
             User user = userService.getUserWithAuthoritiesByLogin(login).get();
             List<Report> reportList = reportRepository.findByUserId(user.getId());
             // 用户没有报告，生成一份报告
             if (reportList == null || reportList.size() < 1) {
-                Report report = new Report();
                 // 设置用户
                 report.setUser(user);
                 // 设置时间
@@ -122,24 +122,32 @@ public class ReportService {
                 report.setReportStatus(ReportStatus.NEW);
                 // 保存报告
                 reportRepository.save(report);
-                // 提报的自评项目入库
-                List<CheckItem> checkItems = checkItemService.findAllByUser(login);
-                checkItems.stream().map(item -> {
-                    ReportItems obj = new ReportItems();
-                    obj.setReport(report);
-                    obj.setCheckItem(item);
-                    // 保存提报信息
-                    reportItemsRepository.save(obj);
-                    return obj;
-                }).collect(Collectors.toSet());
-
-                return report;
+            } else {
+                // 当前的设计方案是一个用户只有一个提报
+                report = reportList.get(0);
             }
 
-            return reportList.get(0);
+            final Report reportFinal = report;
+            if (ReportStatus.NEW == reportFinal.getReportStatus()
+                || ReportStatus.RESET == reportFinal.getReportStatus()) {
+                // 提报的自评项目入库
+                List<CheckItem> checkItems = checkItemService.findAllByUser(login);
+                checkItems.forEach(checkItem -> {
+                    ReportItems reportItems = new ReportItems();
+                    reportItems.setReport(reportFinal);
+                    reportItems.setCheckItem(checkItem);
+                    // 保存提报信息
+                    reportItemsRepository.save(reportItems);
+                });
+                // 自查项目更新完成需要更新报告状态为HALT
+                if (checkItems.size() > 0) {
+                    report.setReportStatus(ReportStatus.HALT);
+                    reportRepository.save(report);
+                }
+            }
 
         }
-        return null;
+        return report;
     }
 
     /**
@@ -188,7 +196,7 @@ public class ReportService {
                 LocalDate rectificationTiem = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
                 String measure = objects[4] == null ? "" : (String) objects[4];
                 String result = objects[5] == null ? "" : (String) objects[5];
-                Long reportItemId = ((BigInteger)objects[6]).longValue();
+                Long reportItemId = ((BigInteger) objects[6]).longValue();
                 return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
                     checkItemCreatedTime, rectificationTiem, measure, result, reportItemId);
             })

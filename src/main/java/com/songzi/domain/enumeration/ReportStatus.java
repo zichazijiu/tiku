@@ -15,5 +15,9 @@ public enum ReportStatus {
     /**
      * 挂起
      */
-    HALT
+    HALT,
+    /**
+     * 重置
+     */
+    RESET
 }
