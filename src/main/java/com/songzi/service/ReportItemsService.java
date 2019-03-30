@@ -85,7 +85,7 @@ public class ReportItemsService {
      * @param login
      * @return
      */
-    public List<Map<String, Integer>> countByUser(Optional<String> login) {
+    public List<Map<String, Integer>> countByUser(String login) {
         return reportItemsRepository.countByUser(login);
     }
 }

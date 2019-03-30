@@ -150,7 +150,7 @@ public class RemainsQuestionResource {
     @GetMapping("/remains-questions/getCountByDepartmentId/{departmentId}")
     @Timed
     @ApiOperation("问题分布统计(按组织机构)")
-    public List<Map<String, Integer>> countByDepartmentId(Long departmentId) {
+    public List<Map<String, Integer>> countByDepartmentId(@PathVariable Long departmentId) {
         log.debug("REST request to count RemainsQuestion by departmentId : {}", departmentId);
         return remainsQuestionService.countByDepartmentId(departmentId);
     }
@@ -163,22 +163,22 @@ public class RemainsQuestionResource {
     @GetMapping("/remains-questions/getCountByCheckItemId/{checkItemId}")
     @Timed
     @ApiOperation("问题分布统计(按自评项)")
-    public List<Map<String, Integer>> getCountByCheckItemId(Long checkItemId) {
+    public List<Map<String, Integer>> getCountByCheckItemId(@PathVariable Long checkItemId) {
         log.debug("REST request to count RemainsQuestion by checkItemId : {}", checkItemId);
         return remainsQuestionService.countByCheckItemId(checkItemId);
     }
 
     /**
      * Rectification analysis
-     * @param departmentId
+     * @param checkItemId
      * @return
      */
-    @GetMapping("/remains-questions/getCountRectification/{departmentId}")
+    @GetMapping("/remains-questions/getCountRectification/{checkItemId}")
     @Timed
     @ApiOperation("整改分析")
-    public List<Map<String, Integer>> getCountRectification(Long departmentId) {
-        log.debug("Request to count Rectification by departmentId : {}", departmentId);
-        return remainsQuestionService.countRectification(departmentId);
+    public List<Map<String, Integer>> getCountRectification(@PathVariable Long checkItemId) {
+        log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
+        return remainsQuestionService.countRectification(checkItemId);
     }
 
 }

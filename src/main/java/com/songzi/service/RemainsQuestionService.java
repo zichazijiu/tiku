@@ -75,7 +75,7 @@ public class RemainsQuestionService {
      * @returnC Map<String, Integer>
      */
     public List<Map<String, Integer>> countByDepartmentId(Long departmentId) {
-        log.debug("Request to count RemainsQuestion : {}", departmentId);
+        log.debug("Request to count RemainsQuestion by departmentId : {}", departmentId);
         return remainsQuestionRepository.countByDepartmentId(departmentId);
     }
 
@@ -85,18 +85,18 @@ public class RemainsQuestionService {
      * @return Map<String, Integer>
      */
     public List<Map<String, Integer>> countByCheckItemId(Long checkItemId) {
-        log.debug("Request to count RemainsQuestion : {}", checkItemId);
+        log.debug("Request to count RemainsQuestion by checkItemId : {}", checkItemId);
         return remainsQuestionRepository.countByCheckItemId(checkItemId);
     }
 
     /**
-     * 根据组织编号进行整改统计
-     * @param departmentId
+     * 根据自评项进行整改统计
+     * @param checkItemId
      * @return
      */
-    public List<Map<String, Integer>> countRectification(Long departmentId) {
-        log.debug("Request to count Rectification : {}", departmentId);
-        return remainsQuestionRepository.countRectification(departmentId);
+    public List<Map<String, Integer>> countRectification(Long checkItemId) {
+        log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
+        return remainsQuestionRepository.countRectification(checkItemId);
     }
 
 }
