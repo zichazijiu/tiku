@@ -218,6 +218,10 @@ public class UserService {
                 userDTO.getAuthorities().stream()
                     .map(authorityRepository::findOne)
                     .forEach(managedAuthorities::add);
+                // 添加部门
+                if (userDTO.getDepartment().getId() != null) {
+                    user.setDepartment(departmentRepository.findOne(userDTO.getDepartment().getId()));
+                }
                 cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
                 cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
                 log.debug("Changed Information for User: {}", user);

@@ -243,9 +243,9 @@ public class DepartmentSerivce {
             if (department == null) {
                 throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
             }
-            // 替换code后四位为____
+            // 替换code后两位为____
             int position = department.getCode().length();
-            String code = new StringBuilder(department.getCode()).replace(position - 4, position, "____").toString();
+            String code = new StringBuilder(department.getCode()).replace(position - 2, position, "____").toString();
             return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), code)
                 .stream().map(departmentMapper::toDto).collect(Collectors.toList());
         } else {
