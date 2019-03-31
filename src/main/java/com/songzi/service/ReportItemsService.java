@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Service Implementation for managing ReportItems.
@@ -86,6 +84,14 @@ public class ReportItemsService {
      * @return
      */
     public List<Map<String, Object>> countByUser(String login) {
-        return reportItemsRepository.countByUser(login);
+        List<Object[]> objects = reportItemsRepository.countByUser(login);
+        List<Map<String,Object>> result = new ArrayList<>(objects.size());
+        objects.forEach(obj->{
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("level",obj[0]);
+            map.put("total",obj[1]);
+            result.add(map);
+        });
+        return result;
     }
 }
