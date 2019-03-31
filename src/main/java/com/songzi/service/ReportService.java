@@ -114,6 +114,7 @@ public class ReportService {
             List<Report> reportList = reportRepository.findByUserId(user.getId());
             // 用户没有报告，生成一份报告
             if (reportList == null || reportList.size() < 1) {
+                report = new Report();
                 // 设置用户
                 report.setUser(user);
                 // 设置时间
@@ -197,8 +198,9 @@ public class ReportService {
                 String measure = objects[4] == null ? "" : (String) objects[4];
                 String result = objects[5] == null ? "" : (String) objects[5];
                 Long reportItemId = ((BigInteger) objects[6]).longValue();
+                Boolean isAnswer = StringUtils.isNotEmpty((String)objects[7]);
                 return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                    checkItemCreatedTime, rectificationTiem, measure, result, reportItemId);
+                    checkItemCreatedTime, rectificationTiem, measure, result, reportItemId, isAnswer);
             })
             .collect(Collectors.toList());
         return reportOverviewDTOList;
