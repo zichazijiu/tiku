@@ -128,7 +128,7 @@ public class ReportItemsResource {
     @GetMapping("/report-items/getCountByUser")
     @Timed
     @ApiOperation("整体自评结果")
-    public List<Map<String, Integer>> getCountByUserId(@RequestParam String login) {
+    public List<Map<String, Object>> getCountByUserId(@RequestParam String login) {
         log.debug("REST request to count ReportItems");
         return reportItemsService.countByUser(login);
     }

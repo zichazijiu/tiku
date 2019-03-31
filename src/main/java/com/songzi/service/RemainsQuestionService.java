@@ -74,7 +74,7 @@ public class RemainsQuestionService {
      * @param departmentId
      * @returnC Map<String, Integer>
      */
-    public List<Map<String, Integer>> countByDepartmentId(Long departmentId) {
+    public List<Map<String, Object>> countByDepartmentId(Long departmentId) {
         log.debug("Request to count RemainsQuestion by departmentId : {}", departmentId);
         return remainsQuestionRepository.countByDepartmentId(departmentId);
     }
@@ -84,7 +84,7 @@ public class RemainsQuestionService {
      * @param checkItemId
      * @return Map<String, Integer>
      */
-    public List<Map<String, Integer>> countByCheckItemId(Long checkItemId) {
+    public List<Map<String, Object>> countByCheckItemId(Long checkItemId) {
         log.debug("Request to count RemainsQuestion by checkItemId : {}", checkItemId);
         return remainsQuestionRepository.countByCheckItemId(checkItemId);
     }
@@ -94,7 +94,7 @@ public class RemainsQuestionService {
      * @param checkItemId
      * @return
      */
-    public List<Map<String, Integer>> countRectification(Long checkItemId) {
+    public List<Map<String, Object>> countRectification(Long checkItemId) {
         log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
         return remainsQuestionRepository.countRectification(checkItemId);
     }
