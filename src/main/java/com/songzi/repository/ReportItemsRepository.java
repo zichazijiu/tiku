@@ -34,7 +34,7 @@ public interface ReportItemsRepository extends JpaRepository<ReportItems, Long> 
      * @param login
      * @return
      */
-    @Query(value = "SELECT report_items.jhi_level as level, COUNT(report_items.id) as total FROM report, report_items, jhi_user WHERE report.id = report_items.report_id and report.user_id = jhi_user.id and jhi_user.login = ? GROUP BY report_items.jhi_level", nativeQuery = true)
+    @Query(value = "SELECT report_items.jhi_level as jhiLevel, COUNT(report_items.id) as total FROM report, report_items, jhi_user WHERE report.id = report_items.report_id and report.user_id = jhi_user.id and jhi_user.login = ? GROUP BY report_items.jhi_level", nativeQuery = true)
     List<Map<String, Integer>> countByUser(String login);
 
 }
