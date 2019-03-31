@@ -36,10 +36,10 @@ public class DatabaseResource {
     @GetMapping("/databasebackup")
     @Timed
     @ApiOperation(value = "备份数据库")
-    public ResponseEntity<?> backupDatabase() throws IOException, InterruptedException {
+    public ResponseEntity<String> backupDatabase() throws IOException, InterruptedException {
         log.debug("备份数据库");
-        Map map = databaseService.doDatabaseBackup();
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(map));
+        String result = databaseService.doDatabaseBackup();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
 }
