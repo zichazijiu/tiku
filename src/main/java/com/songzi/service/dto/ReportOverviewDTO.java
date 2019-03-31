@@ -2,6 +2,7 @@ package com.songzi.service.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 
 import java.time.LocalDate;
 
@@ -38,7 +39,12 @@ public class ReportOverviewDTO {
     @ApiModelProperty("报告条目ID")
     private Long reportItemId;
 
-    public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent, LocalDate checkItemCreatedTime, LocalDate rectificationTime, String measure, String result, Long reportItemId) {
+    @ApiModelProperty("是否回答问题")
+    private Boolean isAnswer;
+
+    public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
+                             LocalDate checkItemCreatedTime, LocalDate rectificationTime,
+                             String measure, String result, Long reportItemId, Boolean isAnswer) {
         this.reportCreatedTime = reportCreatedTime;
         this.reportUsername = reportUsername;
         this.reportId = reportId;
@@ -48,6 +54,7 @@ public class ReportOverviewDTO {
         this.measure = measure;
         this.result =result;
         this.reportItemId = reportItemId;
+        this.isAnswer = isAnswer;
     }
 
     public Long getReportId() {
@@ -120,5 +127,13 @@ public class ReportOverviewDTO {
 
     public void setReportItemId(Long reportItemId) {
         this.reportItemId = reportItemId;
+    }
+
+    public Boolean getIsAnswer() {
+        return isAnswer;
+    }
+
+    public void setIsAnswer(Boolean isAnswer) {
+        isAnswer = isAnswer;
     }
 }

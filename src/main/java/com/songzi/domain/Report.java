@@ -35,7 +35,7 @@ public class Report implements Serializable {
     @Column(name = "report_status", nullable = false)
     private ReportStatus reportStatus;
 
-    @Column(name = "jhi_level")
+    @Column(name = "level")
     private String level;
 
     @ManyToOne(optional = false)
