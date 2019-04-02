@@ -10,6 +10,7 @@ import com.songzi.repository.ReportRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.vm.ReportDetailVM;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,9 +156,10 @@ public class ReportService {
      * @param reportItemsList
      * @return
      */
-    public Report updateReportItems(Long reportId, List<ReportItems> reportItemsList) {
+    public Report updateReportItems(Long reportId, String level, List<ReportItems> reportItemsList) {
         // 获取报告
         Report report = reportRepository.findOne(reportId);
+        report.setLevel(level);
         if (report != null && reportItemsList != null && reportItemsList.size() > 0) {
             // 更新报告详情
             reportItemsList.forEach(reportItems -> {
@@ -334,5 +336,19 @@ public class ReportService {
                 throw new BadRequestAlertException("请注意您的下级部门在考评项目[" + checkItem.getContent() + "]有评分C，您选择了评分" + level, this.getClass().getName(), "下级有C考评项目");
             }
         }
+    }
+
+    /**
+     * 获取部门详情
+     *
+     * @param reportId
+     * @return
+     */
+    public ReportDetailVM getReportDetail(Long reportId) {
+        Report report = reportRepository.findOne(reportId);
+        if (report == null)
+            throw new BadRequestAlertException("报告" + reportId + "不存在", this.getClass().getName(), "报告不存在");
+        List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+        return new ReportDetailVM(report, reportItemsList);
     }
 }

@@ -9,6 +9,7 @@ import com.songzi.service.ReportService;
 import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
+import com.songzi.web.rest.vm.ReportDetailVM;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -170,9 +171,9 @@ public class ReportResource {
      */
     @GetMapping("/reports/report-items")
     @ApiOperation("获取提报的详情信息")
-    public List<ReportItems> getReportItemsByReport(@RequestParam Long reportId) {
+    public ReportDetailVM getReportItemsByReport(@RequestParam Long reportId) {
         log.debug("获取报告{}详情", reportId);
-        return reportItemsService.findAllByReport(reportService.findOne(reportId));
+        return reportService.getReportDetail(reportId);
     }
 
     /**
@@ -185,15 +186,15 @@ public class ReportResource {
     @PutMapping("/reports/submit")
     @Timed
     @ApiOperation("提交报告")
-    public ResponseEntity<Report> updateReportDetail(@RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
+    public ResponseEntity<Report> updateReportDetail(@RequestParam Long reportId, @RequestParam String level, @RequestBody List<ReportItems> reportItemsList) {
         log.debug("更新报告{}的详情", reportId);
-        Report report = reportService.updateReportItems(reportId, reportItemsList);
+        Report report = reportService.updateReportItems(reportId, level, reportItemsList);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
     }
 
     @PutMapping("/reports/submit-check")
     @Timed
-    @ApiOperation("提报项目检查")
+    @ApiOperation("提报项目整体检查")
     public ResponseEntity<Void> reportSubmitCheck(@RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
         log.debug("检查{}报告", reportId);
         reportService.checkReport(reportId, reportItemsList);
@@ -202,7 +203,7 @@ public class ReportResource {
 
     @GetMapping("/reports/check")
     @Timed
-    @ApiOperation("提报项目检查")
+    @ApiOperation("提报项目单项检查")
     public ResponseEntity<Void> reportCheck(@RequestParam String login, @RequestParam Long checkItemId, @RequestParam String level) {
         reportService.checkReport(login, checkItemId, level);
         return ResponseEntity.ok().build();
