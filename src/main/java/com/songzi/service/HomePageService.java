@@ -130,7 +130,7 @@ public class HomePageService {
                 // 提报时间
                 result.setCreatedDate(report.getCreatedTime().toLocalDate().toString());
                 // 总的考评结果
-                result.setCheckResult(report.getLevel());
+                result.setCheckResult(report.getLevel() == null ? "" : report.getLevel());
                 List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
                 // 自查项目
                 List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());

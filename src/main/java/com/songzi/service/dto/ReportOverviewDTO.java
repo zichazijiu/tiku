@@ -42,6 +42,9 @@ public class ReportOverviewDTO {
     @ApiModelProperty("是否回答问题")
     private Boolean isAnswer;
 
+    @ApiModelProperty("大项ID")
+    private Long checkMainItemId;
+
     public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
                              LocalDate checkItemCreatedTime, LocalDate rectificationTime,
                              String measure, String result, Long reportItemId, Boolean isAnswer) {
@@ -55,6 +58,22 @@ public class ReportOverviewDTO {
         this.result =result;
         this.reportItemId = reportItemId;
         this.isAnswer = isAnswer;
+    }
+
+    public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
+                             LocalDate checkItemCreatedTime, LocalDate rectificationTime,
+                             String measure, String result, Long reportItemId, Boolean isAnswer, Long checkMainItemId) {
+        this.reportCreatedTime = reportCreatedTime;
+        this.reportUsername = reportUsername;
+        this.reportId = reportId;
+        this.checkItemContent = checkItemContent;
+        this.checkItemCreatedTime = checkItemCreatedTime;
+        this.rectificationTime = rectificationTime;
+        this.measure = measure;
+        this.result =result;
+        this.reportItemId = reportItemId;
+        this.isAnswer = isAnswer;
+        this.checkMainItemId= checkMainItemId;
     }
 
     public Long getReportId() {
@@ -135,5 +154,13 @@ public class ReportOverviewDTO {
 
     public void setIsAnswer(Boolean isAnswer) {
         isAnswer = isAnswer;
+    }
+
+    public Long getCheckMainItemId() {
+        return checkMainItemId;
+    }
+
+    public void setCheckMainItemId(Long checkMainItemId) {
+        this.checkMainItemId = checkMainItemId;
     }
 }

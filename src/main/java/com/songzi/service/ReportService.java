@@ -21,10 +21,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -194,16 +191,50 @@ public class ReportService {
                 Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
                 String checkItemContent = objects[1] == null ? "" : (String) objects[1];
                 LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
-                LocalDate rectificationTiem = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
+                LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
                 String measure = objects[4] == null ? "" : (String) objects[4];
                 String result = objects[5] == null ? "" : (String) objects[5];
                 Long reportItemId = ((BigInteger) objects[6]).longValue();
-                Boolean isAnswer = StringUtils.isNotEmpty((String)objects[7]);
+                Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
                 return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                    checkItemCreatedTime, rectificationTiem, measure, result, reportItemId, isAnswer);
+                    checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer);
             })
             .collect(Collectors.toList());
         return reportOverviewDTOList;
+    }
+
+    /**
+     * 获取用户的主要信息只查询大项
+     *
+     * @param login
+     * @return
+     */
+    public List<ReportOverviewDTO> getUserReportOverview4MainCheckItem(String login) {
+        Report report = getUserReport(login);
+        List<Object[]> objectList = reportRepository.findAllReportOverview4MainCheckItem(report.getId());
+        List<ReportOverviewDTO> reportOverviewDTOList = objectList
+            .stream()
+            .map(objects -> {
+                LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
+                String reportUsername = report.getUser().getFirstName();
+                Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
+                String checkItemContent = objects[1] == null ? "" : (String) objects[1];
+                LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
+                LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
+                String measure = objects[4] == null ? "" : (String) objects[4];
+                String result = objects[5] == null ? "" : (String) objects[5];
+                Long reportItemId = ((BigInteger) objects[6]).longValue();
+                Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
+                Long checkMainItemId = ((BigInteger) objects[8]).longValue();
+                return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
+                    checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
+            }).collect(Collectors.toList());
+        // 过滤掉重复的大项目
+        Set<ReportOverviewDTO> reportOverviewDTOSet = reportOverviewDTOList
+            .stream()
+            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(ReportOverviewDTO::getCheckMainItemId))));
+
+        return reportOverviewDTOSet.stream().collect(Collectors.toList());
     }
 
     /**

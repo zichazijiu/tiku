@@ -3,6 +3,7 @@ package com.songzi.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Report;
 import com.songzi.domain.ReportItems;
+import com.songzi.domain.enumeration.CheckItemType;
 import com.songzi.service.ReportItemsService;
 import com.songzi.service.ReportService;
 import com.songzi.service.dto.ReportOverviewDTO;
@@ -150,9 +151,14 @@ public class ReportResource {
     @GetMapping("/reports/overview/users")
     @Timed
     @ApiOperation("获取用户的提报概览信息")
-    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam String login) {
+    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam String login, @RequestParam CheckItemType checkItemType) {
         log.debug("获取用户的提报信息：{}", login);
-        List<ReportOverviewDTO> report = reportService.getUserReportOverview(login);
+        List<ReportOverviewDTO> report;
+        if (checkItemType == CheckItemType.SUB) {
+            report = reportService.getUserReportOverview(login);
+        } else {
+            report = reportService.getUserReportOverview4MainCheckItem(login);
+        }
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
     }
 
