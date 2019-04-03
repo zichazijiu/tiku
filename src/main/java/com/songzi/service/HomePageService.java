@@ -138,7 +138,7 @@ public class HomePageService {
                 List<Rectification> rectificationList = new ArrayList<>(16);
                 reportItemsList.forEach(item -> {
                     rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-                    checkDescriptionList.add(item.getCheckItem().getContent() + " " + item.getLevel());
+                    checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + item.getLevel() == null ? "" : item.getLevel());
                 });
 
                 // 更改
