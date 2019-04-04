@@ -138,7 +138,7 @@ public class HomePageService {
                 List<Rectification> rectificationList = new ArrayList<>(16);
                 reportItemsList.forEach(item -> {
                     rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-                    String level = item.getLevel()==null?"":item.getLevel();
+                    String level = item.getLevel() == null ? "" : item.getLevel();
                     checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
                 });
 
@@ -160,7 +160,7 @@ public class HomePageService {
                     // 提报时间
                     result.setCreatedDate(report.getCreatedTime().toLocalDate().toString());
                     // 总的考评结果
-                    result.setCheckResult(report.getLevel());
+                    result.setCheckResult(report.getLevel() == null ? "" : report.getLevel());
                     List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
                     // 自查项目
                     List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
@@ -168,7 +168,8 @@ public class HomePageService {
                     List<Rectification> rectificationList = new ArrayList<>(16);
                     reportItemsList.forEach(item -> {
                         rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-                        checkDescriptionList.add(item.getCheckItem().getContent() + " " + item.getLevel());
+                        String level = item.getLevel() == null ? "" : item.getLevel();
+                        checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
                     });
 
                     // 更改
