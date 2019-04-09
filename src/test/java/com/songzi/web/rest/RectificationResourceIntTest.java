@@ -102,7 +102,7 @@ public class RectificationResourceIntTest {
         RemainsQuestion remainsQuestion = RemainsQuestionResourceIntTest.createEntity(em);
         em.persist(remainsQuestion);
         em.flush();
-        rectification.setRemainsQuestion(remainsQuestion);
+        //rectification.setRemainsQuestion(remainsQuestion);
         return rectification;
     }
 

@@ -86,7 +86,8 @@ public class ReportItemsResourceIntTest {
         ReportItems reportItems = new ReportItems()
             .level(DEFAULT_LEVEL);
         // Add required entity
-        Report report = ReportResourceIntTest.createEntity(em);
+        //Report report = ReportResourceIntTest.createEntity(em);
+        Report report = new Report();
         em.persist(report);
         em.flush();
         reportItems.setReport(report);

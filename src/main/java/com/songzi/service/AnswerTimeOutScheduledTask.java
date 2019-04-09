@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.reflect.TypeToken;
 import com.songzi.domain.Examine;
 import com.songzi.domain.Examiner;
-import com.songzi.domain.Subject;
 import com.songzi.domain.enumeration.ExamineStatus;
 import com.songzi.repository.ExamineRepository;
 import com.songzi.repository.ExaminerRepository;
@@ -13,20 +12,13 @@ import com.songzi.util.SpringContextUtils;
 import com.songzi.web.rest.vm.QuestionVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class AnswerTimeOutScheduledTask implements Runnable {
 

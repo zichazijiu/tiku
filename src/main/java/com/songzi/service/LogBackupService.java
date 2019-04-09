@@ -66,7 +66,7 @@ public class LogBackupService {
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable).map(logBackupMapper :: toDto);
+        },pageable).map(logBackupMapper::toDto);
     }
 
     public Page<LogBackupDTO> getAllIEmportBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {

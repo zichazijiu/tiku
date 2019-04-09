@@ -16,7 +16,6 @@ import com.songzi.service.mapper.ExamineVMMapper;
 import com.songzi.service.mapper.ProjectMapper;
 import com.songzi.util.JSONUtils;
 import com.songzi.web.rest.errors.BadRequestAlertException;
-import com.songzi.web.rest.errors.ErrorConstants;
 import com.songzi.web.rest.vm.ExamineVM;
 import com.songzi.web.rest.vm.QuestionVM;
 import org.slf4j.Logger;

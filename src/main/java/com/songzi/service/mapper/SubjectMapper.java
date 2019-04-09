@@ -1,8 +1,6 @@
 package com.songzi.service.mapper;
 
-import com.songzi.domain.Project;
 import com.songzi.domain.Subject;
-import com.songzi.service.dto.ProjectDTO;
 import com.songzi.service.dto.SubjectDTO;
 import org.mapstruct.Mapper;
 
