@@ -198,7 +198,7 @@ public class UserResource {
 
     @DeleteMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({AuthoritiesConstants.ADMIN,AuthoritiesConstants.BU_ADMIN,AuthoritiesConstants.TING_ADMIN,AuthoritiesConstants.CHU_ADMIN,AuthoritiesConstants.JU_ADMIN})
     @ApiOperation("删除用户")
     public ResponseEntity<Void> deleteUser(@RequestParam Long id) {
         log.debug("REST request to delete User: {}", id);
