@@ -113,8 +113,9 @@ public class HomePageService {
      */
     public CheckItemOverviewDTO getReportOverview(Long departmentId) {
         Department department = departmentRepository.findOne(departmentId);
-        if (department == null)
+        if (department == null) {
             throw new BadRequestAlertException("部门不存在", this.getClass().getName(), "部门不存在");
+        }
         // 根据部门展现报告
         CheckItemOverviewDTO result = new CheckItemOverviewDTO();
         // 部门名称
@@ -132,20 +133,21 @@ public class HomePageService {
                 // 总的考评结果
                 result.setCheckResult(report.getLevel() == null ? "" : report.getLevel());
                 List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+                result.setReportItemsList(reportItemsList);
                 // 自查项目
-                List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+//                List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
                 // 整改结果
-                List<Rectification> rectificationList = new ArrayList<>(16);
-                reportItemsList.forEach(item -> {
-                    rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-                    String level = item.getLevel() == null ? "" : item.getLevel();
-                    checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
-                });
+//                List<Rectification> rectificationList = new ArrayList<>(16);
+//                reportItemsList.forEach(item -> {
+//                    rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+//                    String level = item.getLevel() == null ? "" : item.getLevel();
+//                    checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
+//                });
 
                 // 更改
-                result.setRectificationList(rectificationList);
+//                result.setRectificationList(rectificationList);
                 // 整改信息
-                result.setCheckDescription(checkDescriptionList);
+//                result.setCheckDescription(checkDescriptionList);
             }
         } else {
             // 根据部门查出用户
@@ -162,20 +164,21 @@ public class HomePageService {
                     // 总的考评结果
                     result.setCheckResult(report.getLevel() == null ? "" : report.getLevel());
                     List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+                    result.setReportItemsList(reportItemsList);
                     // 自查项目
-                    List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+//                    List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
                     // 整改结果
-                    List<Rectification> rectificationList = new ArrayList<>(16);
-                    reportItemsList.forEach(item -> {
-                        rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-                        String level = item.getLevel() == null ? "" : item.getLevel();
-                        checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
-                    });
+//                    List<Rectification> rectificationList = new ArrayList<>(16);
+//                    reportItemsList.forEach(item -> {
+//                        rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+//                        String level = item.getLevel() == null ? "" : item.getLevel();
+//                        checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
+//                    });
 
                     // 更改
-                    result.setRectificationList(rectificationList);
+//                    result.setRectificationList(rectificationList);
                     // 整改信息
-                    result.setCheckDescription(checkDescriptionList);
+//                    result.setCheckDescription(checkDescriptionList);
                 }
             }
         }

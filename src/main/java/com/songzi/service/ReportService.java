@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.AccountExpiredException;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -212,31 +213,54 @@ public class ReportService {
      * @return
      */
     public List<ReportOverviewDTO> getUserReportOverview4MainCheckItem(String login) {
+        // 获取用户的报告
         Report report = getUserReport(login);
+        // 查找报告关联的自查项目信息
         List<Object[]> objectList = reportRepository.findAllReportOverview4MainCheckItem(report.getId());
-        List<ReportOverviewDTO> reportOverviewDTOList = objectList
-            .stream()
-            .map(objects -> {
-                LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
-                String reportUsername = report.getUser().getFirstName();
-                Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
+        // map过滤器
+        Map<Long, ReportOverviewDTO> mapFilter = new HashMap<>();
+        List<ReportOverviewDTO> reportOverviewDTOList = new ArrayList<>();
+        objectList.forEach
+            (objects -> {
                 String checkItemContent = objects[1] == null ? "" : (String) objects[1];
-                LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
-                LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
-                String measure = objects[4] == null ? "" : (String) objects[4];
-                String result = objects[5] == null ? "" : (String) objects[5];
-                Long reportItemId = ((BigInteger) objects[6]).longValue();
-                Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
-                Long checkMainItemId = ((BigInteger) objects[8]).longValue();
-                return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                    checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
-            }).collect(Collectors.toList());
-        // 过滤掉重复的大项目
-        Set<ReportOverviewDTO> reportOverviewDTOSet = reportOverviewDTOList
-            .stream()
-            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(ReportOverviewDTO::getCheckMainItemId))));
+                if (StringUtils.isNotEmpty(checkItemContent)) {
 
-        return reportOverviewDTOSet.stream().collect(Collectors.toList());
+                    LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
+                    String reportUsername = report.getUser().getFirstName();
+                    Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
+                    LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
+                    LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
+                    String measure = objects[4] == null ? "" : (String) objects[4];
+                    String result = objects[5] == null ? "" : (String) objects[5];
+                    Long reportItemId = ((BigInteger) objects[6]).longValue();
+                    Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
+                    Long checkMainItemId = ((BigInteger) objects[8]).longValue();
+
+                    // 1. 检查是否有已经保存的对象
+                    ReportOverviewDTO old = mapFilter.get(checkMainItemId);
+                    // 没有对象，保存新对象
+                    if (old == null) {
+                        ReportOverviewDTO item = new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
+                            checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
+
+                        mapFilter.put(item.getCheckMainItemId(), item);
+                    } else {
+                        // 有旧对象，则要和新对象对比：保留有整改时间且整改是最新的对象
+                        if (rectificationTime != null) {
+                            // 新的有整改时间，对比新旧对象的整改时间的大小
+                            if (old.getRectificationTime() == null || old.getRectificationTime().isBefore(rectificationTime)) {
+                                ReportOverviewDTO item = new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
+                                    checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
+
+                                mapFilter.put(item.getCheckMainItemId(), item);
+                            }
+                        }
+                    }
+
+                }
+            });
+
+        return mapFilter.values().stream().collect(Collectors.toList());
     }
 
     /**

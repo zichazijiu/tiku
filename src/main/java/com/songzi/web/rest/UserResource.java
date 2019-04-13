@@ -95,7 +95,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({AuthoritiesConstants.ADMIN,AuthoritiesConstants.BU_ADMIN,AuthoritiesConstants.TING_ADMIN,AuthoritiesConstants.CHU_ADMIN,AuthoritiesConstants.JU_ADMIN})
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
 

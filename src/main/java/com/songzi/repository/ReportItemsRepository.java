@@ -17,7 +17,11 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Repository
 public interface ReportItemsRepository extends JpaRepository<ReportItems, Long> {
-
+    /**
+     * 根据报告查询所有信息
+     * @param report
+     * @return
+     */
     List<ReportItems> findAllByReport(Report report);
 
     /**
