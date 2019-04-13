@@ -125,7 +125,7 @@ public class HomePageService {
             List<Report> reports = reportRepository.findByUserIsCurrentUser();
             if (reports != null && reports.size() > 0) {
                 Report report = reports.get(0);
-                User user = userRepository.findOne(report.getId());
+                User user = userRepository.findOne(report.getUser().getId());
                 // 提报人
                 result.setCreatedUser(user.getLastName() + user.getFirstName());
                 // 提报时间

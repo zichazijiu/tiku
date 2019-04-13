@@ -363,16 +363,23 @@ public class ReportService {
     }
 
     /**
-     * 获取部门详情
+     * 获取报告详情
      *
      * @param reportId
+     * @param checkMainItemId
      * @return
      */
-    public ReportDetailVM getReportDetail(Long reportId) {
+    public ReportDetailVM getReportDetail(Long reportId, Long checkMainItemId) {
         Report report = reportRepository.findOne(reportId);
-        if (report == null)
+        if (report == null) {
             throw new BadRequestAlertException("报告" + reportId + "不存在", this.getClass().getName(), "报告不存在");
-        List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+        }
+        List<ReportItems> reportItemsList;
+        if (checkMainItemId != null) {
+            reportItemsList = reportItemsRepository.findAllByReportAndCheckItemParentId(report, checkMainItemId);
+        } else {
+            reportItemsList = reportItemsRepository.findAllByReport(report);
+        }
         return new ReportDetailVM(report, reportItemsList);
     }
 }

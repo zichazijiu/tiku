@@ -41,4 +41,12 @@ public interface ReportItemsRepository extends JpaRepository<ReportItems, Long> 
     @Query(value = "SELECT report_items.jhi_level as level, COUNT(report_items.id) as total FROM report, report_items, jhi_user WHERE report.id = report_items.report_id and report.user_id = jhi_user.id and jhi_user.login = ? GROUP BY report_items.jhi_level", nativeQuery = true)
     List<Object[]> countByUser(String login);
 
+    /**
+     * 根据报告查列表
+     * @param report
+     * @param checkItemParentId
+     * @return
+     */
+    List<ReportItems> findAllByReportAndCheckItemParentId(Report report, Long checkItemParentId);
+
 }

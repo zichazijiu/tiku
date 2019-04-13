@@ -23,4 +23,12 @@ public interface CheckItemRepository extends JpaRepository<CheckItem, Long> {
      * @return
      */
     List<CheckItem> findAllByDelFlagIsAndItemTypeIs(DeleteFlag deleteFlag, CheckItemType checkItemType);
+
+    /**
+     * 根据删除状态和父亲ID查列表
+     * @param deleteFlag
+     * @param parentId
+     * @return
+     */
+    List<CheckItem> findAllByDelFlagAndParentId(DeleteFlag deleteFlag, Long parentId);
 }
