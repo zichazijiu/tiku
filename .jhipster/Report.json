@@ -30,7 +30,7 @@
         {
             "fieldName": "reportStatus",
             "fieldType": "ReportStatus",
-            "fieldValues": "FINISH,HALT",
+            "fieldValues": "FINISH,HALT,NEW,RESET",
             "fieldValidateRules": [
                 "required"
             ]
