@@ -1,0 +1,10 @@
+{
+    "tikuApp": {
+        "ReleaseStatus" : {
+            "null": "",
+            "TEST": "TEST",
+            "RELEASE": "RELEASE",
+            "CLOSE": "CLOSE"
+        }
+    }
+}

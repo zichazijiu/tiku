@@ -22,6 +22,7 @@
                 "rectification": "Rectification",
                 "report": "Report",
                 "reportItems": "Report Items",
+                "release": "Release",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

@@ -1,0 +1,25 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "checkItemIds",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "releaseUser",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "releaseStatus",
+            "fieldType": "ReleaseStatus",
+            "fieldValues": "TEST,RELEASE,CLOSE"
+        }
+    ],
+    "changelogDate": "20190414061759",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "check_item_release",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

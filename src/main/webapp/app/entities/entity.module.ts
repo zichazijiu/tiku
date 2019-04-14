@@ -14,6 +14,7 @@ import { TikuRemainsQuestionModule } from './remains-question/remains-question.m
 import { TikuReportModule } from './report/report.module';
 import { TikuReportItemsModule } from './report-items/report-items.module';
 import { TikuRectificationModule } from './rectification/rectification.module';
+import { TikuReleaseModule } from './release/release.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -32,6 +33,7 @@ import { TikuRectificationModule } from './rectification/rectification.module';
     TikuReportItemsModule,
     TikuRemainsQuestionModule,
     TikuRectificationModule,
+    TikuReleaseModule,
     /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
   ],
   declarations: [],
