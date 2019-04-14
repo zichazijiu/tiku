@@ -35,15 +35,17 @@ public class Report implements Serializable {
     @Column(name = "report_status", nullable = false)
     private ReportStatus reportStatus;
 
-    @Column(name = "level")
+    @Column(name = "jhi_level")
     private String level;
+
+    @Column(name = "check_items_release_id")
+    private Long checkItemsReleaseId;
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "report", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "report")
     @JsonIgnore
     private Set<ReportItems> reportItems = new HashSet<>();
 
@@ -93,6 +95,19 @@ public class Report implements Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public Long getCheckItemsReleaseId() {
+        return checkItemsReleaseId;
+    }
+
+    public Report checkItemsReleaseId(Long checkItemsReleaseId) {
+        this.checkItemsReleaseId = checkItemsReleaseId;
+        return this;
+    }
+
+    public void setCheckItemsReleaseId(Long checkItemsReleaseId) {
+        this.checkItemsReleaseId = checkItemsReleaseId;
     }
 
     public User getUser() {
@@ -161,6 +176,7 @@ public class Report implements Serializable {
             ", createdTime='" + getCreatedTime() + "'" +
             ", reportStatus='" + getReportStatus() + "'" +
             ", level='" + getLevel() + "'" +
+            ", checkItemsReleaseId=" + getCheckItemsReleaseId() +
             "}";
     }
 }

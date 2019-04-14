@@ -19,6 +19,8 @@
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="tikuApp.report.createdTime">Created Time</span></th>
             <th><span jhiTranslate="tikuApp.report.reportStatus">Report Status</span></th>
+            <th><span jhiTranslate="tikuApp.report.level">Level</span></th>
+            <th><span jhiTranslate="tikuApp.report.checkItemsReleaseId">Check Items Release Id</span></th>
             <th><span jhiTranslate="tikuApp.report.user">User</span></th>
             <th></th>
             </tr>
@@ -28,6 +30,8 @@
                 <td><a [routerLink]="['../report', report.id ]">{{report.id}}</a></td>
                 <td>{{report.createdTime | date:'medium'}}</td>
                 <td jhiTranslate="{{'tikuApp.ReportStatus.' + report.reportStatus}}">{{report.reportStatus}}</td>
+                <td>{{report.level}}</td>
+                <td>{{report.checkItemsReleaseId}}</td>
                 <td>
                     {{report.user?.login}}
                 </td>

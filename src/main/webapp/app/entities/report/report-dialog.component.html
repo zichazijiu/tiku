@@ -42,6 +42,16 @@
                 </small>
             </div>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.report.level" for="field_level">Level</label>
+            <input type="text" class="form-control" name="level" id="field_level"
+                [(ngModel)]="report.level" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.report.checkItemsReleaseId" for="field_checkItemsReleaseId">Check Items Release Id</label>
+            <input type="number" class="form-control" name="checkItemsReleaseId" id="field_checkItemsReleaseId"
+                [(ngModel)]="report.checkItemsReleaseId" />
+        </div>
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="tikuApp.report.user" for="field_user">User</label>

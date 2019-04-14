@@ -1,8 +1,6 @@
 package com.songzi.repository;
 
 import com.songzi.domain.Report;
-import com.songzi.service.dto.ReportOverviewDTO;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;

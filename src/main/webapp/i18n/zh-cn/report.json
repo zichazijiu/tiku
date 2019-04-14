@@ -18,6 +18,8 @@
             },
             "createdTime": "Created Time",
             "reportStatus": "Report Status",
+            "level": "Level",
+            "checkItemsReleaseId": "Check Items Release Id",
             "user": "User",
             "reportItems": "Report Items"
         }

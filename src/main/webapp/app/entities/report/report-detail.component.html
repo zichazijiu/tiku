@@ -12,6 +12,14 @@
         <dd>
             <span jhiTranslate="{{'tikuApp.ReportStatus.' + report.reportStatus}}">{{report.reportStatus}}</span>
         </dd>
+        <dt><span jhiTranslate="tikuApp.report.level">Level</span></dt>
+        <dd>
+            <span>{{report.level}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.report.checkItemsReleaseId">Check Items Release Id</span></dt>
+        <dd>
+            <span>{{report.checkItemsReleaseId}}</span>
+        </dd>
         <dt><span jhiTranslate="tikuApp.report.user">User</span></dt>
         <dd>
             {{report.user?.login}}

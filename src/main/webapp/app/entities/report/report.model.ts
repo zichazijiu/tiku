@@ -10,6 +10,8 @@ export class Report implements BaseEntity {
         public id?: number,
         public createdTime?: any,
         public reportStatus?: ReportStatus,
+        public level?: string,
+        public checkItemsReleaseId?: number,
         public user?: User,
         public reportItems?: BaseEntity[],
     ) {
