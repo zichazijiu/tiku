@@ -1,9 +1,12 @@
 package com.songzi.service;
 
 import com.songzi.domain.Release;
+import com.songzi.domain.ReleaseHistory;
+import com.songzi.repository.ReleaseHistoryRepository;
 import com.songzi.repository.ReleaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,9 @@ import java.util.List;
 public class ReleaseService {
 
     private final Logger log = LoggerFactory.getLogger(ReleaseService.class);
+
+    @Autowired
+    private ReleaseHistoryRepository releaseHistoryRepository;
 
     private final ReleaseRepository releaseRepository;
 
@@ -32,6 +38,12 @@ public class ReleaseService {
      */
     public Release save(Release release) {
         log.debug("Request to save Release : {}", release);
+        if (release.getId() != null) {
+            // 发布历史增加一条记录
+            ReleaseHistory releaseHistory = new ReleaseHistory();
+            releaseHistory.setReleaseId(release.getId());
+            releaseHistoryRepository.save(releaseHistory);
+        }
         return releaseRepository.save(release);
     }
 

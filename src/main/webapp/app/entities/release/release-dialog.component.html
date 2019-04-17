@@ -30,6 +30,16 @@
                 <option value="CLOSE">{{'tikuApp.ReleaseStatus.CLOSE' | translate}}</option>
             </select>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.release.releaseName" for="field_releaseName">Release Name</label>
+            <input type="text" class="form-control" name="releaseName" id="field_releaseName"
+                [(ngModel)]="release.releaseName" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.release.releaseDescription" for="field_releaseDescription">Release Description</label>
+            <input type="text" class="form-control" name="releaseDescription" id="field_releaseDescription"
+                [(ngModel)]="release.releaseDescription" />
+        </div>
 
     </div>
     <div class="modal-footer">

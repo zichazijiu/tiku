@@ -1,10 +1,10 @@
 <div>
     <h2>
-        <span jhiTranslate="tikuApp.release.home.title">Releases</span>
-        <button class="btn btn-primary float-right jh-create-entity create-release" [routerLink]="['/', { outlets: { popup: ['release-new'] } }]">
+        <span jhiTranslate="tikuApp.releaseHistory.home.title">Release Histories</span>
+        <button class="btn btn-primary float-right jh-create-entity create-release-history" [routerLink]="['/', { outlets: { popup: ['release-history-new'] } }]">
             <span class="fa fa-plus"></span>
-            <span  jhiTranslate="tikuApp.release.home.createLabel">
-            Create new Release
+            <span  jhiTranslate="tikuApp.releaseHistory.home.createLabel">
+            Create new Release History
             </span>
         </button>
     </h2>
@@ -12,37 +12,29 @@
     <div class="row">
     </div>
     <br/>
-    <div class="table-responsive" *ngIf="releases">
+    <div class="table-responsive" *ngIf="releaseHistories">
         <table class="table table-striped">
             <thead>
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="tikuApp.release.checkItemIds">Check Item Ids</span></th>
-            <th><span jhiTranslate="tikuApp.release.releaseUser">Release User</span></th>
-            <th><span jhiTranslate="tikuApp.release.releaseStatus">Release Status</span></th>
-            <th><span jhiTranslate="tikuApp.release.releaseName">Release Name</span></th>
-            <th><span jhiTranslate="tikuApp.release.releaseDescription">Release Description</span></th>
+            <th><span jhiTranslate="tikuApp.releaseHistory.releaseId">Release Id</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let release of releases ;trackBy: trackId">
-                <td><a [routerLink]="['../release', release.id ]">{{release.id}}</a></td>
-                <td>{{release.checkItemIds}}</td>
-                <td>{{release.releaseUser}}</td>
-                <td jhiTranslate="{{'tikuApp.ReleaseStatus.' + release.releaseStatus}}">{{release.releaseStatus}}</td>
-                <td>{{release.releaseName}}</td>
-                <td>{{release.releaseDescription}}</td>
+            <tr *ngFor="let releaseHistory of releaseHistories ;trackBy: trackId">
+                <td><a [routerLink]="['../release-history', releaseHistory.id ]">{{releaseHistory.id}}</a></td>
+                <td>{{releaseHistory.releaseId}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../release', release.id ]"
+                                [routerLink]="['../release-history', releaseHistory.id ]"
                                 class="btn btn-info btn-sm">
                             <span class="fa fa-eye"></span>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'release/'+ release.id + '/edit'} }]"
+                                [routerLink]="['/', { outlets: { popup: 'release-history/'+ releaseHistory.id + '/edit'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-primary btn-sm">
@@ -50,7 +42,7 @@
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'release/'+ release.id + '/delete'} }]"
+                                [routerLink]="['/', { outlets: { popup: 'release-history/'+ releaseHistory.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">

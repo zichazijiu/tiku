@@ -12,6 +12,8 @@ export class Release implements BaseEntity {
         public checkItemIds?: string,
         public releaseUser?: string,
         public releaseStatus?: ReleaseStatus,
+        public releaseName?: string,
+        public releaseDescription?: string,
     ) {
     }
 }

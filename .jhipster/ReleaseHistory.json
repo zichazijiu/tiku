@@ -1,0 +1,16 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "releaseId",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20190416134535",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "check_item_release_history",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

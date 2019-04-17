@@ -137,10 +137,10 @@ public class ReportResource {
     @GetMapping("/reports/users")
     @Timed
     @ApiOperation("获取用户的提报信息")
-    public ResponseEntity<Report> gerUserReport(@RequestParam String login) {
+    public ResponseEntity<List<Report>> gerUserReport(@RequestParam String login) {
         log.debug("获取用户的提报信息：{}", login);
-        Report report = reportService.getUserReport(login);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
+        List<Report> reports = reportService.getUserReport(login);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reports));
     }
 
     /**
@@ -173,7 +173,7 @@ public class ReportResource {
     @ApiOperation("获取提报的详情信息")
     public ReportDetailVM getReportItemsByReport(@RequestParam Long reportId, @RequestParam(required = false) Long CheckMainItemId) {
         log.debug("获取报告{}详情", reportId);
-        return reportService.getReportDetail(reportId,CheckMainItemId);
+        return reportService.getReportDetail(reportId, CheckMainItemId);
     }
 
     /**

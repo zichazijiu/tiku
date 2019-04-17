@@ -18,7 +18,9 @@
             },
             "checkItemIds": "Check Item Ids",
             "releaseUser": "Release User",
-            "releaseStatus": "Release Status"
+            "releaseStatus": "Release Status",
+            "releaseName": "Release Name",
+            "releaseDescription": "Release Description"
         }
     }
 }

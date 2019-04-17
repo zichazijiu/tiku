@@ -23,6 +23,7 @@
                 "report": "Report",
                 "reportItems": "Report Items",
                 "release": "Release",
+                "releaseHistory": "Release History",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

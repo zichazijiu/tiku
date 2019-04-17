@@ -24,9 +24,18 @@ public class Release extends AbstractAuditingEntity implements Serializable {
     @Column(name = "check_item_ids")
     private String checkItemIds;
 
+    @Column(name = "release_user")
+    private String releaseUser;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "release_status")
     private ReleaseStatus releaseStatus;
+
+    @Column(name = "release_name")
+    private String releaseName;
+
+    @Column(name = "release_description")
+    private String releaseDescription;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -50,6 +59,19 @@ public class Release extends AbstractAuditingEntity implements Serializable {
         this.checkItemIds = checkItemIds;
     }
 
+    public String getReleaseUser() {
+        return releaseUser;
+    }
+
+    public Release releaseUser(String releaseUser) {
+        this.releaseUser = releaseUser;
+        return this;
+    }
+
+    public void setReleaseUser(String releaseUser) {
+        this.releaseUser = releaseUser;
+    }
+
     public ReleaseStatus getReleaseStatus() {
         return releaseStatus;
     }
@@ -61,6 +83,32 @@ public class Release extends AbstractAuditingEntity implements Serializable {
 
     public void setReleaseStatus(ReleaseStatus releaseStatus) {
         this.releaseStatus = releaseStatus;
+    }
+
+    public String getReleaseName() {
+        return releaseName;
+    }
+
+    public Release releaseName(String releaseName) {
+        this.releaseName = releaseName;
+        return this;
+    }
+
+    public void setReleaseName(String releaseName) {
+        this.releaseName = releaseName;
+    }
+
+    public String getReleaseDescription() {
+        return releaseDescription;
+    }
+
+    public Release releaseDescription(String releaseDescription) {
+        this.releaseDescription = releaseDescription;
+        return this;
+    }
+
+    public void setReleaseDescription(String releaseDescription) {
+        this.releaseDescription = releaseDescription;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -89,7 +137,10 @@ public class Release extends AbstractAuditingEntity implements Serializable {
         return "Release{" +
             "id=" + getId() +
             ", checkItemIds='" + getCheckItemIds() + "'" +
+            ", releaseUser='" + getReleaseUser() + "'" +
             ", releaseStatus='" + getReleaseStatus() + "'" +
+            ", releaseName='" + getReleaseName() + "'" +
+            ", releaseDescription='" + getReleaseDescription() + "'" +
             "}";
     }
 }
