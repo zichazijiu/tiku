@@ -18,5 +18,5 @@ public interface ReleaseHistoryRepository extends JpaRepository<ReleaseHistory, 
 
     @Query(value = "select release_view.release_history_id,release_view.release_id,release_view.user_id,release_view.login,department_view.id as department_id,department_view.code,department_view.name " +
         "from (select check_item_release_history.id as release_history_id,release_id,jhi_user.id as user_id,jhi_user.login as login from check_item_release_history JOIN jhi_user on jhi_user.login = check_item_release_history.created_by) release_view left join (select * from department join jhi_user_department on department.id=jhi_user_department.department_id) department_view on release_view.user_id = department_view.user_id WHERE code like :code", nativeQuery = true)
-    List<ReleaseHistory> findAllByDepartmentCode(@Param("code") String code);
+    List<Object[]> findAllByDepartmentCode(@Param("code") String code);
 }

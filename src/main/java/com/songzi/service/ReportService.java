@@ -50,6 +50,8 @@ public class ReportService {
     @Autowired
     private ReleaseHistoryRepository releaseHistoryRepository;
 
+    @Autowired private ReleaseRepository releaseRepository;
+
     private final ReportRepository reportRepository;
 
     public ReportService(ReportRepository reportRepository) {
@@ -131,36 +133,56 @@ public class ReportService {
             }
 
             // 检查该部门有没有新的发布历史
-            List<ReleaseHistory> releaseHistoryList = releaseHistoryRepository.findAllByDepartmentCode(code);
+            List<Object[]> releaseHistoryList = releaseHistoryRepository.findAllByDepartmentCode(code);
             if (releaseHistoryList == null) {
                 // 没有发布历史
                 return reports;
             } else {
                 // 有发布历史，检查是否有新的发布历史
-            }
-            // 有新的发布历史
-            reports = reportRepository.findByUserId(user.getId());
-            if (reports == null || reports.size() < 1) {
-                Report report = new Report();
-                // 设置用户
-                report.setUser(user);
-                // 设置时间
-                report.setCreatedTime(ZonedDateTime.now());
-                // 设置状态
-                report.setReportStatus(ReportStatus.NEW);
-                // 保存报告
-                Report report1 = reportRepository.save(report);
-                // 提报的自评项目入库
-                List<CheckItem> checkItems = checkItemService.findAllByUser(login);
-                checkItems.forEach(checkItem -> {
-                    ReportItems reportItems = new ReportItems();
-                    reportItems.setReport(report1);
-                    reportItems.setCheckItem(checkItem);
-                    // 保存提报信息
-                    reportItemsRepository.save(reportItems);
-                });
+                reports = reportRepository.findByUserId(user.getId());
+                // 把报告归集成map
+                Map<Long, Report> reportMap = reports.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+                final List<Report> reportList = new ArrayList<>();
+                releaseHistoryList.forEach(it -> {
+                    // 发布历史ID
+                    Long releaseHistoryId = ((BigInteger) it[0]).longValue();
+                    // 发布ID
+                    Long releaseId = ((BigInteger) it[1]).longValue();
+                    // 有新的发布
+                    if (reportMap.get(releaseId) == null) {
+                        Report report = new Report();
+                        // 设置用户
+                        report.setUser(user);
+                        // 设置时间
+                        report.setCreatedTime(ZonedDateTime.now());
+                        // 设置状态
+                        report.setReportStatus(ReportStatus.NEW);
+                        // 保存发布ID
+                        report.setCheckItemsReleaseId(releaseId);
+                        // 保存报告
+                        Report report1 = reportRepository.save(report);
+                        // 获取发布的自评项目ID
+                        Release release = releaseRepository.findOne(releaseId);
+                        if (release!=null&&StringUtils.isNotEmpty(release.getCheckItemIds())){
 
-                reports.add(report1);
+                        }
+                        // 提报的自评项目入库
+                        List<CheckItem> checkItems = checkItemService.findAllByUser(login);
+                        checkItems.forEach(checkItem -> {
+                            ReportItems reportItems = new ReportItems();
+                            reportItems.setReport(report1);
+                            reportItems.setCheckItem(checkItem);
+                            // 保存提报信息
+                            reportItemsRepository.save(reportItems);
+                        });
+
+                        reportList.add(report1);
+                    }
+                });
+                // 合并结果
+                if (reportList != null && reportList.size() > 0) {
+                    reports.addAll(reportList);
+                }
             }
 
         }
