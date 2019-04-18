@@ -4,6 +4,8 @@ import com.songzi.domain.Release;
 import com.songzi.domain.ReleaseHistory;
 import com.songzi.repository.ReleaseHistoryRepository;
 import com.songzi.repository.ReleaseRepository;
+import com.songzi.service.dto.ReleaseDTO;
+import com.songzi.service.mapper.ReleaseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class ReleaseService {
 
     @Autowired
     private ReleaseHistoryRepository releaseHistoryRepository;
+
+    @Autowired
+    private ReleaseMapper releaseMapper;
 
     private final ReleaseRepository releaseRepository;
 
@@ -56,6 +61,15 @@ public class ReleaseService {
     public List<Release> findAll() {
         log.debug("Request to get all Releases");
         return releaseRepository.findAll();
+    }
+
+    /**
+     * 查询所有转换
+     * @return
+     */
+    public List<ReleaseDTO> findAllWithDTO() {
+        List<Release> releaseList = this.findAll();
+        return releaseMapper.toDto(releaseList);
     }
 
     /**

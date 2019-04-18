@@ -3,6 +3,7 @@ package com.songzi.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Release;
 import com.songzi.service.ReleaseService;
+import com.songzi.service.dto.ReleaseDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -83,10 +84,10 @@ public class ReleaseResource {
      */
     @GetMapping("/releases")
     @Timed
-    public List<Release> getAllReleases() {
+    public List<ReleaseDTO> getAllReleases() {
         log.debug("REST request to get all Releases");
-        return releaseService.findAll();
-        }
+        return releaseService.findAllWithDTO();
+    }
 
     /**
      * GET  /releases/:id : get the "id" release.

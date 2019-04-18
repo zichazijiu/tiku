@@ -24,9 +24,6 @@ public class Release extends AbstractAuditingEntity implements Serializable {
     @Column(name = "check_item_ids")
     private String checkItemIds;
 
-    @Column(name = "release_user")
-    private String releaseUser;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "release_status")
     private ReleaseStatus releaseStatus;
@@ -57,19 +54,6 @@ public class Release extends AbstractAuditingEntity implements Serializable {
 
     public void setCheckItemIds(String checkItemIds) {
         this.checkItemIds = checkItemIds;
-    }
-
-    public String getReleaseUser() {
-        return releaseUser;
-    }
-
-    public Release releaseUser(String releaseUser) {
-        this.releaseUser = releaseUser;
-        return this;
-    }
-
-    public void setReleaseUser(String releaseUser) {
-        this.releaseUser = releaseUser;
     }
 
     public ReleaseStatus getReleaseStatus() {
@@ -137,7 +121,6 @@ public class Release extends AbstractAuditingEntity implements Serializable {
         return "Release{" +
             "id=" + getId() +
             ", checkItemIds='" + getCheckItemIds() + "'" +
-            ", releaseUser='" + getReleaseUser() + "'" +
             ", releaseStatus='" + getReleaseStatus() + "'" +
             ", releaseName='" + getReleaseName() + "'" +
             ", releaseDescription='" + getReleaseDescription() + "'" +

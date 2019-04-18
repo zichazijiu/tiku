@@ -7,10 +7,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "releaseUser",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "releaseStatus",
             "fieldType": "ReleaseStatus",
             "fieldValues": "TEST,RELEASE,CLOSE"
