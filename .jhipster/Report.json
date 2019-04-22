@@ -42,6 +42,10 @@
         {
             "fieldName": "checkItemsReleaseId",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "reportName",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20190315142352",

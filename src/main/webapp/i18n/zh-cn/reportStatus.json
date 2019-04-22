@@ -3,7 +3,9 @@
         "ReportStatus" : {
             "null": "",
             "FINISH": "FINISH",
-            "HALT": "HALT"
+            "HALT": "HALT",
+            "NEW": "NEW",
+            "RESET": "RESET"
         }
     }
 }

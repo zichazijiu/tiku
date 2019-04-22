@@ -142,16 +142,16 @@ public class ReportService {
             } else {
                 // 有发布历史，检查是否有新的发布历史
                 reports = reportRepository.findByUserId(user.getId());
-                // 把报告归集成map
-                Map<Long, Report> reportMap = reports.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+                // 根据发布历史ID把报告归集成map过滤器
+                Map<Long, Report> reportMap = reports.stream().collect(Collectors.toMap(x -> x.getCheckItemsReleaseId(), x -> x));
                 final List<Report> reportList = new ArrayList<>();
                 releaseHistoryList.forEach(it -> {
                     // 发布历史ID
                     Long releaseHistoryId = ((BigInteger) it[0]).longValue();
                     // 发布ID
                     Long releaseId = ((BigInteger) it[1]).longValue();
-                    // 有新的发布
-                    if (reportMap.get(releaseId) == null) {
+                    // 有新的发布历史
+                    if (reportMap.get(releaseHistoryId) == null) {
                         // 获取发布的信息
                         Release release = releaseRepository.findOne(releaseId);
                         if (release != null) {
@@ -162,8 +162,10 @@ public class ReportService {
                             report.setCreatedTime(release.getLastModifiedDate().atZone(ZoneOffset.ofHours(8)));
                             // 设置状态
                             report.setReportStatus(ReportStatus.NEW);
-                            // 保存发布ID
-                            report.setCheckItemsReleaseId(release.getId());
+                            // 保存发布历史ID
+                            report.setCheckItemsReleaseId(releaseHistoryId);
+                            // 保存报告名称
+                            report.setReportName(release.getReleaseName());
                             // 保存报告
                             Report report1 = reportRepository.save(report);
 

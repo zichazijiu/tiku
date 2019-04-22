@@ -2,7 +2,9 @@ import { BaseEntity, User } from './../../shared';
 
 export const enum ReportStatus {
     'FINISH',
-    'HALT'
+    'HALT',
+    'NEW',
+    'RESET'
 }
 
 export class Report implements BaseEntity {
@@ -12,6 +14,7 @@ export class Report implements BaseEntity {
         public reportStatus?: ReportStatus,
         public level?: string,
         public checkItemsReleaseId?: number,
+        public reportName?: string,
         public user?: User,
         public reportItems?: BaseEntity[],
     ) {

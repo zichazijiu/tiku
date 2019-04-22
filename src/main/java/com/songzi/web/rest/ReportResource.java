@@ -152,13 +152,13 @@ public class ReportResource {
     @GetMapping("/reports/overview")
     @Timed
     @ApiOperation("获取用户的提报概览信息")
-    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam Long reportId, @RequestParam CheckItemType checkItemType) {
+    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam Long reportId, @RequestParam(required = false) CheckItemType checkItemType) {
         log.debug("获取提报{}的概览信息", reportId);
         List<ReportOverviewDTO> reportList;
-        if (checkItemType == CheckItemType.SUB) {
-            reportList = reportService.getUserReportOverview(reportId);
-        } else {
+        if (checkItemType == CheckItemType.MAIN) {
             reportList = reportService.getUserReportOverview4MainCheckItem(reportId);
+        } else {
+            reportList = reportService.getUserReportOverview(reportId);
         }
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportList));
     }

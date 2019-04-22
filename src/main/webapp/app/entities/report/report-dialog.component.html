@@ -34,6 +34,8 @@
             <select class="form-control" name="reportStatus" [(ngModel)]="report.reportStatus" id="field_reportStatus"  required>
                 <option value="FINISH">{{'tikuApp.ReportStatus.FINISH' | translate}}</option>
                 <option value="HALT">{{'tikuApp.ReportStatus.HALT' | translate}}</option>
+                <option value="NEW">{{'tikuApp.ReportStatus.NEW' | translate}}</option>
+                <option value="RESET">{{'tikuApp.ReportStatus.RESET' | translate}}</option>
             </select>
             <div [hidden]="!(editForm.controls.reportStatus?.dirty && editForm.controls.reportStatus?.invalid)">
                 <small class="form-text text-danger"
@@ -51,6 +53,11 @@
             <label class="form-control-label" jhiTranslate="tikuApp.report.checkItemsReleaseId" for="field_checkItemsReleaseId">Check Items Release Id</label>
             <input type="number" class="form-control" name="checkItemsReleaseId" id="field_checkItemsReleaseId"
                 [(ngModel)]="report.checkItemsReleaseId" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.report.reportName" for="field_reportName">Report Name</label>
+            <input type="text" class="form-control" name="reportName" id="field_reportName"
+                [(ngModel)]="report.reportName" />
         </div>
 
         <div class="form-group">

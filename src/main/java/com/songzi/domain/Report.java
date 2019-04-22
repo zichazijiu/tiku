@@ -41,6 +41,9 @@ public class Report implements Serializable {
     @Column(name = "check_items_release_id")
     private Long checkItemsReleaseId;
 
+    @Column(name = "report_name")
+    private String reportName;
+
     @ManyToOne(optional = false)
     @NotNull
     private User user;
@@ -110,6 +113,19 @@ public class Report implements Serializable {
         this.checkItemsReleaseId = checkItemsReleaseId;
     }
 
+    public String getReportName() {
+        return reportName;
+    }
+
+    public Report reportName(String reportName) {
+        this.reportName = reportName;
+        return this;
+    }
+
+    public void setReportName(String reportName) {
+        this.reportName = reportName;
+    }
+
     public User getUser() {
         return user;
     }
@@ -177,6 +193,7 @@ public class Report implements Serializable {
             ", reportStatus='" + getReportStatus() + "'" +
             ", level='" + getLevel() + "'" +
             ", checkItemsReleaseId=" + getCheckItemsReleaseId() +
+            ", reportName='" + getReportName() + "'" +
             "}";
     }
 }

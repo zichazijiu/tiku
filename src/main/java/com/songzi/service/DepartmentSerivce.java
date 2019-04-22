@@ -250,9 +250,9 @@ public class DepartmentSerivce {
         } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)) {
             return getChildDepartmentListByCode(user.getDepartment(), 6);
         } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
-            return getChildDepartmentListByCode(user.getDepartment(), 8);
-        } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
             return getChildDepartmentListByCode(user.getDepartment(), 10);
+        } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
+            return getChildDepartmentListByCode(user.getDepartment(), 12);
         } else {
             Department department = user.getDepartment();
             if (department == null) {

@@ -20,6 +20,7 @@
             "reportStatus": "Report Status",
             "level": "Level",
             "checkItemsReleaseId": "Check Items Release Id",
+            "reportName": "Report Name",
             "user": "User",
             "reportItems": "Report Items"
         }
