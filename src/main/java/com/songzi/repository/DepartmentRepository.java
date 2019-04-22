@@ -67,7 +67,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
 
     /**
-     * 查询一级子部门
+     * 查询某一级子部门
      *
      * @param deleteFlag
      * @param code

@@ -232,6 +232,7 @@ public class UserService {
 
     /**
      * 根据用户登录账号删除用户
+     *
      * @param login
      */
     public void deleteUser(String login) {
@@ -245,6 +246,7 @@ public class UserService {
 
     /**
      * 根据用户ID删除用户
+     *
      * @param id
      */
     public void deleteUser(Long id) {
@@ -356,6 +358,16 @@ public class UserService {
 
     public User findOne(String login) {
         return userRepository.findOneByLogin(login).get();
+    }
+
+    /**
+     * 根据创建者查出用户信息
+     * @param pageable
+     * @param login
+     * @return
+     */
+    public Page<UserDTO> findAllByCreatedBy(Pageable pageable, String login) {
+        return userRepository.findAllByCreatedBy(pageable, login).map(UserDTO::new);
     }
 
 }

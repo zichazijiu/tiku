@@ -137,30 +137,30 @@ public class ReportResource {
     @GetMapping("/reports/users")
     @Timed
     @ApiOperation("获取用户的提报信息")
-    public ResponseEntity<List<Report>> gerUserReport(@RequestParam String login) {
+    public ResponseEntity<List<Report>> gerUserReport(@RequestParam("login") String login) {
         log.debug("获取用户的提报信息：{}", login);
         List<Report> reports = reportService.getUserReport(login);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reports));
     }
 
     /**
-     * 获取用户的提报概览信息
-     *
-     * @param login
+     * 获取报告的提报概览信息
+     * @param reportId
+     * @param checkItemType
      * @return
      */
-    @GetMapping("/reports/overview/users")
+    @GetMapping("/reports/overview")
     @Timed
     @ApiOperation("获取用户的提报概览信息")
-    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam String login, @RequestParam CheckItemType checkItemType) {
-        log.debug("获取用户的提报信息：{}", login);
-        List<ReportOverviewDTO> report;
+    public ResponseEntity<List<ReportOverviewDTO>> gerUserReportOverview(@RequestParam Long reportId, @RequestParam CheckItemType checkItemType) {
+        log.debug("获取提报{}的概览信息", reportId);
+        List<ReportOverviewDTO> reportList;
         if (checkItemType == CheckItemType.SUB) {
-            report = reportService.getUserReportOverview(login);
+            reportList = reportService.getUserReportOverview(reportId);
         } else {
-            report = reportService.getUserReportOverview4MainCheckItem(login);
+            reportList = reportService.getUserReportOverview4MainCheckItem(reportId);
         }
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(report));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportList));
     }
 
     /**

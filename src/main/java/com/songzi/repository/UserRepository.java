@@ -48,12 +48,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByLoginNot(Pageable pageable, String login);
 
     /**
+     * 根据某个创建者查出用户
+     * @param pageable
+     * @param login
+     * @return
+     */
+    Page<User> findAllByCreatedBy(Pageable pageable, String login);
+
+    /**
      * 根据部门查询用户列表
      * @param department
      * @return
      */
     Page<User> findAllByDepartment(Pageable pageable, Department department);
 
+    /**
+     * 根据多部门信息查询用户
+     * @param pageable
+     * @param departments
+     * @return
+     */
+    Page<User> findAllByDepartmentIn(Pageable pageable, List<Department> departments);
     /**
      * 根据部门查所有用户
      * @param department

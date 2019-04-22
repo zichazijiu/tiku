@@ -111,11 +111,20 @@ public class DepartmentSerivce {
     }
 
     public void delete(Long id) {
-        List<Examiner> examinerList = examinerRepository.findAllByDepartmentId(id);
-        if (examinerList != null && examinerList.size() > 0) {
-            throw new BadRequestAlertException("本机构下有考察员不允许删除", this.getClass().getName(), "不能删除");
-        }
+//        List<Examiner> examinerList = examinerRepository.findAllByDepartmentId(id);
+//        if (examinerList != null && examinerList.size() > 0) {
+//            throw new BadRequestAlertException("本机构下有考察员不允许删除", this.getClass().getName(), "不能删除");
+//        }
 
+        // 查询用户
+        Department department = departmentRepository.findOne(id);
+        if (department != null) {
+            List<User> userList = userRepository.findAllByDepartment(department);
+            if (userList != null && userList.size() > 0) {
+                throw new BadRequestAlertException("本机构下有用户不允许删除", this.getClass().getName(), "不能删除");
+            }
+        }
+        // 检查是由有其它机构
         List<Department> departmentList = departmentRepository.findAllByParentIdAndDelFlag(id, DeleteFlag.NORMAL);
         if (departmentList != null && departmentList.size() > 0) {
             throw new BadRequestAlertException("本机构下有其他机构不允许删除", this.getClass().getName(), "不能删除");
@@ -210,6 +219,22 @@ public class DepartmentSerivce {
     }
 
     /**
+     * 根据部门ID获取用户信息包含子部门
+     *
+     * @param pageable
+     * @param departmentId
+     * @return
+     */
+    public Page<UserDTO> findAllByDepartmentWithChild(Pageable pageable, Long departmentId) {
+        // 获取当前用户的部门ID
+        Department department = departmentRepository.findOne(departmentId);
+        // 获取子部门信息
+        List<Department> departmentList = departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.toString(), department.getCode());
+
+        return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
+    }
+
+    /**
      * 根据登录用户获取部门列表
      *
      * @return
@@ -222,19 +247,12 @@ public class DepartmentSerivce {
                 .stream()
                 .map(departmentMapper::toDto)
                 .collect(Collectors.toList());
-        } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
-            || roles.contains(AuthoritiesConstants.JU_ADMIN)
-            || roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
-            Department department = user.getDepartment();
-            if (department == null) {
-                throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
-            }
-            // 替换code后两位为____
-//            int position = department.getCode().length();
-//            String code = new StringBuilder(department.getCode()).replace(position - 2, position, "").toString();
-//            String code = department.getCode().substring(0,position-2);
-            return departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.name(), department.getCode())
-                .stream().map(departmentMapper::toDto).collect(Collectors.toList());
+        } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)) {
+            return getChildDepartmentListByCode(user.getDepartment(), 6);
+        } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
+            return getChildDepartmentListByCode(user.getDepartment(), 8);
+        } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
+            return getChildDepartmentListByCode(user.getDepartment(), 10);
         } else {
             Department department = user.getDepartment();
             if (department == null) {
@@ -245,4 +263,22 @@ public class DepartmentSerivce {
         }
     }
 
+    /**
+     * 指定code长度获取子部门信息
+     *
+     * @param department
+     * @param expect
+     * @return
+     */
+    private List<DepartmentDTO> getChildDepartmentListByCode(Department department, int expect) {
+        if (department == null) {
+            throw new BadRequestAlertException("该用户的部门不存在", this.getClass().getName(), "部门不存在");
+        }
+        String code = department.getCode();
+        if (code.length() > expect) {
+            code = code.substring(0, expect);
+        }
+        return departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.name(), code)
+            .stream().map(departmentMapper::toDto).collect(Collectors.toList());
+    }
 }

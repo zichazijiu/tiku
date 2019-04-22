@@ -45,6 +45,10 @@ public class ReportOverviewDTO {
     @ApiModelProperty("大项ID")
     private Long checkMainItemId;
 
+    public ReportOverviewDTO(){
+
+    }
+
     public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
                              LocalDate checkItemCreatedTime, LocalDate rectificationTime,
                              String measure, String result, Long reportItemId, Boolean isAnswer) {

@@ -77,25 +77,27 @@ public class HomePageService {
             }
 
             // 封装部门
-            List<Department> departmentList;
+            List<Department> departmentList = null;
             if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
                 // 管理员、部级管理员展现一级部门
                 departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), "8602__");
-            } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)
-                || roles.contains(AuthoritiesConstants.JU_ADMIN)) {
-                // 厅、局
+            } else if (roles.contains(AuthoritiesConstants.TING_ADMIN)) {
+                // 厅
                 String code = user.getDepartment().getCode();
-                String childCode = code.substring(0, code.length() - 3);
-                // 查看该机构下的所有子部门
-                departmentList = departmentRepository.findAllByDelFlagIsAndCodeStartingWith(DeleteFlag.NORMAL, childCode);
+                departmentList = getHomePageDepartmentListByCode(code, 6);
+
+            } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
+                // 局
+                String code = user.getDepartment().getCode();
+                departmentList = getHomePageDepartmentListByCode(code, 8);
             } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
                 // 处
                 String code = user.getDepartment().getCode();
-                String childCode = code.substring(0, code.length() - 2);
-                // 查看该机构下的所有子部门
-                departmentList = departmentRepository.findAllByDelFlagIsAndCodeStartingWith(DeleteFlag.NORMAL, childCode);
+                departmentList = getHomePageDepartmentListByCode(code, 10);
             } else { // 普通用户
-                departmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
+                List<Department> allDepartmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
+                // FIXME：新的需求是只给最后两级别的树
+                departmentList = allDepartmentList.subList(allDepartmentList.size() - 2, allDepartmentList.size());
             }
 
             // 部门树
@@ -103,6 +105,31 @@ public class HomePageService {
 
         }
         return homepageDTO;
+    }
+
+    /**
+     * @param code
+     * @param except
+     * @return
+     */
+    private List<Department> getHomePageDepartmentListByCode(String code, int except) {
+
+        List<Department> departmentList = new ArrayList<>();
+        if (code.length() == except) {
+            //
+            String prefix = "__";
+            // 查出二级
+            List<Department> deptLevel2 = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), code + prefix);
+            departmentList.addAll(deptLevel2);
+            // 查出三级
+            List<Department> deptLevel3 = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), code + prefix + prefix);
+            departmentList.addAll(deptLevel3);
+        } else {
+            StringBuilder paramCode = new StringBuilder(code);
+            paramCode.replace(code.length() - 3, code.length(), "___");
+            departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), paramCode.toString());
+        }
+        return departmentList;
     }
 
     /**
@@ -184,4 +211,13 @@ public class HomePageService {
         }
         return result;
     }
+
+//  public static void main(String[] gras) {
+//        List<String> a = new ArrayList<>();
+//        a.add("1");
+//        a.add("2");
+//        a.add("3");
+//        List<String> b = a.subList(a.size()-2,a.size());
+//        System.out.print(Arrays.toString(b.toArray()));
+//  }
 }

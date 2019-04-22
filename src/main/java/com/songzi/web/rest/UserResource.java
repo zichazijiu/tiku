@@ -72,7 +72,8 @@ public class UserResource {
 
     private final MailService mailService;
 
-    @Autowired private DepartmentSerivce departmentSerivce;
+    @Autowired
+    private DepartmentSerivce departmentSerivce;
 
     public UserResource(UserRepository userRepository, UserService userService, MailService mailService) {
 
@@ -95,7 +96,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    @Secured({AuthoritiesConstants.ADMIN,AuthoritiesConstants.BU_ADMIN,AuthoritiesConstants.TING_ADMIN,AuthoritiesConstants.CHU_ADMIN,AuthoritiesConstants.JU_ADMIN})
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.BU_ADMIN, AuthoritiesConstants.TING_ADMIN, AuthoritiesConstants.CHU_ADMIN, AuthoritiesConstants.JU_ADMIN})
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
 
@@ -125,7 +126,7 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    @Secured({AuthoritiesConstants.ADMIN,AuthoritiesConstants.BU_ADMIN,AuthoritiesConstants.TING_ADMIN,AuthoritiesConstants.CHU_ADMIN,AuthoritiesConstants.JU_ADMIN})
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.BU_ADMIN, AuthoritiesConstants.TING_ADMIN, AuthoritiesConstants.CHU_ADMIN, AuthoritiesConstants.JU_ADMIN})
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) {
         log.debug("REST request to update User : {}", userDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
@@ -198,12 +199,12 @@ public class UserResource {
 
     @DeleteMapping("/users")
     @Timed
-    @Secured({AuthoritiesConstants.ADMIN,AuthoritiesConstants.BU_ADMIN,AuthoritiesConstants.TING_ADMIN,AuthoritiesConstants.CHU_ADMIN,AuthoritiesConstants.JU_ADMIN})
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.BU_ADMIN, AuthoritiesConstants.TING_ADMIN, AuthoritiesConstants.CHU_ADMIN, AuthoritiesConstants.JU_ADMIN})
     @ApiOperation("删除用户")
     public ResponseEntity<Void> deleteUser(@RequestParam Long id) {
         log.debug("REST request to delete User: {}", id);
         userService.deleteUser(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", id+"")).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", id + "")).build();
     }
 
     /**
@@ -217,5 +218,21 @@ public class UserResource {
     public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByUser() {
         List<DepartmentDTO> page = departmentSerivce.finAllByUser();
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    /**
+     * 根据创建者查询用户信息
+     *
+     * @param pageable
+     * @param login
+     * @return
+     */
+    @GetMapping("/users/createdBy")
+    @Timed
+    @ApiOperation("查询某个创建者的用户")
+    public ResponseEntity<List<UserDTO>> getAllUserByCreated(Pageable pageable, @RequestParam String login) {
+        final Page<UserDTO> page = userService.findAllByCreatedBy(pageable, login);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/departments");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

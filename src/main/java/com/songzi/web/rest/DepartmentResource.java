@@ -181,7 +181,22 @@ public class DepartmentResource {
     @ApiOperation("查询机构的用户")
     public ResponseEntity<List<UserDTO>> getAllUsersByDepartment(Pageable pageable, @RequestParam Long deptId) {
         final Page<UserDTO> page = departmentSerivce.findAllByDepartment(pageable, deptId);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/department");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/departments");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
+    /**
+     * 查询子机构的所有用户
+     * @param pageable
+     * @param deptId
+     * @return
+     */
+    @GetMapping("/departments/child/users")
+    @ApiOperation("查询子机构的用户")
+    public ResponseEntity<List<UserDTO>> getAllUsersByDepartmentWithChild(Pageable pageable, @RequestParam Long deptId) {
+        final Page<UserDTO> page = departmentSerivce.findAllByDepartmentWithChild(pageable, deptId);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/departments");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }
