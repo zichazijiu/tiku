@@ -162,14 +162,14 @@ public class HomePageService {
                 List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
                 result.setReportItemsList(reportItemsList);
                 // 自查项目
-//                List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+                List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
                 // 整改结果
-//                List<Rectification> rectificationList = new ArrayList<>(16);
-//                reportItemsList.forEach(item -> {
-//                    rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-//                    String level = item.getLevel() == null ? "" : item.getLevel();
-//                    checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
-//                });
+                List<Rectification> rectificationList = new ArrayList<>(16);
+                reportItemsList.forEach(item -> {
+                    rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+                    String level = item.getLevel() == null ? "" : item.getLevel();
+                    checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
+                });
 
                 // 更改
 //                result.setRectificationList(rectificationList);
@@ -193,14 +193,14 @@ public class HomePageService {
                     List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
                     result.setReportItemsList(reportItemsList);
                     // 自查项目
-//                    List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
+                    List<String> checkDescriptionList = new ArrayList<>(reportItemsList.size());
                     // 整改结果
-//                    List<Rectification> rectificationList = new ArrayList<>(16);
-//                    reportItemsList.forEach(item -> {
-//                        rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
-//                        String level = item.getLevel() == null ? "" : item.getLevel();
-//                        checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
-//                    });
+                    List<Rectification> rectificationList = new ArrayList<>(16);
+                    reportItemsList.forEach(item -> {
+                        rectificationList.addAll(rectificationRepository.findAllByReportItemId(item.getId()));
+                        String level = item.getLevel() == null ? "" : item.getLevel();
+                        checkDescriptionList.add(item.getCheckItem().getContent() + "$$$" + level);
+                    });
 
                     // 更改
 //                    result.setRectificationList(rectificationList);
@@ -212,12 +212,4 @@ public class HomePageService {
         return result;
     }
 
-//  public static void main(String[] gras) {
-//        List<String> a = new ArrayList<>();
-//        a.add("1");
-//        a.add("2");
-//        a.add("3");
-//        List<String> b = a.subList(a.size()-2,a.size());
-//        System.out.print(Arrays.toString(b.toArray()));
-//  }
 }
