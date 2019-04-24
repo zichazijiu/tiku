@@ -1,14 +1,23 @@
 package com.songzi.service;
 
+import com.songzi.domain.Department;
 import com.songzi.domain.Report;
 import com.songzi.domain.ReportItems;
+import com.songzi.domain.User;
+import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ReportItemsRepository;
+import com.songzi.repository.UserRepository;
+import com.songzi.security.SecurityUtils;
+import org.apache.commons.collections4.set.CompositeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing ReportItems.
@@ -18,6 +27,12 @@ import java.util.*;
 public class ReportItemsService {
 
     private final Logger log = LoggerFactory.getLogger(ReportItemsService.class);
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DepartmentSerivce departmentSerivce;
 
     private final ReportItemsRepository reportItemsRepository;
 
@@ -71,6 +86,7 @@ public class ReportItemsService {
 
     /**
      * 根据报告获取报告详情
+     *
      * @param report
      * @return
      */
@@ -80,16 +96,28 @@ public class ReportItemsService {
 
     /**
      * 根据当前登录用户统计整体自评结果
+     *
      * @param login
      * @return
      */
     public List<Map<String, Object>> countByUser(String login) {
-        List<Object[]> objects = reportItemsRepository.countByUser(login);
-        List<Map<String,Object>> result = new ArrayList<>(objects.size());
-        objects.forEach(obj->{
-            Map<String,Object> map = new HashMap<>(2);
-            map.put("level",obj[0]);
-            map.put("total",obj[1]);
+        // 获取登陆用户的信息
+        //String currentLogin = SecurityUtils.getCurrentUserLogin().get();
+        // 获取当前用户的信息
+        User user = userRepository.findOneByLogin(login).get();
+        // 当前用户的部门信息
+        Department department = user.getDepartment();
+        // 查询子部门的用户信息
+        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+        // 搜集用户的ID
+        Set<Long> userIds = userList.stream().map(x->x.getId()).collect(Collectors.toSet());
+
+        List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
+        List<Map<String, Object>> result = new ArrayList<>(objects.size());
+        objects.forEach(obj -> {
+            Map<String, Object> map = new HashMap<>(2);
+            map.put("level", obj[0]);
+            map.put("total", obj[1]);
             result.add(map);
         });
         return result;

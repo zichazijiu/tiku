@@ -21,7 +21,7 @@ public interface RemainsQuestionRepository extends JpaRepository<RemainsQuestion
      * @param departmentId
      * @return
      */
-    @Query(value = "SELECT DATE_FORMAT(remains_question.created_time,'%Y-%m-%d') AS date,remains_question.question_type AS questionType,count(remains_question.id) AS total FROM remains_question, report, report_items, jhi_user_department WHERE remains_question.report_items_id = report_items.id and report.id = report_items.report_id and report.user_id = jhi_user_department.user_id and jhi_user_department.department_id = ? GROUP BY date,remains_question.question_type", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(remains_question.created_time,'%Y-%m-%d') AS date,remains_question.question_type AS questionType,count(remains_question.id) AS total FROM remains_question, report, report_items, jhi_user_department WHERE remains_question.report_items_id = report_items.id and report.id = report_items.report_id and report.user_id = jhi_user_department.user_id and jhi_user_department.department_id = ?1 GROUP BY date,remains_question.question_type", nativeQuery = true)
     List<Map<String, Object>> countByDepartmentId(Long departmentId);
 
     /**

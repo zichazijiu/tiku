@@ -231,7 +231,7 @@ public class DepartmentSerivce {
         // 获取子部门信息
         List<Department> departmentList = departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.toString(), department.getCode());
 
-        return userRepository.findAllByDepartment(pageable, department).map(UserDTO::new);
+        return userRepository.findAllByDepartmentIn(pageable, departmentList).map(UserDTO::new);
     }
 
     /**
@@ -280,5 +280,19 @@ public class DepartmentSerivce {
         }
         return departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.name(), code)
             .stream().map(departmentMapper::toDto).collect(Collectors.toList());
+    }
+
+    /**
+     * 根据用户部门查询子部门的用户信息
+     * @param department
+     * @return
+     */
+    public List<User> getChildDepartmentUserByDepartment(Department department) {
+        if (department != null) {
+            // 获取子部门信息
+            List<Department> departmentList = departmentRepository.findAllChildDepartmentByCode(DeleteFlag.NORMAL.toString(), department.getCode());
+            return userRepository.findAllByDepartmentIn(departmentList);
+        }
+        return null;
     }
 }

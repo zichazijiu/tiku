@@ -8,6 +8,7 @@ import com.songzi.security.AuthoritiesConstants;
 import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ReportDetailVM;
+import javafx.collections.transformation.SortedList;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -267,10 +268,11 @@ public class ReportService {
         Report report = reportRepository.findOne(id);
         // map过滤器
         Map<Long, ReportOverviewDTO> mapFilter = new HashMap<>();
-        if(report != null) {
+        List<ReportOverviewDTO> reportOverviewDTOList;
+        if (report != null) {
             // 查找报告关联的自查项目信息
             List<Object[]> objectList = reportRepository.findAllReportOverview4MainCheckItem(report.getId());
-            //List<ReportOverviewDTO> reportOverviewDTOList = new ArrayList<>();
+
             objectList.forEach
                 (objects -> {
                     String checkItemContent = objects[1] == null ? "" : (String) objects[1];
@@ -311,7 +313,9 @@ public class ReportService {
                     }
                 });
         }
-        return mapFilter.values().stream().collect(Collectors.toList());
+        reportOverviewDTOList = mapFilter.values().stream().collect(Collectors.toList());
+        reportOverviewDTOList.sort((o1, o2) -> o1.getCheckMainItemId().compareTo(o2.getCheckMainItemId()));
+        return reportOverviewDTOList;
     }
 
     /**
