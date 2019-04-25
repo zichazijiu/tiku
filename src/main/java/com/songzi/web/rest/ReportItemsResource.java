@@ -121,15 +121,16 @@ public class ReportItemsResource {
     }
 
     /**
-     *  COUNT /report-items/getCountByUserId/:login : count based on current users
+     * COUNT /report-items/getCountByUserId/:login : count based on current users
+     *
      * @param login
      * @return
      */
     @GetMapping("/report-items/getCountByUser")
     @Timed
     @ApiOperation("整体自评结果")
-    public List<Map<String, Object>> getCountByUserId(@RequestParam String login) {
+    public ResponseEntity<List<Map<String, Object>>> getCountByUserId(@RequestParam String login) {
         log.debug("REST request to count ReportItems");
-        return reportItemsService.countByUser(login);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportItemsService.countByUser(login)));
     }
 }

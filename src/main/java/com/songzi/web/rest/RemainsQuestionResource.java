@@ -144,6 +144,7 @@ public class RemainsQuestionResource {
 
     /**
      * Problem distribution statistics by organization
+     *
      * @param departmentId
      * @return
      */
@@ -157,6 +158,7 @@ public class RemainsQuestionResource {
 
     /**
      * Problem distribution statistics by self evaluation
+     *
      * @param checkItemId
      * @return
      */
@@ -170,15 +172,16 @@ public class RemainsQuestionResource {
 
     /**
      * Rectification analysis
+     *
      * @param checkItemId
      * @return
      */
     @GetMapping("/remains-questions/getCountRectification/{checkItemId}")
     @Timed
     @ApiOperation("整改分析")
-    public List<Map<String, Object>> getCountRectification(@PathVariable Long checkItemId) {
+    public ResponseEntity<List<Map<String, Object>>> getCountRectification(@PathVariable Long checkItemId) {
         log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
-        return remainsQuestionService.countRectification(checkItemId);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(remainsQuestionService.countRectification(checkItemId)));
     }
 
 }

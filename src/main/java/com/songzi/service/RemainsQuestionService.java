@@ -1,14 +1,24 @@
 package com.songzi.service;
 
+import com.songzi.domain.Department;
 import com.songzi.domain.RemainsQuestion;
+import com.songzi.domain.User;
+import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.RemainsQuestionRepository;
+import com.songzi.repository.UserRepository;
+import com.songzi.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing RemainsQuestion.
@@ -18,6 +28,12 @@ import java.util.Map;
 public class RemainsQuestionService {
 
     private final Logger log = LoggerFactory.getLogger(RemainsQuestionService.class);
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DepartmentSerivce departmentSerivce;
 
     private final RemainsQuestionRepository remainsQuestionRepository;
 
@@ -71,8 +87,9 @@ public class RemainsQuestionService {
 
     /**
      * 根据组织编号进行问题分布统计
+     *
      * @param departmentId
-     * @returnC Map<String, Integer>
+     * @returnC Map<String               ,                               Integer>
      */
     public List<Map<String, Object>> countByDepartmentId(Long departmentId) {
         log.debug("Request to count RemainsQuestion by departmentId : {}", departmentId);
@@ -81,22 +98,46 @@ public class RemainsQuestionService {
 
     /**
      * 根据自评项进行问题分布统计
+     *
      * @param checkItemId
-     * @return Map<String, Integer>
+     * @return Map<String               ,                               Integer>
      */
     public List<Map<String, Object>> countByCheckItemId(Long checkItemId) {
         log.debug("Request to count RemainsQuestion by checkItemId : {}", checkItemId);
-        return remainsQuestionRepository.countByCheckItemId(checkItemId);
+        // 获取登陆用户信息
+        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
+        // 获取登陆用户的部门信息
+        Department department = user.getDepartment();
+        // 获取登陆用户的子部门信息的用户信息
+        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+
+        Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
+
+        return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
     }
 
     /**
      * 根据自评项进行整改统计
+     *
      * @param checkItemId
      * @return
      */
     public List<Map<String, Object>> countRectification(Long checkItemId) {
         log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
-        return remainsQuestionRepository.countRectification(checkItemId);
+        // 获取登陆用户信息
+        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
+        // 获取登陆用户的部门信息
+        Department department = user.getDepartment();
+        // 获取登陆用户的子部门信息的用户信息
+        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+        if (userList != null) {
+
+            Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
+
+            return remainsQuestionRepository.countRectification(checkItemId, userIds);
+        } else {
+            return null;
+        }
     }
 
 }
