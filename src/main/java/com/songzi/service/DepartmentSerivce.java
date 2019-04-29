@@ -1,7 +1,6 @@
 package com.songzi.service;
 
 import com.songzi.domain.Department;
-import com.songzi.domain.Examiner;
 import com.songzi.domain.User;
 import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.DepartmentRepository;
@@ -252,7 +251,7 @@ public class DepartmentSerivce {
         } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
             return getChildDepartmentListByCode(user.getDepartment(), 10);
         } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
-            return getChildDepartmentListByCode(user.getDepartment(), 12);
+            return getChildDepartmentListByCode(user.getDepartment(), 14);
         } else {
             Department department = user.getDepartment();
             if (department == null) {
@@ -284,6 +283,7 @@ public class DepartmentSerivce {
 
     /**
      * 根据用户部门查询子部门的用户信息
+     *
      * @param department
      * @return
      */
@@ -298,6 +298,7 @@ public class DepartmentSerivce {
 
     /**
      * 根据创建者查询部门信息
+     *
      * @return
      */
     public List<DepartmentDTO> findAllByCreatedUser(User createdUser) {
@@ -305,11 +306,11 @@ public class DepartmentSerivce {
             throw new BadRequestAlertException("用户不存在", this.getClass().getName(), "用户不存在");
         }
 
-            String login = createdUser.getLogin();
-            return departmentRepository.findAllByDelFlagAndCreatedBy(DeleteFlag.NORMAL,login)
-                .stream()
-                .map(departmentMapper::toDto)
-                .collect(Collectors.toList());
+        String login = createdUser.getLogin();
+        return departmentRepository.findAllByDelFlagAndCreatedBy(DeleteFlag.NORMAL, login)
+            .stream()
+            .map(departmentMapper::toDto)
+            .collect(Collectors.toList());
 
     }
 }
