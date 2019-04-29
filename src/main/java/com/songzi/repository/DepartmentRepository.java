@@ -115,4 +115,12 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
     @Query(value = "INSERT INTO jhi_user_department (user_id, department_id) VALUES (:userId,:departmentId)", nativeQuery = true)
     void insertDepartmentIdAndUserId(@Param("userId") Long userId, @Param("departmentId") Long departmentId);
 
+    /**
+     * 根据创建者和删除标志查询部门列表
+     * @param deleteFlag
+     * @param login
+     * @return
+     */
+    List<Department> findAllByDelFlagAndCreatedBy(DeleteFlag deleteFlag, String login);
+
 }

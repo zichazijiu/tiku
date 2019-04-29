@@ -20,6 +20,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,6 +219,22 @@ public class UserResource {
     public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByUser() {
         List<DepartmentDTO> page = departmentSerivce.finAllByUser();
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    /**
+     * 根据用户的登陆名获取用户的创建的部门
+     * @return
+     */
+    @GetMapping("/users/created/departments")
+    @Timed
+    @ApiOperation("查询用户创建的机构")
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByCreatedUser(@RequestParam("login") String login) {
+        List < DepartmentDTO > departmentDTOList = null;
+        if (StringUtils.isNotEmpty(login)) {
+            User user = userService.findOne(login);
+            departmentDTOList = departmentSerivce.findAllByCreatedUser(user);
+        }
+        return new ResponseEntity<>(departmentDTOList, HttpStatus.OK);
     }
 
     /**

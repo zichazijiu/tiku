@@ -295,4 +295,21 @@ public class DepartmentSerivce {
         }
         return null;
     }
+
+    /**
+     * 根据创建者查询部门信息
+     * @return
+     */
+    public List<DepartmentDTO> findAllByCreatedUser(User createdUser) {
+        if (createdUser == null) {
+            throw new BadRequestAlertException("用户不存在", this.getClass().getName(), "用户不存在");
+        }
+
+            String login = createdUser.getLogin();
+            return departmentRepository.findAllByDelFlagAndCreatedBy(DeleteFlag.NORMAL,login)
+                .stream()
+                .map(departmentMapper::toDto)
+                .collect(Collectors.toList());
+
+    }
 }

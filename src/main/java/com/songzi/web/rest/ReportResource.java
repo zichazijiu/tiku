@@ -171,10 +171,11 @@ public class ReportResource {
      */
     @GetMapping("/reports/report-items")
     @ApiOperation("获取提报的详情信息")
-    public ReportDetailVM getReportItemsByReport(@RequestParam Long reportId, @RequestParam(required = false) Long CheckMainItemId) {
+    public ReportDetailVM getReportItemsByReport(@RequestParam Long reportId, @RequestParam(required = false) Long checkMainItemId) {
         log.debug("获取报告{}详情", reportId);
-        return reportService.getReportDetail(reportId, CheckMainItemId);
+        return reportService.getReportDetail(reportId, checkMainItemId);
     }
+
 
     /**
      * 提交报告

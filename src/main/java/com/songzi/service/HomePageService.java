@@ -89,11 +89,11 @@ public class HomePageService {
             } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
                 // 局
                 String code = user.getDepartment().getCode();
-                departmentList = getHomePageDepartmentListByCode(code, 8);
+                departmentList = getHomePageDepartmentListByCode(code, 10);
             } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
                 // 处
                 String code = user.getDepartment().getCode();
-                departmentList = getHomePageDepartmentListByCode(code, 10);
+                departmentList = getHomePageDepartmentListByCode(code, 12);
             } else { // 普通用户
                 List<Department> allDepartmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
                 // FIXME：新的需求是只给最后两级别的树

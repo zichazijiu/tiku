@@ -279,7 +279,7 @@ public class ReportService {
                     if (StringUtils.isNotEmpty(checkItemContent)) {
 
                         LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
-                        String reportUsername = report.getUser().getFirstName();
+                        String reportUsername = report.getUser().getLastName()+report.getUser().getFirstName();
                         Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
                         LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
                         LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
