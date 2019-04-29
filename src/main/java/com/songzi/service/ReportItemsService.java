@@ -109,12 +109,14 @@ public class ReportItemsService {
         Department department = user.getDepartment();
         // 查询子部门的用户信息
         List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+        // 结果
+        List<Map<String, Object>> result;
         if (userList != null) {
             // 搜集用户的ID
             Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
 
             List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
-            List<Map<String, Object>> result = new ArrayList<>(objects.size());
+            result = new ArrayList<>(objects.size());
             objects.forEach(obj -> {
                 Map<String, Object> map = new HashMap<>(2);
                 map.put("level", obj[0]);
@@ -122,6 +124,12 @@ public class ReportItemsService {
                 result.add(map);
             });
             return result;
+        } else {
+            result = new ArrayList<>(1);
+            Map<String, Object> map = new HashMap<>(2);
+            map.put("level", null);
+            map.put("total", 1);
+            result.add(map);
         }
         return null;
     }
