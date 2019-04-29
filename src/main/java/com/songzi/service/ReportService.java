@@ -5,6 +5,7 @@ import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.domain.enumeration.ReportStatus;
 import com.songzi.repository.*;
 import com.songzi.security.AuthoritiesConstants;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ReportDetailVM;
@@ -220,6 +221,15 @@ public class ReportService {
             });
             // 更新报告
             report.setReportStatus(ReportStatus.FINISH);
+            if (StringUtils.isEmpty(report.getReportUser())){
+                // 获取当前登陆用户
+                User user = userService.findOne(SecurityUtils.getCurrentUserLogin().get());
+                if (user!=null){
+                    report.setReportUser(user.getLogin());
+                    report.setReportTime(ZonedDateTime.now());
+                }
+            }
+
             reportRepository.save(report);
         }
         return report;
@@ -240,7 +250,7 @@ public class ReportService {
                 .stream()
                 .map(objects -> {
                     LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
-                    String reportUsername = report.getUser().getFirstName();
+                    String reportUsername = report.getReportUser();
                     Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
                     String checkItemContent = objects[1] == null ? "" : (String) objects[1];
                     LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
@@ -249,8 +259,9 @@ public class ReportService {
                     String result = objects[5] == null ? "" : (String) objects[5];
                     Long reportItemId = ((BigInteger) objects[6]).longValue();
                     Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
+                    LocalDate reportTime = report.getReportTime().toLocalDate();
                     return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer);
+                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer,reportTime);
                 })
                 .collect(Collectors.toList());
         }
@@ -279,7 +290,7 @@ public class ReportService {
                     if (StringUtils.isNotEmpty(checkItemContent)) {
 
                         LocalDate reportCreatedTime = report.getCreatedTime().toLocalDate();
-                        String reportUsername = report.getUser().getLastName()+report.getUser().getFirstName();
+                        String reportUsername = report.getReportUser();
                         Long reportId = objects[0] == null ? report.getId() : ((BigInteger) objects[0]).longValue();
                         LocalDate checkItemCreatedTime = objects[2] == null ? null : ((Timestamp) objects[2]).toLocalDateTime().toLocalDate();
                         LocalDate rectificationTime = objects[3] == null ? null : ((Timestamp) objects[3]).toLocalDateTime().toLocalDate();
@@ -288,13 +299,14 @@ public class ReportService {
                         Long reportItemId = ((BigInteger) objects[6]).longValue();
                         Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
                         Long checkMainItemId = ((BigInteger) objects[8]).longValue();
+                        LocalDate reportTime = report.getReportTime().toLocalDate();
 
                         // 1. 检查是否有已经保存的对象
                         ReportOverviewDTO old = mapFilter.get(checkMainItemId);
                         // 没有对象，保存新对象
                         if (old == null) {
                             ReportOverviewDTO item = new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                                checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
+                                checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId,reportTime);
 
                             mapFilter.put(item.getCheckMainItemId(), item);
                         } else {
@@ -303,7 +315,7 @@ public class ReportService {
                                 // 新的有整改时间，对比新旧对象的整改时间的大小
                                 if (old.getRectificationTime() == null || old.getRectificationTime().isBefore(rectificationTime)) {
                                     ReportOverviewDTO item = new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId);
+                                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId,reportTime);
 
                                     mapFilter.put(item.getCheckMainItemId(), item);
                                 }

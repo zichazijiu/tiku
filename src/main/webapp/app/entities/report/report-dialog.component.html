@@ -59,6 +59,18 @@
             <input type="text" class="form-control" name="reportName" id="field_reportName"
                 [(ngModel)]="report.reportName" />
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.report.reportUser" for="field_reportUser">Report User</label>
+            <input type="text" class="form-control" name="reportUser" id="field_reportUser"
+                [(ngModel)]="report.reportUser" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="tikuApp.report.reportTime" for="field_reportTime">Report Time</label>
+            <div class="d-flex">
+                <input id="field_reportTime" type="datetime-local" class="form-control" name="reportTime" [(ngModel)]="report.reportTime"
+                />
+            </div>
+        </div>
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="tikuApp.report.user" for="field_user">User</label>

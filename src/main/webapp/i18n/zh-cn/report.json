@@ -21,6 +21,8 @@
             "level": "Level",
             "checkItemsReleaseId": "Check Items Release Id",
             "reportName": "Report Name",
+            "reportUser": "Report User",
+            "reportTime": "Report Time",
             "user": "User",
             "reportItems": "Report Items"
         }

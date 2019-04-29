@@ -33,6 +33,8 @@ export class ReportPopupService {
                         const report: Report = reportResponse.body;
                         report.createdTime = this.datePipe
                             .transform(report.createdTime, 'yyyy-MM-ddTHH:mm:ss');
+                        report.reportTime = this.datePipe
+                            .transform(report.reportTime, 'yyyy-MM-ddTHH:mm:ss');
                         this.ngbModalRef = this.reportModalRef(component, report);
                         resolve(this.ngbModalRef);
                     });

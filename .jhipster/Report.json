@@ -46,6 +46,14 @@
         {
             "fieldName": "reportName",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "reportUser",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "reportTime",
+            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20190315142352",

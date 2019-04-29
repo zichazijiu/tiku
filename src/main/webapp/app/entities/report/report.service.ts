@@ -65,6 +65,8 @@ export class ReportService {
         const copy: Report = Object.assign({}, report);
         copy.createdTime = this.dateUtils
             .convertDateTimeFromServer(report.createdTime);
+        copy.reportTime = this.dateUtils
+            .convertDateTimeFromServer(report.reportTime);
         return copy;
     }
 
@@ -75,6 +77,8 @@ export class ReportService {
         const copy: Report = Object.assign({}, report);
 
         copy.createdTime = this.dateUtils.toDate(report.createdTime);
+
+        copy.reportTime = this.dateUtils.toDate(report.reportTime);
         return copy;
     }
 }

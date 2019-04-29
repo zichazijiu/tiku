@@ -22,6 +22,8 @@
             <th><span jhiTranslate="tikuApp.report.level">Level</span></th>
             <th><span jhiTranslate="tikuApp.report.checkItemsReleaseId">Check Items Release Id</span></th>
             <th><span jhiTranslate="tikuApp.report.reportName">Report Name</span></th>
+            <th><span jhiTranslate="tikuApp.report.reportUser">Report User</span></th>
+            <th><span jhiTranslate="tikuApp.report.reportTime">Report Time</span></th>
             <th><span jhiTranslate="tikuApp.report.user">User</span></th>
             <th></th>
             </tr>
@@ -34,6 +36,8 @@
                 <td>{{report.level}}</td>
                 <td>{{report.checkItemsReleaseId}}</td>
                 <td>{{report.reportName}}</td>
+                <td>{{report.reportUser}}</td>
+                <td>{{report.reportTime | date:'medium'}}</td>
                 <td>
                     {{report.user?.login}}
                 </td>

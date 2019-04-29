@@ -24,6 +24,14 @@
         <dd>
             <span>{{report.reportName}}</span>
         </dd>
+        <dt><span jhiTranslate="tikuApp.report.reportUser">Report User</span></dt>
+        <dd>
+            <span>{{report.reportUser}}</span>
+        </dd>
+        <dt><span jhiTranslate="tikuApp.report.reportTime">Report Time</span></dt>
+        <dd>
+            <span>{{report.reportTime | date:'medium'}}</span>
+        </dd>
         <dt><span jhiTranslate="tikuApp.report.user">User</span></dt>
         <dd>
             {{report.user?.login}}

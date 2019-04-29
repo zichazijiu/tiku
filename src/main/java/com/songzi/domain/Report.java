@@ -44,6 +44,12 @@ public class Report implements Serializable {
     @Column(name = "report_name")
     private String reportName;
 
+    @Column(name = "report_user")
+    private String reportUser;
+
+    @Column(name = "report_time")
+    private ZonedDateTime reportTime;
+
     @ManyToOne(optional = false)
     @NotNull
     private User user;
@@ -126,6 +132,32 @@ public class Report implements Serializable {
         this.reportName = reportName;
     }
 
+    public String getReportUser() {
+        return reportUser;
+    }
+
+    public Report reportUser(String reportUser) {
+        this.reportUser = reportUser;
+        return this;
+    }
+
+    public void setReportUser(String reportUser) {
+        this.reportUser = reportUser;
+    }
+
+    public ZonedDateTime getReportTime() {
+        return reportTime;
+    }
+
+    public Report reportTime(ZonedDateTime reportTime) {
+        this.reportTime = reportTime;
+        return this;
+    }
+
+    public void setReportTime(ZonedDateTime reportTime) {
+        this.reportTime = reportTime;
+    }
+
     public User getUser() {
         return user;
     }
@@ -194,6 +226,8 @@ public class Report implements Serializable {
             ", level='" + getLevel() + "'" +
             ", checkItemsReleaseId=" + getCheckItemsReleaseId() +
             ", reportName='" + getReportName() + "'" +
+            ", reportUser='" + getReportUser() + "'" +
+            ", reportTime='" + getReportTime() + "'" +
             "}";
     }
 }

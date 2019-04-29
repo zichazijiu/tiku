@@ -45,13 +45,16 @@ public class ReportOverviewDTO {
     @ApiModelProperty("大项ID")
     private Long checkMainItemId;
 
+    @ApiModelProperty("提报时间")
+    private LocalDate reportTime;
+
     public ReportOverviewDTO(){
 
     }
 
     public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
                              LocalDate checkItemCreatedTime, LocalDate rectificationTime,
-                             String measure, String result, Long reportItemId, Boolean isAnswer) {
+                             String measure, String result, Long reportItemId, Boolean isAnswer,LocalDate reportTime) {
         this.reportCreatedTime = reportCreatedTime;
         this.reportUsername = reportUsername;
         this.reportId = reportId;
@@ -62,11 +65,12 @@ public class ReportOverviewDTO {
         this.result =result;
         this.reportItemId = reportItemId;
         this.isAnswer = isAnswer;
+        this.reportTime = reportTime;
     }
 
     public ReportOverviewDTO(LocalDate reportCreatedTime, String reportUsername, Long reportId, String checkItemContent,
                              LocalDate checkItemCreatedTime, LocalDate rectificationTime,
-                             String measure, String result, Long reportItemId, Boolean isAnswer, Long checkMainItemId) {
+                             String measure, String result, Long reportItemId, Boolean isAnswer, Long checkMainItemId, LocalDate reportTime) {
         this.reportCreatedTime = reportCreatedTime;
         this.reportUsername = reportUsername;
         this.reportId = reportId;
@@ -78,6 +82,7 @@ public class ReportOverviewDTO {
         this.reportItemId = reportItemId;
         this.isAnswer = isAnswer;
         this.checkMainItemId= checkMainItemId;
+        this.reportTime = reportTime;
     }
 
     public Long getReportId() {
@@ -166,5 +171,13 @@ public class ReportOverviewDTO {
 
     public void setCheckMainItemId(Long checkMainItemId) {
         this.checkMainItemId = checkMainItemId;
+    }
+
+    public LocalDate getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalDate reportTime) {
+        this.reportTime = reportTime;
     }
 }
