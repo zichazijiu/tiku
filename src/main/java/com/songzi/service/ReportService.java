@@ -259,9 +259,13 @@ public class ReportService {
                     String result = objects[5] == null ? "" : (String) objects[5];
                     Long reportItemId = ((BigInteger) objects[6]).longValue();
                     Boolean isAnswer = StringUtils.isNotEmpty((String) objects[7]);
+                    Long checkItemId = ((BigInteger) objects[8]).longValue();
+                    Long checkMainItemId = ((BigInteger) objects[9]).longValue();
+                    if (checkMainItemId == 0)
+                        checkMainItemId = checkItemId;
                     LocalDate reportTime = report.getReportTime() == null ? null : report.getReportTime().toLocalDate();
                     return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, reportTime);
+                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId,reportTime);
                 })
                 .collect(Collectors.toList());
         }
