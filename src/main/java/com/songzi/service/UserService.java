@@ -11,6 +11,7 @@ import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.service.util.RandomUtil;
 import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.errors.InvalidPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,10 +257,14 @@ public class UserService {
         }
     }
 
-    public void changePassword(String password) {
+    public void changePassword(String oldpassword, String password) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(user -> {
+                // 检查旧密码
+                boolean pass = passwordEncoder.matches(oldpassword, user.getPassword());
+                if (!pass)
+                    throw new InvalidPasswordException();
                 String encryptedPassword = passwordEncoder.encode(password);
                 user.setPassword(encryptedPassword);
                 cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());

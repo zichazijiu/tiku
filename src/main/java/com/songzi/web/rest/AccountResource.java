@@ -141,11 +141,14 @@ public class AccountResource {
     @Timed
     public void changePassword(@RequestBody PasswordChangeVM passwordChangeVM) {
         String oldpassword = passwordChangeVM.getOldPassword();
+        if (StringUtils.isEmpty(oldpassword)){
+            throw new InvalidPasswordException();
+        }
         String password = passwordChangeVM.getPassword();
         if (!checkPasswordLength(password)) {
             throw new InvalidPasswordException();
         }
-        userService.changePassword(password);
+        userService.changePassword(oldpassword,password);
    }
 
     /**

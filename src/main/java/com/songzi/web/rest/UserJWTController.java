@@ -2,7 +2,6 @@ package com.songzi.web.rest;
 
 import com.songzi.security.jwt.JWTConfigurer;
 import com.songzi.security.jwt.TokenProvider;
-import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.LoginVM;
 
 import com.codahale.metrics.annotation.Timed;
