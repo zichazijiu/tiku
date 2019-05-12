@@ -116,7 +116,7 @@ public class HomePageService {
 
         List<Department> departmentList = new ArrayList<>();
         if (code.length() == except) {
-            //
+            // 部门后缀
             String prefix = "__";
             // 查出二级
             List<Department> deptLevel2 = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), code + prefix);
