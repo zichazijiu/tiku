@@ -2,6 +2,7 @@ package com.songzi.service;
 
 import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
+import com.songzi.domain.Department;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
 import com.songzi.repository.DepartmentRepository;
@@ -50,6 +51,9 @@ public class UserService {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private DepartmentSerivce departmentSerivce;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
@@ -367,6 +371,7 @@ public class UserService {
 
     /**
      * 根据创建者查出用户信息
+     *
      * @param pageable
      * @param login
      * @return
@@ -375,4 +380,28 @@ public class UserService {
         return userRepository.findAllByCreatedBy(pageable, login).map(UserDTO::new);
     }
 
+    /**
+     * 获取子部门用户信息
+     *
+     * @return 用户列表
+     */
+    public List<User> getChildDepartmentUserInfo4Statistic(Department department) {
+        List<User> userList;
+        // 检查用户的权限
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.CHU_ADMIN)) {
+            // 如果是处级用户需要获取下级普通用户的信息
+            userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+        } else if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.JU_ADMIN)
+            || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.TING_ADMIN)
+            || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.BU_ADMIN)
+            || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            // 如果是处级以上的用户需要获取下级处级管理员统计的信息和下级普通用户的信息
+            List<User> subAdminUserList = departmentSerivce.getChildDepartmentUserByDepartmentCode(department.getCode() + "__");
+            userList = departmentSerivce.getChildDepartmentUserByDepartmentCode(department.getCode() + "____");
+            userList.addAll(subAdminUserList);
+        } else {
+            throw new BadRequestAlertException("用户没有权限", this.getClass().getName(), "用户没有权限");
+        }
+        return userList;
+    }
 }

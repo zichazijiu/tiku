@@ -93,7 +93,7 @@ public class HomePageService {
             } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
                 // 处
                 String code = user.getDepartment().getCode();
-                departmentList = getHomePageDepartmentListByCode(code, 12);
+                departmentList = getHomePageDepartmentListByCode(code, 14);
             } else { // 普通用户
                 List<Department> allDepartmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
                 // FIXME：新的需求是只给最后两级别的树

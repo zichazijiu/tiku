@@ -7,7 +7,9 @@ import com.songzi.domain.enumeration.DeleteFlag;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.repository.UserRepository;
+import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class RemainsQuestionService {
 
     @Autowired
     private DepartmentSerivce departmentSerivce;
+
+    @Autowired UserService userService;
 
     private final RemainsQuestionRepository remainsQuestionRepository;
 
@@ -100,7 +104,7 @@ public class RemainsQuestionService {
      * 根据自评项进行问题分布统计
      *
      * @param checkItemId
-     * @return Map<String               ,                               Integer>
+     * @return Map<String,Integer>
      */
     public List<Map<String, Object>> countByCheckItemId(Long checkItemId) {
         log.debug("Request to count RemainsQuestion by checkItemId : {}", checkItemId);
@@ -109,10 +113,15 @@ public class RemainsQuestionService {
         // 获取登陆用户的部门信息
         Department department = user.getDepartment();
         // 获取登陆用户的子部门信息的用户信息
-        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
-
+        List<User> userList = userService.getChildDepartmentUserInfo4Statistic(department);
+        // 把自己排除在用户列表中
+        if (userList!=null&&userList.size()>0){
+            userList.removeIf(s -> user.getId().equals(s.getId()));
+        }
         Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
-
+        if (userIds.isEmpty()){
+            return null;
+        }
         return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
     }
 
@@ -129,15 +138,16 @@ public class RemainsQuestionService {
         // 获取登陆用户的部门信息
         Department department = user.getDepartment();
         // 获取登陆用户的子部门信息的用户信息
-        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
-        if (userList != null) {
-
-            Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
-
-            return remainsQuestionRepository.countRectification(checkItemId, userIds);
-        } else {
+        List<User> userList = userService.getChildDepartmentUserInfo4Statistic(department);
+        // 把自己排除在用户列表中
+        if (userList!=null&userList.size()>0){
+            userList.removeIf(s -> user.getId().equals(s.getId()));
+        }
+        Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
+        if (userIds.isEmpty()){
             return null;
         }
+        return remainsQuestionRepository.countRectification(checkItemId, userIds);
     }
 
 }

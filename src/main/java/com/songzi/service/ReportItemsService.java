@@ -7,7 +7,9 @@ import com.songzi.domain.User;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ReportItemsRepository;
 import com.songzi.repository.UserRepository;
+import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
+import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.apache.commons.collections4.set.CompositeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ import java.util.stream.Collectors;
 public class ReportItemsService {
 
     private final Logger log = LoggerFactory.getLogger(ReportItemsService.class);
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
@@ -102,28 +107,31 @@ public class ReportItemsService {
      */
     public List<Map<String, Object>> countByUser(String login) {
         // 获取登陆用户的信息
-        //String currentLogin = SecurityUtils.getCurrentUserLogin().get();
+        String currentLogin = SecurityUtils.getCurrentUserLogin().get();
         // 获取当前用户的信息
-        User user = userRepository.findOneByLogin(login).get();
+        User user = userRepository.findOneByLogin(currentLogin).get();
         // 当前用户的部门信息
         Department department = user.getDepartment();
         // 查询子部门的用户信息
-        List<User> userList = departmentSerivce.getChildDepartmentUserByDepartment(department);
+        List<User> userList = userService.getChildDepartmentUserInfo4Statistic(department);
         // 结果
         List<Map<String, Object>> result;
-        if (userList != null) {
+        if (userList != null && userList.size()>0) {
+            // 把自己排除在用户列表中
+            userList.removeIf(s -> user.getId().equals(s.getId()));
             // 搜集用户的ID
             Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
-
-            List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
-            result = new ArrayList<>(objects.size());
-            objects.forEach(obj -> {
-                Map<String, Object> map = new HashMap<>(2);
-                map.put("level", obj[0]);
-                map.put("total", obj[1]);
-                result.add(map);
-            });
-            return result;
+            if (!userIds.isEmpty()) {
+                List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
+                result = new ArrayList<>(objects.size());
+                objects.forEach(obj -> {
+                    Map<String, Object> map = new HashMap<>(2);
+                    map.put("level", obj[0]);
+                    map.put("total", obj[1]);
+                    result.add(map);
+                });
+                return result;
+            }
         } else {
             result = new ArrayList<>(1);
             Map<String, Object> map = new HashMap<>(2);

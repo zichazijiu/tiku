@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -294,6 +295,20 @@ public class DepartmentSerivce {
             return userRepository.findAllByDepartmentIn(departmentList);
         }
         return null;
+    }
+
+    /**
+     * 根据部门Code查询子部门用户信息
+     * @param code
+     * @return
+     */
+    public List<User> getChildDepartmentUserByDepartmentCode(String code) {
+        if (StringUtils.isEmpty(code)){
+            return null;
+        } else {
+            List<Department> departments = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),code);
+            return userRepository.findAllByDepartmentIn(departments);
+        }
     }
 
     /**
