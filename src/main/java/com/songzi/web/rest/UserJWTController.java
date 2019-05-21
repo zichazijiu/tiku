@@ -37,14 +37,14 @@ public class UserJWTController {
 
     @PostMapping("/authenticate")
     @Timed
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM) {
+    public ResponseEntity<JWTToken> authorize(@RequestBody LoginVM loginVM) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
         Authentication authentication = null;
-        try{
+        try {
             authentication = this.authenticationManager.authenticate(authenticationToken);
-        }catch (BadCredentialsException ex){
+        } catch (BadCredentialsException ex){
             throw ex;
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
