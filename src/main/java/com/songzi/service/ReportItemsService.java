@@ -116,14 +116,14 @@ public class ReportItemsService {
         List<User> userList = userService.getChildDepartmentUserInfo4Statistic(department);
         // 结果
         List<Map<String, Object>> result = null;
-        if (userList != null && userList.size()>0) {
+        if (userList != null && userList.size() > 0) {
             // 把自己排除在用户列表中
             userList.removeIf(s -> user.getId().equals(s.getId()));
             // 搜集用户的ID
             Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
             if (!userIds.isEmpty()) {
                 List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
-                List<Map<String, Object>>  finalResult = new ArrayList<>(objects.size());
+                List<Map<String, Object>> finalResult = new ArrayList<>(objects.size());
                 objects.forEach(obj -> {
                     Map<String, Object> map = new HashMap<>(2);
                     map.put("level", obj[0]);
@@ -132,7 +132,8 @@ public class ReportItemsService {
                 });
                 result = finalResult;
             }
-        } else {
+        }
+        if (result == null) {
             result = new ArrayList<>(1);
             Map<String, Object> map = new HashMap<>(2);
             map.put("level", null);
