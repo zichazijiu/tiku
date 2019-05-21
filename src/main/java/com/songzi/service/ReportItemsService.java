@@ -115,7 +115,7 @@ public class ReportItemsService {
         // 查询子部门的用户信息
         List<User> userList = userService.getChildDepartmentUserInfo4Statistic(department);
         // 结果
-        List<Map<String, Object>> result;
+        List<Map<String, Object>> result = null;
         if (userList != null && userList.size()>0) {
             // 把自己排除在用户列表中
             userList.removeIf(s -> user.getId().equals(s.getId()));
@@ -123,14 +123,14 @@ public class ReportItemsService {
             Set<Long> userIds = userList.stream().map(x -> x.getId()).collect(Collectors.toSet());
             if (!userIds.isEmpty()) {
                 List<Object[]> objects = reportItemsRepository.countByUsers(userIds);
-                result = new ArrayList<>(objects.size());
+                List<Map<String, Object>>  finalResult = new ArrayList<>(objects.size());
                 objects.forEach(obj -> {
                     Map<String, Object> map = new HashMap<>(2);
                     map.put("level", obj[0]);
                     map.put("total", obj[1]);
-                    result.add(map);
+                    finalResult.add(map);
                 });
-                return result;
+                result = finalResult;
             }
         } else {
             result = new ArrayList<>(1);
@@ -138,7 +138,8 @@ public class ReportItemsService {
             map.put("level", null);
             map.put("total", 1);
             result.add(map);
+
         }
-        return null;
+        return result;
     }
 }

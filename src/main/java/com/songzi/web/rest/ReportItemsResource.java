@@ -2,7 +2,6 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.ReportItems;
-import com.songzi.security.SecurityUtils;
 import com.songzi.service.ReportItemsService;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.util.HeaderUtil;
@@ -129,7 +128,7 @@ public class ReportItemsResource {
     @GetMapping("/report-items/getCountByUser")
     @Timed
     @ApiOperation("整体自评结果")
-    public ResponseEntity<List<Map<String, Object>>> getCountByUserId(@RequestParam String login) {
+    public ResponseEntity<List<Map<String, Object>>> getCountByUserId(@RequestParam("login") String login) {
         log.debug("REST request to count ReportItems");
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportItemsService.countByUser(login)));
     }
