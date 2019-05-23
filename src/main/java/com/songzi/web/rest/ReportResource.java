@@ -196,18 +196,16 @@ public class ReportResource {
     @PutMapping("/reports/submit-check")
     @Timed
     @ApiOperation("提报项目整体检查")
-    public ResponseEntity<Void> reportSubmitCheck(@RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
+    public ResponseEntity<?> reportSubmitCheck(@RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
         log.debug("检查{}报告", reportId);
-        reportService.checkReport(reportId, reportItemsList);
-        return ResponseEntity.ok().build();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportService.checkReport(reportId, reportItemsList)));
     }
 
     @GetMapping("/reports/check")
     @Timed
     @ApiOperation("提报项目单项检查")
-    public ResponseEntity<Void> reportCheck(@RequestParam String login, @RequestParam Long checkItemId, @RequestParam String level) {
-        reportService.checkReport(login, checkItemId, level);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> reportCheck(@RequestParam String login, @RequestParam Long checkItemId, @RequestParam String level) {
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportService.checkReport(login, checkItemId, level)));
     }
 
 }

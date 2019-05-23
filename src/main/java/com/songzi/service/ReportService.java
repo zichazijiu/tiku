@@ -340,7 +340,7 @@ public class ReportService {
      * @param reportId
      * @param reportItemsList
      */
-    public void checkReport(Long reportId, List<ReportItems> reportItemsList) {
+    public int checkReport(Long reportId, List<ReportItems> reportItemsList) {
         // 根据报告获取用户信息
         Report report = this.findOne(reportId);
         if (report == null) {
@@ -384,6 +384,7 @@ public class ReportService {
             });
 
         }
+        return 0;
     }
 
     /**
@@ -393,7 +394,7 @@ public class ReportService {
      * @param checkItemId
      * @param level
      */
-    public void checkReport(String login, Long checkItemId, String level) {
+    public int checkReport(String login, Long checkItemId, String level) {
         // 根据报告获取用户信息
         User reportUser = userService.findOne(login);
         Set<String> authorities = reportUser.getAuthorities().stream().map(auth -> auth.getName()).collect(Collectors.toSet());
@@ -431,6 +432,7 @@ public class ReportService {
                 throw new BadRequestAlertException("请注意您的下级部门在考评项目[" + checkItem.getContent() + "]有评分C，您选择了评分" + level, this.getClass().getName(), "下级有C考评项目");
             }
         }
+        return 0;
     }
 
     /**
