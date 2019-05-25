@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 @Service
 @Transactional
-public class DepartmentSerivce {
+public class DepartmentService {
 
     @Autowired
     private DepartmentVMMapper departmentVMMapper;
@@ -61,8 +61,34 @@ public class DepartmentSerivce {
     public DepartmentDTO insert(DepartmentVM departmentVM) {
         Department department = departmentVMMapper.toEntity(departmentVM);
         department.setDepartmentStatus("NORMAL");
-        department.setDepartmentType("NORMAL");
+        department.setDepartmentType("NORMAL"); // NORMAL的部门机构可以增加用户
         department = departmentRepository.save(department);
+        // 如果code的长度是8或者12增加下级 "直属机关单位" "下属保密机构"
+        int length = department.getCode().length();
+        String codeType = department.getCode().substring(length-4);
+        if (codeType.startsWith("02") && (length == 6 || length == 10)) {
+            List<Department> departmentListForSaved = new ArrayList<>(2);
+            // 增加"直属机关单位"
+            Department dept01 = new Department();
+            dept01.setName("直属机关单位");
+            dept01.setParentId(department.getId());
+            dept01.setCode(department.getCode() + "01");
+            dept01.setParentCodes(department.getParentCodes() + "," + dept01.getCode());
+            dept01.setDepartmentStatus("NORMAL");
+            dept01.setDepartmentType("VIRTUAL"); // VIRTUAL的部门不能增加用户
+            departmentListForSaved.add(dept01);
+            // 增加"下属保密机构"
+            Department dept02 = new Department();
+            dept02.setName("下属保密机构");
+            dept02.setParentId(department.getId());
+            dept02.setCode(department.getCode() + "02");
+            dept02.setParentCodes(department.getParentCodes() + "," + dept01.getCode());
+            dept02.setDepartmentStatus("NORMAL");
+            dept02.setDepartmentType("VIRTUAL"); // VIRTUAL的部门不能增加用户
+            departmentListForSaved.add(dept02);
+            // 保存部门
+            departmentRepository.save(departmentListForSaved);
+        }
         return departmentMapper.toDto(department);
     }
 
@@ -299,14 +325,15 @@ public class DepartmentSerivce {
 
     /**
      * 根据部门Code查询子部门用户信息
+     *
      * @param code
      * @return
      */
     public List<User> getChildDepartmentUserByDepartmentCode(String code) {
-        if (StringUtils.isEmpty(code)){
+        if (StringUtils.isEmpty(code)) {
             return null;
         } else {
-            List<Department> departments = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),code);
+            List<Department> departments = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), code);
             return userRepository.findAllByDepartmentIn(departments);
         }
     }

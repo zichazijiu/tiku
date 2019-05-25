@@ -3,20 +3,16 @@ package com.songzi.service;
 import com.songzi.domain.Department;
 import com.songzi.domain.RemainsQuestion;
 import com.songzi.domain.User;
-import com.songzi.domain.enumeration.DeleteFlag;
-import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.repository.UserRepository;
-import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
-import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +31,7 @@ public class RemainsQuestionService {
     private UserRepository userRepository;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
 
     @Autowired UserService userService;
 

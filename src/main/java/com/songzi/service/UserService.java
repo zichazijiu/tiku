@@ -3,6 +3,7 @@ package com.songzi.service;
 import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
 import com.songzi.domain.Department;
+import com.songzi.domain.Report;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
 import com.songzi.repository.DepartmentRepository;
@@ -53,7 +54,9 @@ public class UserService {
     private DepartmentRepository departmentRepository;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
+
+    @Autowired private ReportService reportService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
@@ -255,6 +258,8 @@ public class UserService {
      * @param id
      */
     public void deleteUser(Long id) {
+        // 清除用户的报告
+        reportService.deleteReportByUser(id);
         User user = userRepository.findOne(id);
         if (user != null) {
             this.deleteUser(user.getLogin());

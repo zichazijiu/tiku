@@ -9,7 +9,6 @@ import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.ReportOverviewDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
 import com.songzi.web.rest.vm.ReportDetailVM;
-import javafx.collections.transformation.SortedList;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.AccountExpiredException;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -56,6 +53,9 @@ public class ReportService {
 
     @Autowired
     private ReleaseRepository releaseRepository;
+
+    @Autowired
+    private ReportItemsService reportItemsService;
 
     private final ReportRepository reportRepository;
 
@@ -265,7 +265,7 @@ public class ReportService {
                         checkMainItemId = checkItemId;
                     LocalDate reportTime = report.getReportTime() == null ? null : report.getReportTime().toLocalDate();
                     return new ReportOverviewDTO(reportCreatedTime, reportUsername, reportId, checkItemContent,
-                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId,reportTime);
+                        checkItemCreatedTime, rectificationTime, measure, result, reportItemId, isAnswer, checkMainItemId, reportTime);
                 })
                 .collect(Collectors.toList());
         }
@@ -454,6 +454,16 @@ public class ReportService {
             reportItemsList = reportItemsRepository.findAllByReport(report);
         }
         return new ReportDetailVM(report, reportItemsList);
+    }
+
+    public void deleteReportByUser(Long userId) {
+        List<Report> reports = reportRepository.findByUserId(userId);
+        if (reports != null && reports.size() > 0) {
+            reports.forEach(report -> {
+                reportItemsService.deleteByReport(report);
+            });
+            reportRepository.delete(reports);
+        }
     }
 
 }

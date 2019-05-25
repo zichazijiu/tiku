@@ -1,6 +1,7 @@
 package com.songzi.repository;
 
 import com.songzi.domain.RemainsQuestion;
+import com.songzi.domain.ReportItems;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,8 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Repository
 public interface RemainsQuestionRepository extends JpaRepository<RemainsQuestion, Long> {
+
+    List<RemainsQuestion> findRemainsQuestionsByReportItems(ReportItems reportItems);
 
     /**
      * 根据组织编号进行问题分布统计

@@ -11,7 +11,6 @@ import com.songzi.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -34,7 +33,7 @@ public class HomePageService {
     private UserRepository userRepository;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
 
     @Autowired
     private DepartmentRepository departmentRepository;

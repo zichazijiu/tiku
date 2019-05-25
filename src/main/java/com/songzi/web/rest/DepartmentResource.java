@@ -3,7 +3,7 @@ package com.songzi.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.Department;
 import com.songzi.repository.DepartmentRepository;
-import com.songzi.service.DepartmentSerivce;
+import com.songzi.service.DepartmentService;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
@@ -19,16 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,7 +44,7 @@ public class DepartmentResource {
     private final DepartmentRepository departmentRepository;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
 
     public DepartmentResource(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;

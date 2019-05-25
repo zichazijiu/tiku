@@ -5,7 +5,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.User;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
-import com.songzi.service.DepartmentSerivce;
+import com.songzi.service.DepartmentService;
 import com.songzi.service.MailService;
 import com.songzi.service.UserService;
 import com.songzi.service.dto.DepartmentDTO;
@@ -15,10 +15,8 @@ import com.songzi.web.rest.errors.EmailAlreadyUsedException;
 import com.songzi.web.rest.errors.LoginAlreadyUsedException;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
-import com.songzi.web.rest.vm.DepartmentQueryVM;
 import io.github.jhipster.web.util.ResponseUtil;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import liquibase.util.StringUtils;
 import org.slf4j.Logger;
@@ -74,7 +72,7 @@ public class UserResource {
     private final MailService mailService;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
 
     public UserResource(UserRepository userRepository, UserService userService, MailService mailService) {
 

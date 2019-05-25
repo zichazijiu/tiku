@@ -35,11 +35,11 @@ public class Department extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(name = "department_status", nullable = false)
-    private String departmentStatus;
+    private String departmentStatus = "NORMAL";
 
     @NotNull
     @Column(name = "department_type", nullable = false)
-    private String departmentType;
+    private String departmentType = "NORMAL";
 
     @NotNull
     @Enumerated(EnumType.STRING)

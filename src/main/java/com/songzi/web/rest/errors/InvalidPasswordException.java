@@ -6,6 +6,6 @@ import org.zalando.problem.Status;
 public class InvalidPasswordException extends AbstractThrowableProblem {
 
     public InvalidPasswordException() {
-        super(ErrorConstants.INVALID_PASSWORD_TYPE, "Incorrect password", Status.BAD_REQUEST);
+        super(ErrorConstants.INVALID_PASSWORD_TYPE, "密码错误", Status.BAD_REQUEST);
     }
 }

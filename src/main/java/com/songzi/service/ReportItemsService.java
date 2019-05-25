@@ -1,16 +1,11 @@
 package com.songzi.service;
 
-import com.songzi.domain.Department;
-import com.songzi.domain.Report;
-import com.songzi.domain.ReportItems;
-import com.songzi.domain.User;
-import com.songzi.repository.DepartmentRepository;
+import com.songzi.domain.*;
+import com.songzi.repository.RectificationRepository;
+import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.repository.ReportItemsRepository;
 import com.songzi.repository.UserRepository;
-import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
-import com.songzi.web.rest.errors.BadRequestAlertException;
-import org.apache.commons.collections4.set.CompositeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +31,13 @@ public class ReportItemsService {
     private UserRepository userRepository;
 
     @Autowired
-    private DepartmentSerivce departmentSerivce;
+    private DepartmentService departmentSerivce;
+
+    @Autowired
+    private RemainsQuestionRepository remainsQuestionRepository;
+
+    @Autowired
+    private RectificationRepository rectificationRepository;
 
     private final ReportItemsRepository reportItemsRepository;
 
@@ -142,5 +142,32 @@ public class ReportItemsService {
 
         }
         return result;
+    }
+
+    /**
+     * 根据报告删除item
+     *
+     * @param report
+     * @return
+     */
+    public void deleteByReport(Report report) {
+        if (report != null) {
+            List<ReportItems> reportItemsList = reportItemsRepository.findAllByReport(report);
+            if (reportItemsList != null && reportItemsList.size() > 0) {
+                reportItemsList.forEach(reportItem -> {
+                    // 查找待删除的遗留问题
+                    List<RemainsQuestion> remainsQuestionList = remainsQuestionRepository.findRemainsQuestionsByReportItems(reportItem);
+                    // 清除整改信息
+                    remainsQuestionList.forEach(remainsQuestion -> {
+                        if (remainsQuestion.getRectification() != null)
+                            rectificationRepository.delete(remainsQuestion.getRectification());
+                    });
+                    // 清理遗留问题
+                    remainsQuestionRepository.delete(remainsQuestionList);
+                });
+                // 清理reportItems
+                reportItemsRepository.delete(reportItemsList);
+            }
+        }
     }
 }

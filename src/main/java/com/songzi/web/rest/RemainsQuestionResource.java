@@ -179,9 +179,9 @@ public class RemainsQuestionResource {
     @GetMapping("/remains-questions/getCountRectification/{checkItemId}")
     @Timed
     @ApiOperation("整改分析")
-    public ResponseEntity<List<Map<String, Object>>> getCountRectification(@PathVariable Long checkItemId) {
+    public List<Map<String, Object>> getCountRectification(@PathVariable Long checkItemId) {
         log.debug("Request to count Rectification by checkItemId : {}", checkItemId);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(remainsQuestionService.countRectification(checkItemId)));
+        return remainsQuestionService.countRectification(checkItemId);
     }
 
 }
