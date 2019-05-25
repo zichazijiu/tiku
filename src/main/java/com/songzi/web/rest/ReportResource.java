@@ -145,6 +145,7 @@ public class ReportResource {
 
     /**
      * 获取报告的提报概览信息
+     *
      * @param reportId
      * @param checkItemType
      * @return
@@ -198,14 +199,26 @@ public class ReportResource {
     @ApiOperation("提报项目整体检查")
     public ResponseEntity<?> reportSubmitCheck(@RequestParam Long reportId, @RequestBody List<ReportItems> reportItemsList) {
         log.debug("检查{}报告", reportId);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportService.checkReport(reportId, reportItemsList)));
+        try {
+            reportService.checkReport(reportId, reportItemsList);
+        } catch (BadRequestAlertException e) {
+            String msg = e.getLocalizedMessage();
+            return ResponseEntity.badRequest().body(msg);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/reports/check")
     @Timed
     @ApiOperation("提报项目单项检查")
     public ResponseEntity<?> reportCheck(@RequestParam String login, @RequestParam Long checkItemId, @RequestParam String level) {
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reportService.checkReport(login, checkItemId, level)));
+        try {
+            reportService.checkReport(login, checkItemId, level);
+        } catch (BadRequestAlertException e) {
+            String msg = e.getLocalizedMessage();
+            return ResponseEntity.badRequest().body(msg);
+        }
+        return ResponseEntity.ok().build();
     }
 
 }
