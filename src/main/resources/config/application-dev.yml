@@ -32,8 +32,8 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://39.98.63.130:3306/tiku?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: root
+        url: jdbc:mysql://172.16.211.134:3306/TIKU?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: tikudb
         password: Q!w2e3r4
         hikari:
             data-source-properties:

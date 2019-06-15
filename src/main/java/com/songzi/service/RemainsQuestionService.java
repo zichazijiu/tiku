@@ -89,7 +89,7 @@ public class RemainsQuestionService {
      * 根据组织编号进行问题分布统计
      *
      * @param departmentId
-     * @returnC Map<String               ,                               Integer>
+     * @returnC Map<String,Integer>
      */
     public List<Map<String, Object>> countByDepartmentId(Long departmentId) {
         log.debug("Request to count RemainsQuestion by departmentId : {}", departmentId);

@@ -355,4 +355,8 @@ public class DepartmentService {
             .collect(Collectors.toList());
 
     }
+
+    public List<DepartmentDTO> findAllByProviceDept() {
+        return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),"8602__").stream().map(departmentMapper::toDto).collect(Collectors.toList());
+    }
 }

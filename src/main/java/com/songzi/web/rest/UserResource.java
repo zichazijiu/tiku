@@ -5,6 +5,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.songzi.domain.User;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
+import com.songzi.security.SecurityUtils;
 import com.songzi.service.DepartmentService;
 import com.songzi.service.MailService;
 import com.songzi.service.UserService;
@@ -221,16 +222,25 @@ public class UserResource {
 
     /**
      * 根据用户的登陆名获取用户的创建的部门
+     *
      * @return
      */
     @GetMapping("/users/created/departments")
     @Timed
     @ApiOperation("查询用户创建的机构")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartmentsByCreatedUser(@RequestParam("login") String login) {
-        List < DepartmentDTO > departmentDTOList = null;
+        List<DepartmentDTO> departmentDTOList = null;
         if (StringUtils.isNotEmpty(login)) {
             User user = userService.findOne(login);
-            departmentDTOList = departmentSerivce.findAllByCreatedUser(user);
+            if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.BU_ADMIN)) {
+                // 查询出省的机构
+                departmentDTOList= departmentSerivce.findAllByProviceDept();
+                List<DepartmentDTO> departmentDTOList2 = departmentSerivce.findAllByCreatedUser(user);
+                departmentDTOList.addAll(departmentDTOList2);
+
+            } else {
+                departmentDTOList = departmentSerivce.findAllByCreatedUser(user);
+            }
         }
         return new ResponseEntity<>(departmentDTOList, HttpStatus.OK);
     }
