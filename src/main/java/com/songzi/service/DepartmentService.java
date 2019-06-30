@@ -33,6 +33,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The type Department service.
+ */
 @Service
 @Transactional
 public class DepartmentService {
@@ -55,8 +58,8 @@ public class DepartmentService {
     /**
      * 新建机构部门
      *
-     * @param departmentVM
-     * @return
+     * @param departmentVM the department vm
+     * @return department dto
      */
     public DepartmentDTO insert(DepartmentVM departmentVM) {
         Department department = departmentVMMapper.toEntity(departmentVM);
@@ -95,8 +98,8 @@ public class DepartmentService {
     /**
      * 更新机构部门
      *
-     * @param departmentVM
-     * @return
+     * @param departmentVM the department vm
+     * @return department dto
      */
     public DepartmentDTO update(DepartmentVM departmentVM) {
         Department department = departmentRepository.findOne(departmentVM.getId());
@@ -114,8 +117,8 @@ public class DepartmentService {
     /**
      * 根据条件查询机构部门
      *
-     * @param departmentQueryVM
-     * @return
+     * @param departmentQueryVM the department query vm
+     * @return all all
      */
     public List<DepartmentDTO> getAll(DepartmentQueryVM departmentQueryVM) {
 
@@ -136,6 +139,11 @@ public class DepartmentService {
         }).stream().map(departmentMapper::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * Delete.
+     *
+     * @param id the id
+     */
     public void delete(Long id) {
 //        List<Examiner> examinerList = examinerRepository.findAllByDepartmentId(id);
 //        if (examinerList != null && examinerList.size() > 0) {
@@ -161,8 +169,8 @@ public class DepartmentService {
     /**
      * 根据用户ID查找部门树
      *
-     * @param userId
-     * @return
+     * @param userId the user id
+     * @return department tree by user id
      */
     public List<Department> getDepartmentTreeByUserId(Long userId) {
         Department department = this.getDepartmentByUserId(userId);
@@ -177,8 +185,8 @@ public class DepartmentService {
     /**
      * 根据用户ID获取部门信息
      *
-     * @param userId
-     * @return
+     * @param userId the user id
+     * @return department by user id
      */
     public Department getDepartmentByUserId(Long userId) {
         return departmentRepository.findOneByUserId(userId);
@@ -187,9 +195,9 @@ public class DepartmentService {
     /**
      * 根据部门ID查询子部门
      *
-     * @param deptId
-     * @param level
-     * @return
+     * @param deptId the dept id
+     * @param level  the level
+     * @return child department by id
      */
     public List<Department> getChildDepartmentById(Long deptId, int level) {
         Department department = departmentRepository.findOne(deptId);
@@ -206,9 +214,8 @@ public class DepartmentService {
     /**
      * 更新部门用户
      *
-     * @param departmentId
-     * @param userIds
-     * @return
+     * @param departmentId the department id
+     * @param userIds      the user ids
      */
     public void updateDepartmentUser(Long departmentId, Long[] userIds) {
         Department department = departmentRepository.findOne(departmentId);
@@ -235,9 +242,9 @@ public class DepartmentService {
     /**
      * 根据部门ID获取用户信息
      *
-     * @param pageable
-     * @param departmentId
-     * @return
+     * @param pageable     the pageable
+     * @param departmentId the department id
+     * @return page page
      */
     public Page<UserDTO> findAllByDepartment(Pageable pageable, Long departmentId) {
         Department department = departmentRepository.findOne(departmentId);
@@ -247,9 +254,9 @@ public class DepartmentService {
     /**
      * 根据部门ID获取用户信息包含子部门
      *
-     * @param pageable
-     * @param departmentId
-     * @return
+     * @param pageable     the pageable
+     * @param departmentId the department id
+     * @return page page
      */
     public Page<UserDTO> findAllByDepartmentWithChild(Pageable pageable, Long departmentId) {
         // 获取当前用户的部门ID
@@ -263,7 +270,7 @@ public class DepartmentService {
     /**
      * 根据登录用户获取部门列表
      *
-     * @return
+     * @return list
      */
     public List<DepartmentDTO> finAllByUser() {
         User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
@@ -311,8 +318,8 @@ public class DepartmentService {
     /**
      * 根据用户部门查询子部门的用户信息
      *
-     * @param department
-     * @return
+     * @param department the department
+     * @return child department user by department
      */
     public List<User> getChildDepartmentUserByDepartment(Department department) {
         if (department != null) {
@@ -326,8 +333,8 @@ public class DepartmentService {
     /**
      * 根据部门Code查询子部门用户信息
      *
-     * @param code
-     * @return
+     * @param code the code
+     * @return child department user by department code
      */
     public List<User> getChildDepartmentUserByDepartmentCode(String code) {
         if (StringUtils.isEmpty(code)) {
@@ -341,7 +348,8 @@ public class DepartmentService {
     /**
      * 根据创建者查询部门信息
      *
-     * @return
+     * @param createdUser the created user
+     * @return list
      */
     public List<DepartmentDTO> findAllByCreatedUser(User createdUser) {
         if (createdUser == null) {
@@ -356,6 +364,11 @@ public class DepartmentService {
 
     }
 
+    /**
+     * Find all by provice dept list.
+     *
+     * @return the list
+     */
     public List<DepartmentDTO> findAllByProviceDept() {
         return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),"8602__").stream().map(departmentMapper::toDto).collect(Collectors.toList());
     }

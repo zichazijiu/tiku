@@ -48,5 +48,10 @@
                   separator=";"
                   tableName="menu_authority">
         </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/check_item.csv"
+                  separator=";"
+                  tableName="check_item">
+        </loadData>
     </changeSet>
 </databaseChangeLog>
