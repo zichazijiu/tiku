@@ -102,8 +102,7 @@ public class HomePageService {
                 if (codes.length > 2) {
                     parentCode = codes[codes.length - 2];
                 }
-                List<Department> allDepartmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
-                departmentList.addAll(allDepartmentList);
+                departmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
             }
 
             // 部门树

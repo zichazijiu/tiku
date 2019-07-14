@@ -1,12 +1,16 @@
 package com.songzi.service;
 
+import com.songzi.domain.CheckItem;
 import com.songzi.domain.Department;
 import com.songzi.domain.RemainsQuestion;
 import com.songzi.domain.User;
+import com.songzi.domain.enumeration.DeleteFlag;
+import com.songzi.repository.CheckItemRepository;
 import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
+import net.bytebuddy.asm.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,8 @@ public class RemainsQuestionService {
     private DepartmentService departmentSerivce;
 
     @Autowired UserService userService;
+
+    @Autowired private CheckItemRepository checkItemRepository;
 
     private final RemainsQuestionRepository remainsQuestionRepository;
 
@@ -122,7 +128,7 @@ public class RemainsQuestionService {
         if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.USER)) {
             return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
         } else {
-            return remainsQuestionRepository.countByMainCheckItemId(checkItemId, userIds);
+          return remainsQuestionRepository.countByMainCheckItemId(checkItemId,userIds);
         }
     }
 
