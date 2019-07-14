@@ -125,10 +125,10 @@ public class RemainsQuestionService {
         if (userIds.isEmpty()){
             return null;
         }
-        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.USER)) {
-            return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.CHU_ADMIN)) {
+            return remainsQuestionRepository.countByMainCheckItemId(checkItemId,userIds);
         } else {
-          return remainsQuestionRepository.countByMainCheckItemId(checkItemId,userIds);
+            return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
         }
     }
 
@@ -154,7 +154,12 @@ public class RemainsQuestionService {
         if (userIds.isEmpty()){
             return null;
         }
-        return remainsQuestionRepository.countRectification(checkItemId, userIds);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.CHU_ADMIN)) {
+            return remainsQuestionRepository.countMainCheckItemRectification(checkItemId, userIds);
+        } else {
+            return remainsQuestionRepository.countRectification(checkItemId, userIds);
+        }
+
     }
 
 }

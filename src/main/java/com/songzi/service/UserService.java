@@ -56,7 +56,8 @@ public class UserService {
     @Autowired
     private DepartmentService departmentSerivce;
 
-    @Autowired private ReportService reportService;
+    @Autowired
+    private ReportService reportService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
@@ -400,10 +401,12 @@ public class UserService {
             || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.TING_ADMIN)
             || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.BU_ADMIN)
             || SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
-            // 如果是处级以上的用户需要获取下级处级管理员统计的信息和下级普通用户的信息
-            List<User> subAdminUserList = departmentSerivce.getChildDepartmentUserByDepartmentCode(department.getCode() + "__");
+            // 如果是处级以上的用户需要获取下级管理员统计
             userList = departmentSerivce.getChildDepartmentUserByDepartmentCode(department.getCode() + "____");
+            List<User> subAdminUserList = departmentSerivce.getChildDepartmentUserByDepartmentCode(department.getCode() + "__");
             userList.addAll(subAdminUserList);
+            // 去掉普通用户的角色
+            userList.removeIf(user -> user.getAuthorities().stream().anyMatch(authority -> authority.getName().equals(AuthoritiesConstants.USER)));
         } else {
             throw new BadRequestAlertException("用户没有权限", this.getClass().getName(), "用户没有权限");
         }

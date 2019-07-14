@@ -379,7 +379,7 @@ public class ReportService {
                 // 子项目有C的项目
                 ReportItems reportItems = reportItemsCMap.get(key);
                 if (reportItems != null && "A".equals(item.getLevel())) {
-                    throw new BadRequestAlertException("请注意考评项目[" + reportItemsCMap.get(key).getCheckItem().getContent() + "]的下级部门有评分C，您选择了评分" + item.getLevel(), this.getClass().getName(), "下级有C考评项目");
+                    throw new BadRequestAlertException("请注意考评项目[" + reportItems.getCheckItem().getContent() + "]的下级部门有评分C，您选择了评分" + item.getLevel(), this.getClass().getName(), "下级有C考评项目");
                 }
             });
 

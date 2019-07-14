@@ -55,4 +55,7 @@ public interface RemainsQuestionRepository extends JpaRepository<RemainsQuestion
     @Query(value = "SELECT remains_question.question_type AS questionType, SUM(if(ISNULL(remains_question.rectification_id) = 0, 1, 0)) AS completeQuantity, SUM(if(ISNULL(remains_question.rectification_id) = 1, 1, 0)) AS uncompleteQuantity FROM remains_question, report, report_items WHERE remains_question.report_items_id = report_items.id AND report.id = report_items.report_id AND report_items.check_item_id = :checkItemId AND report.user_id IN :userIds GROUP BY remains_question.question_type", nativeQuery = true)
     List<Map<String, Object>> countRectification(@Param("checkItemId") Long checkItemId, @Param("userIds") Set<Long> userIds);
 
+    @Query(value = "SELECT remains_question.question_type AS questionType, SUM(if(ISNULL(remains_question.rectification_id) = 0, 1, 0)) AS completeQuantity, SUM(if(ISNULL(remains_question.rectification_id) = 1, 1, 0)) AS uncompleteQuantity FROM remains_question, report, report_items WHERE remains_question.report_items_id = report_items.id AND report.id = report_items.report_id AND report_items.check_item_id IN (select id from check_item where check_item.parent_id=:checkItemId) AND report.user_id IN :userIds GROUP BY remains_question.question_type", nativeQuery = true)
+    List<Map<String, Object>> countMainCheckItemRectification(@Param("checkItemId") Long checkItemId, @Param("userIds") Set<Long> userIds);
+
 }
