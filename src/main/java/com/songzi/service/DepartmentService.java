@@ -183,6 +183,19 @@ public class DepartmentService {
     }
 
     /**
+     * 根据codes获取部门
+     * @param codes
+     * @return
+     */
+    public List<Department> getDepartmentByCodes(String... codes) {
+        if (codes != null && codes.length >0) {
+            Set<String> parentCodes = Stream.of(codes).collect(Collectors.toSet());
+            return departmentRepository.findDepartmentTreeByCodes(parentCodes);
+        }
+        return null;
+    }
+
+    /**
      * 根据用户ID获取部门信息
      *
      * @param userId the user id
@@ -372,4 +385,9 @@ public class DepartmentService {
     public List<DepartmentDTO> findAllByProviceDept() {
         return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),"8602__").stream().map(departmentMapper::toDto).collect(Collectors.toList());
     }
+
+    public List<DepartmentDTO> findDepartmentForAdmin() {
+        return departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(),"86").stream().map(departmentMapper::toDto).collect(Collectors.toList());
+    }
+
 }

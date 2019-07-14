@@ -94,9 +94,16 @@ public class HomePageService {
                 String code = user.getDepartment().getCode();
                 departmentList = getHomePageDepartmentListByCode(code, 14);
             } else { // 普通用户
-                List<Department> allDepartmentList = departmentSerivce.getDepartmentTreeByUserId(user.getId());
                 // FIXME：新的需求是只给最后两级别的树
-                departmentList = allDepartmentList.subList(allDepartmentList.size() - 2, allDepartmentList.size());
+                Department department = user.getDepartment();
+                String deptCode = department.getCode();
+                String[] codes = department.getParentCodes().split(",");
+                String parentCode = deptCode;
+                if (codes.length > 2) {
+                    parentCode = codes[codes.length - 2];
+                }
+                List<Department> allDepartmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
+                departmentList.addAll(allDepartmentList);
             }
 
             // 部门树

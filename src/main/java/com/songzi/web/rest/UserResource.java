@@ -232,14 +232,19 @@ public class UserResource {
         List<DepartmentDTO> departmentDTOList = null;
         if (StringUtils.isNotEmpty(login)) {
             User user = userService.findOne(login);
-            if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.BU_ADMIN)) {
+            if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+                departmentDTOList = departmentSerivce.findDepartmentForAdmin();
+            }
+            else if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.BU_ADMIN)) {
                 // 查询出省的机构
                 departmentDTOList= departmentSerivce.findAllByProviceDept();
-                List<DepartmentDTO> departmentDTOList2 = departmentSerivce.findAllByCreatedUser(user);
-                departmentDTOList.addAll(departmentDTOList2);
 
             } else {
-                departmentDTOList = departmentSerivce.findAllByCreatedUser(user);
+                departmentDTOList = new ArrayList<>();
+            }
+            List<DepartmentDTO> departmentDTOList2 = departmentSerivce.findAllByCreatedUser(user);
+            if (departmentDTOList2!=null) {
+                departmentDTOList.addAll(departmentDTOList2);
             }
         }
         return new ResponseEntity<>(departmentDTOList, HttpStatus.OK);
