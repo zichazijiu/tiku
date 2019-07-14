@@ -5,6 +5,7 @@ import com.songzi.domain.RemainsQuestion;
 import com.songzi.domain.User;
 import com.songzi.repository.RemainsQuestionRepository;
 import com.songzi.repository.UserRepository;
+import com.songzi.security.AuthoritiesConstants;
 import com.songzi.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +119,11 @@ public class RemainsQuestionService {
         if (userIds.isEmpty()){
             return null;
         }
-        return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.USER)) {
+            return remainsQuestionRepository.countByCheckItemId(checkItemId, userIds);
+        } else {
+            return remainsQuestionRepository.countByMainCheckItemId(checkItemId, userIds);
+        }
     }
 
     /**

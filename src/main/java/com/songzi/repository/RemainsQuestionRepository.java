@@ -40,6 +40,15 @@ public interface RemainsQuestionRepository extends JpaRepository<RemainsQuestion
     List<Map<String, Object>> countByCheckItemId(@Param("checkItemId") Long checkItemId, @Param("userIds") Set<Long> userIds);
 
     /**
+     * 根据主CheckItemId统计
+     * @param checkItemId
+     * @param userIds
+     * @return
+     */
+    @Query(value = "SELECT DATE_FORMAT( remains_question.created_time , '%Y-%m-%d') AS date , remains_question.question_type AS questionType , count(remains_question.id) AS total FROM remains_question , report , report_items , check_item WHERE remains_question.report_items_id = report_items.id AND report.id = report_items.report_id AND report_items.check_item_id = check_item.id AND check_item.parent_id = :checkItemId AND report.user_id IN :userIds GROUP BY date , remains_question.question_type", nativeQuery = true)
+    List<Map<String, Object>> countByMainCheckItemId(@Param("checkItemId") Long checkItemId, @Param("userIds") Set<Long> userIds);
+
+    /**
      * 根据自评项进行整改统计
      *
      * @param checkItemId
