@@ -34,6 +34,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByLogin(String login);
 
+    Optional<User> findOneByCertDn(String certDn);
+
     @EntityGraph(attributePaths = {"authorities", "department"})
     Optional<User> findOneWithAuthoritiesById(Long id);
 

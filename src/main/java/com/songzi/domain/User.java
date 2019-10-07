@@ -23,7 +23,6 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "jhi_user")
-
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -68,6 +67,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Size(max = 256)
     @Column(name = "image_url", length = 256)
     private String imageUrl;
+
+    @Size(max = 256)
+    @Column(name = "cert_dn", length = 256)
+    private String certDn;
 
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
@@ -204,7 +207,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
+    public String getCertDn() {
+        return certDn;
+    }
 
+    public void setCertDn(String certDn) {
+        this.certDn = certDn;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -231,6 +240,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
+            ", certDn='" + certDn + '\'' +
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +

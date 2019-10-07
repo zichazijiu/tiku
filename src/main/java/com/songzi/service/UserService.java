@@ -375,6 +375,15 @@ public class UserService {
         return userRepository.findOneByLogin(login).get();
     }
 
+    public User findOneByCert(String certDn) {
+        Optional<User> optionalUser = userRepository.findOneByCertDn(certDn);
+        if (optionalUser.isPresent())
+        {
+            return optionalUser.get();
+        }
+        return null;
+    }
+
     /**
      * 根据创建者查出用户信息
      *

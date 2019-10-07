@@ -39,6 +39,9 @@ public class UserDTO {
     @Size(max = 256)
     private String imageUrl;
 
+    @Size(max = 256)
+    private String certDn;
+
     private boolean activated = false;
 
     @Size(min = 2, max = 6)
@@ -68,6 +71,7 @@ public class UserDTO {
         this.email = user.getEmail();
         this.activated = user.getActivated();
         this.imageUrl = user.getImageUrl();
+        this.certDn = user.getCertDn();
         this.langKey = user.getLangKey();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
@@ -191,6 +195,7 @@ public class UserDTO {
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
+            ", certDn='" + certDn + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
             ", createdBy=" + createdBy +
@@ -208,5 +213,13 @@ public class UserDTO {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getCertDn() {
+        return certDn;
+    }
+
+    public void setCertDn(String certDn) {
+        this.certDn = certDn;
     }
 }
