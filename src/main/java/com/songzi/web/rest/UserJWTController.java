@@ -40,7 +40,7 @@ public class UserJWTController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserJWTController.class);
 
-    private static final String COOKIE_USER_NAME = "KOAL_CERT_G";
+    private static final String COOKIE_USER_NAME_PINYIN = "KOAL_CERT_ALIAS";
 
     @Autowired
     private UserService userService;
@@ -82,7 +82,7 @@ public class UserJWTController {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 String cookieName = cookie.getName();
-                if (COOKIE_USER_NAME.equals(cookieName)) {
+                if (COOKIE_USER_NAME_PINYIN.equals(cookieName)) {
                     String certDn = cookie.getValue();
                     LOG.debug("cert user name: {}", certDn);
                     User user = userService.findOneByCert(certDn);
