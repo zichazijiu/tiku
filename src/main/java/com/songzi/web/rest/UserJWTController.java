@@ -2,10 +2,12 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.songzi.domain.Department;
 import com.songzi.domain.User;
 import com.songzi.security.jwt.JWTConfigurer;
 import com.songzi.security.jwt.TokenProvider;
 import com.songzi.service.UserService;
+import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.vm.LoginVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +47,7 @@ public class UserJWTController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserJWTController.class);
 
-    private static final String COOKIE_USER_NAME_PINYIN = "KOAL_CERT_ALIAS";
+    private static final String KOAL_CERT_CN = "KOAL_CERT_CN";
 
     @Autowired
     private UserService userService;
@@ -79,37 +86,63 @@ public class UserJWTController {
     public ResponseEntity<JWTToken> authorizeByCert(HttpServletRequest request) {
         // 1. 从cookie中拿到certDn信息
         Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                String cookieName = cookie.getName();
-                if (COOKIE_USER_NAME_PINYIN.equals(cookieName)) {
-                    String certDn = cookie.getValue();
-                    LOG.debug("cert user name: {}", certDn);
-                    User user = userService.findOneByCert(certDn);
-                    if (user != null) {
-                        // 加载用户权限
-                        User authorizedUser = userService.getUserWithAuthorities(user.getId()).get();
-                        // 封装权限集合
-                        List<GrantedAuthority> grantedAuthorities = authorizedUser.getAuthorities().stream()
-                            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-                            .collect(Collectors.toList());
-                        // 封装用户
-                        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(authorizedUser.getLogin(), "", grantedAuthorities);
-                        // 授权
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, "", grantedAuthorities);
-                        // 生产jwt
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        String jwt = tokenProvider.createToken(authentication, false);
-                        HttpHeaders httpHeaders = new HttpHeaders();
-                        httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-                        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
-                    }
-                }
+
+        Map<String, String> cookiesMap = cookiesMap(cookies);
+
+        if (cookiesMap != null && cookiesMap.size() > 0) {
+            // 通用证书名
+            String cn = cookiesMap.get(KOAL_CERT_CN);
+            LOG.debug("User's CN: {}", cn);
+            User user = userService.findOneByCert(cn);
+            // 没有证书用户，注册。
+            if (user == null) {
+                // email
+                String email = cookiesMap.get("KOAL_CERT_E");
+                // 部门代号
+                String bu = cookiesMap.get("KOAL_CERT_OU");
+                // 用户拼音名
+                String pinyin = cookiesMap.get("KOAL_CERT_ALIAS");
+                // 用户姓名
+                String name = cookiesMap.get("KOAL_CERT_G");
+                UserDTO userDTO = new UserDTO();
+                userDTO.setEmail(email);
+                userDTO.setLogin(pinyin);
+                userDTO.setFirstName(pinyin);
+                userDTO.setLastName("");
+                userDTO.setCertDn(cn);
+                userDTO.setDepartment(new Department());
+                user = userService.createUser(userDTO);
             }
+            // 加载用户权限
+            User authorizedUser = userService.getUserWithAuthorities(user.getId()).get();
+            // 封装权限集合
+            List<GrantedAuthority> grantedAuthorities = authorizedUser.getAuthorities().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+                .collect(Collectors.toList());
+            // 封装用户
+            org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(authorizedUser.getLogin(), "", grantedAuthorities);
+            // 授权
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, "", grantedAuthorities);
+            // 生产jwt
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = tokenProvider.createToken(authentication, false);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
         }
 
         // 认证失败
         return new ResponseEntity<>(null, null, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * cookes convert to map<String,String>
+     *
+     * @param cookies cookies
+     * @return map
+     */
+    private Map<String, String> cookiesMap(Cookie[] cookies) {
+        return Arrays.stream(cookies).collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
     }
 
     /**
