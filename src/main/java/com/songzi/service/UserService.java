@@ -3,7 +3,6 @@ package com.songzi.service;
 import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
 import com.songzi.domain.Department;
-import com.songzi.domain.Report;
 import com.songzi.domain.User;
 import com.songzi.repository.AuthorityRepository;
 import com.songzi.repository.DepartmentRepository;
@@ -21,6 +20,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,6 +155,10 @@ public class UserService {
         user.setImageUrl(userDTO.getImageUrl());
         if (!StringUtils.isEmpty(userDTO.getCertDn())){
             user.setCertDn(userDTO.getCertDn());
+        }
+        if (userDTO.getAuthorities() != null){
+            Set<Authority> collect = userDTO.getAuthorities().stream().map(Authority::new).collect(Collectors.toSet());
+            user.setAuthorities(collect);
         }
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language

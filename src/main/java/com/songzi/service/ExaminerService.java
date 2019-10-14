@@ -1,13 +1,12 @@
 package com.songzi.service;
 
-import com.songzi.domain.*;
+import com.songzi.domain.Department;
+import com.songzi.domain.Examiner;
+import com.songzi.domain.User;
 import com.songzi.domain.enumeration.AuthoritiesType;
-import com.songzi.domain.enumeration.Level;
-import com.songzi.domain.enumeration.LogType;
 import com.songzi.domain.enumeration.Sex;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.ExaminerRepository;
-import com.songzi.security.SecurityUtils;
 import com.songzi.service.dto.ExaminerDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.service.mapper.ExaminerMapper;
@@ -28,7 +27,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

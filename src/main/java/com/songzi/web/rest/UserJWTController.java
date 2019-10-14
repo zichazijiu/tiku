@@ -4,10 +4,13 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.songzi.domain.Department;
 import com.songzi.domain.User;
+import com.songzi.domain.enumeration.AuthoritiesType;
 import com.songzi.security.jwt.JWTConfigurer;
 import com.songzi.security.jwt.TokenProvider;
 import com.songzi.service.UserService;
 import com.songzi.service.dto.UserDTO;
+import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.errors.ErrorConstants;
 import com.songzi.web.rest.vm.LoginVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +90,10 @@ public class UserJWTController {
         if (cookiesMap != null && cookiesMap.size() > 0) {
             // 通用证书名
             String cn = cookiesMap.get(KOAL_CERT_CN);
+            if (StringUtils.isEmpty(cn)){
+                // 认证失败
+                throw new BadRequestAlertException(ErrorConstants.INVALID_CERT, this.getClass().getName(), "没有证书或者证书无效");
+            }
             LOG.debug("User's CN: {}", cn);
             User user = userService.findOneByCert(cn);
             // 没有证书用户，注册。
@@ -110,6 +112,9 @@ public class UserJWTController {
                 userDTO.setFirstName(pinyin);
                 userDTO.setLastName("");
                 userDTO.setCertDn(cn);
+                Set<String> authorities = new HashSet<>(1);
+                authorities.add(AuthoritiesType.ROLE_USER.name());
+                userDTO.setAuthorities(authorities);
                 userDTO.setDepartment(new Department());
                 user = userService.createUser(userDTO);
             }
@@ -132,7 +137,7 @@ public class UserJWTController {
         }
 
         // 认证失败
-        return new ResponseEntity<>(null, null, HttpStatus.UNAUTHORIZED);
+        throw new BadRequestAlertException(ErrorConstants.INVALID_CERT, this.getClass().getName(), "没有证书或者证书无效");
     }
 
     /**
@@ -142,6 +147,10 @@ public class UserJWTController {
      * @return map
      */
     private Map<String, String> cookiesMap(Cookie[] cookies) {
+        if (cookies == null || cookies.length ==0)
+        {
+            return null;
+        }
         return Arrays.stream(cookies).collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
     }
 
