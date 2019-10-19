@@ -24,6 +24,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
 
+
     private String secretKey;
 
     private long tokenValidityInMilliseconds;
