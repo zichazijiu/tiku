@@ -98,25 +98,27 @@ public class UserJWTController {
             User user = userService.findOneByCert(cn);
             // 没有证书用户，注册。
             if (user == null) {
-                // email
-                String email = cookiesMap.get("KOAL_CERT_E");
-                // 部门代号
-                String bu = cookiesMap.get("KOAL_CERT_OU");
-                // 用户拼音名
-                String pinyin = cookiesMap.get("KOAL_CERT_ALIAS");
-                // 用户姓名
-                String name = cookiesMap.get("KOAL_CERT_G");
-                UserDTO userDTO = new UserDTO();
-                userDTO.setEmail(email);
-                userDTO.setLogin(pinyin);
-                userDTO.setFirstName(pinyin);
-                userDTO.setLastName("");
-                userDTO.setCertDn(cn);
-                Set<String> authorities = new HashSet<>(1);
-                authorities.add(AuthoritiesType.ROLE_USER.name());
-                userDTO.setAuthorities(authorities);
-                userDTO.setDepartment(new Department());
-                user = userService.createUser(userDTO);
+                throw new BadRequestAlertException(ErrorConstants.INVALID_CERT, this.getClass().getName(), "没有证书或者证书无效");
+
+//                // email
+//                String email = cookiesMap.get("KOAL_CERT_E");
+//                // 部门代号
+//                String bu = cookiesMap.get("KOAL_CERT_OU");
+//                // 用户拼音名
+//                String pinyin = cookiesMap.get("KOAL_CERT_ALIAS");
+//                // 用户姓名
+//                String name = cookiesMap.get("KOAL_CERT_G");
+//                UserDTO userDTO = new UserDTO();
+//                userDTO.setEmail(email);
+//                userDTO.setLogin(pinyin);
+//                userDTO.setFirstName(pinyin);
+//                userDTO.setLastName("");
+//                userDTO.setCertDn(cn);
+//                Set<String> authorities = new HashSet<>(1);
+//                authorities.add(AuthoritiesType.ROLE_USER.name());
+//                userDTO.setAuthorities(authorities);
+//                userDTO.setDepartment(new Department());
+//                user = userService.createUser(userDTO);
             }
             // 加载用户权限
             User authorizedUser = userService.getUserWithAuthorities(user.getId()).get();
