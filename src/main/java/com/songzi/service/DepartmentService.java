@@ -66,7 +66,7 @@ public class DepartmentService {
         department.setDepartmentStatus("NORMAL");
         department.setDepartmentType("NORMAL"); // NORMAL的部门机构可以增加用户
         department = departmentRepository.save(department);
-        // 如果code的长度是8或者12增加下级 "直属机关单位" "下属保密机构"
+        // 如果code的长度是8或者12增加下级 "直属机关单位" "下属机构"
         int length = department.getCode().length();
         String codeType = department.getCode().substring(length-4);
         if (codeType.startsWith("02") && (length == 6 || length == 10)) {
@@ -82,7 +82,7 @@ public class DepartmentService {
             departmentListForSaved.add(dept01);
             // 增加"下属保密机构"
             Department dept02 = new Department();
-            dept02.setName("下属保密机构");
+            dept02.setName("下属机构");
             dept02.setParentId(department.getId());
             dept02.setCode(department.getCode() + "02");
             dept02.setParentCodes(department.getParentCodes() + "," + dept01.getCode());
