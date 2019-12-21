@@ -272,6 +272,10 @@ public class UserService {
         reportService.deleteReportByUser(id);
         User user = userRepository.findOne(id);
         if (user != null) {
+            // admin 和 system 不允许被删。
+            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+                return;
+            }
             this.deleteUser(user.getLogin());
         }
     }
