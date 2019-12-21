@@ -53,5 +53,10 @@
                   separator=";"
                   tableName="check_item">
         </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/check_item_release.csv"
+                  separator=";"
+                  tableName="check_item_release">
+        </loadData>
     </changeSet>
 </databaseChangeLog>
