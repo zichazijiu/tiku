@@ -274,7 +274,7 @@ public class UserService {
         if (user != null) {
             // admin 和 system 不允许被删。
             if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
-                return;
+                throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
             }
             this.deleteUser(user.getLogin());
         }

@@ -25,7 +25,7 @@ task webpack_test(type: YarnTask, dependsOn: 'yarn_install') {
 }
 
 task webpack(type: YarnTask, dependsOn: 'yarn_install') {
-    args = ["run", "webpack:prod"]
+//    args = ["run", "webpack:prod"]
 }
 
 war {
