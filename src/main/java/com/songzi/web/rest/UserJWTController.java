@@ -59,8 +59,8 @@ public class UserJWTController {
         this.authenticationManager = authenticationManager;
     }
 
-//    @PostMapping("/authenticate")
-//    @Timed
+    @PostMapping("/authenticate")
+    @Timed
     public ResponseEntity<JWTToken> authorize(@RequestBody LoginVM loginVM) {
 
         UsernamePasswordAuthenticationToken authenticationToken =

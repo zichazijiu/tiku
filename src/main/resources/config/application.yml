@@ -57,7 +57,7 @@ server:
         cookie:
             http-only: true
     port: 8080
-    context-path: /cfsms
+    context-path: /
 
 info:
     project:
