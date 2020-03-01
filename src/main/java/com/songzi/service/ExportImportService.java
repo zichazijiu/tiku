@@ -1,17 +1,15 @@
 package com.songzi.service;
 
-import com.alibaba.fastjson.JSON;
+import cc.kebei.expands.template.Template;
+import cc.kebei.expands.template.freemarker.FreemarkerTemplateRender;
 import com.alibaba.fastjson.JSONArray;
-import com.songzi.domain.Examiner;
-import com.songzi.domain.LogBackup;
-import com.songzi.domain.Subject;
-import com.songzi.domain.User;
+import com.songzi.TikuConstants;
+import com.songzi.domain.*;
 import com.songzi.domain.enumeration.*;
 import com.songzi.repository.ExaminerRepository;
 import com.songzi.repository.SubjectRepository;
 import com.songzi.repository.UserRepository;
 import com.songzi.security.SecurityUtils;
-import com.songzi.service.dto.ExaminerDTO;
 import com.songzi.service.dto.MultipleChoice;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
@@ -20,31 +18,43 @@ import com.songzi.web.rest.vm.SubjectVM;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
 @Transactional
@@ -493,4 +503,212 @@ public class ExportImportService {
                 bos.close();
         }
     }
+
+    @Autowired
+    private ReportService reportService;
+    @Autowired
+    private ReportItemsService reportItemsService;
+
+    @Transactional
+    public void importReport(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        if (!".doc".equals(extension)) {
+            log.debug("模板不匹配,只支持Word2003文件,后缀为doc");
+            throw new BadRequestAlertException("模板不匹配,只支持Word2003文件,后缀为doc", this.getClass().getName(), "格式不匹配");
+        }
+        // 处理doc格式 即office2003版本
+        POIFSFileSystem pfs = null;
+        HWPFDocument document = null;
+        try {
+            pfs = new POIFSFileSystem(file.getInputStream());
+            document = new HWPFDocument(pfs);
+            TableIterator iterator = new TableIterator(document.getRange());
+            Map<Integer, String> answerMap = new HashMap();
+            while (iterator.hasNext()) {
+                Table table = iterator.next();
+                // 遍历行，从第1行开始
+                int position = 1;
+                for (int i = 1; i < table.numRows(); i++) {
+                    TableRow row = table.getRow(i);
+                    if (row.numCells() == 5) {
+                        answerMap.put(position, row.getCell(4).text());
+                    }
+                    position++;
+                }
+            }
+            // 生成报告
+            Report report = new Report();
+            // 保存报告名称
+            report.setReportName("自查自纠");
+            ZonedDateTime now = Instant.now().atZone(ZoneOffset.ofHours(8));
+            // 报告创建时间
+            report.setCreatedTime(now);
+            // 报告时间
+            report.setReportTime(now);
+            // 保存报告人
+            User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
+            report.setReportUser(user.getLogin());
+            report.setUser(user);
+            // 报告状态
+            report.setReportStatus(ReportStatus.FINISH);
+            // 保存报告
+            Report report1 = reportService.save(report);
+            // 报告内容
+            for (int i = 1; i < 60; i++) {
+                String level = answerMap.get(i);
+                if (level != null && level.length() > 0) {
+                    CheckItem checkItem = new CheckItem();
+                    checkItem.setId((long) i);
+                    ReportItems items = new ReportItems();
+                    items.setLevel(level.trim());
+                    items.setCheckItem(checkItem);
+                    items.setReport(report1);
+                    // 保存提报信息
+                    reportItemsService.save(items);
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pfs != null) {
+                    pfs.close();
+                }
+                if (document != null) {
+                    document.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * 导出报告
+     *
+     * @param id report id
+     */
+    public void exportReport(String id, HttpServletRequest request, HttpServletResponse response) {
+        ByteArrayInputStream bis = null;
+        try {
+            Report report = reportService.findOne(Long.parseLong(id));
+            User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).get();
+            Resource resource = resourceLoader.getResource("classpath:templates/report-template.ftl");
+            Map<String, Object> dataMap = new HashMap<>();
+            // 设置报告部门
+            String department = "";
+            if (user.getDepartment() != null) {
+                department = user.getDepartment().getName();
+            }
+            dataMap.put("department", department);
+            // 设置报告日期
+            ZonedDateTime reportDate = DateTime.now().toGregorianCalendar().toZonedDateTime();
+            if (report.getReportTime() != null) {
+                reportDate = report.getReportTime();
+            }
+            dataMap.put("year", reportDate.getYear() + "");
+            dataMap.put("month", reportDate.getMonthValue() + "");
+            dataMap.put("day", reportDate.getDayOfMonth() + "");
+            // 设置报告答案
+            for (ReportItems item : report.getReportItems()) {
+                Long checkItemId = item.getCheckItem().getId();
+                String answer = item.getLevel();
+                dataMap.put("X" + checkItemId, answer.trim());
+            }
+            // Freemarker
+            String template = FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), UTF_8));
+            String result = Template.freemarker.compile(template).render(dataMap);
+            bis = new ByteArrayInputStream(result.getBytes(UTF_8));
+            // 编码文件名
+            String filename = "自查自评报告.doc";
+            String userAgent = request.getHeader("User-Agent");
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident") || userAgent.contains("Edge")) {
+                filename = URLEncoder.encode(filename, "UTF-8");
+            } else {
+                filename = new String(filename.getBytes(UTF_8), "ISO8859-1");
+            }
+            // 设置Response信息
+            response.reset();
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/msword");
+            response.setHeader("Content-disposition", "attachment;filename=" + filename);
+
+            org.apache.commons.io.IOUtils.copy(bis, response.getOutputStream());
+            response.flushBuffer();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) {
+                    bis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void readAnswerFromTable(Range range) {
+        TableIterator it = new TableIterator(range);
+        while (it.hasNext()) {
+            Table tb = it.next();
+            //迭代行，默认从0开始,可以依据需要设置i的值,改变起始行数，也可设置读取到那行，只需修改循环的判断条件即可
+            for (int i = 0; i < tb.numRows(); i++) {
+                TableRow tr = tb.getRow(i);
+                //迭代列，默认从0开始
+                for (int j = 0; j < tr.numCells(); j++) {
+                    //取得单元格
+                    TableCell td = tr.getCell(j);
+                    //取得单元格的内容
+                    for (int k = 0; k < td.numParagraphs(); k++) {
+                        Paragraph para = td.getParagraph(k);
+                        String s = para.text();
+                        //去除后面的特殊符号
+                        if (null != s && !"".equals(s)) {
+                            s = s.substring(0, s.length() - 1);
+                        }
+                        System.out.print(s + "\t");
+                    }
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public static Map<Integer, String> readReportAnswerMapFromRange(Range range) {
+        TableIterator iterator = new TableIterator(range);
+        Map<Integer, String> map = new HashMap();
+        while (iterator.hasNext()) {
+            Table table = iterator.next();
+            // 遍历行，从第1行开始
+            int position = 1;
+            for (int i = 1; i < table.numRows(); i++) {
+                TableRow row = table.getRow(i);
+                if (row.numCells() == 5) {
+                    map.put(position, row.getCell(4).text());
+                }
+                position++;
+            }
+        }
+        return map;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String filepath = "/Users/kebei/Desktop/自查自纠/自查自评结果.doc";
+        File file = new File(filepath);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        POIFSFileSystem pfs = new POIFSFileSystem(fileInputStream);
+        HWPFDocument document = new HWPFDocument(pfs);
+        readReportAnswerMapFromRange(document.getRange());
+    }
+
 }

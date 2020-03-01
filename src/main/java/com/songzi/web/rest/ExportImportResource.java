@@ -75,8 +75,19 @@ public class ExportImportResource {
     @GetMapping("/exportReport")
     @Timed
     @ApiOperation(value = "导出报告",httpMethod = "GET", response = Void.class, notes = "导出报告")
-    public ResponseEntity<?> exportReport() {
-        return null;
+    public void exportReport(HttpServletRequest request, HttpServletResponse response, @RequestParam("reportId") String id) {
+        exportImportService.exportReport(id,request,response);
+    }
+
+    @PostMapping("/importReport")
+    @Timed
+    @ApiOperation(value = "导入报告", httpMethod = "POST", response = Map.class, notes = "导入报告")
+    public ResponseEntity<?> importReport(@RequestParam MultipartFile file) {
+        exportImportService.importReport(file);
+        Map<String,String> result = new HashMap(2);
+        result.put("flag","success");
+        result.put("message","成功导入");
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
     @GetMapping("/exportModelExcel")

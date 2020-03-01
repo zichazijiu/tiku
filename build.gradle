@@ -200,11 +200,15 @@ dependencies {
     compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
     apt "org.mapstruct:mapstruct-processor:${mapstruct_version}"
     // https://mvnrepository.com/artifact/org.apache.poi/poi
-    compile group: 'org.apache.poi', name: 'poi', version: '3.15'
-
+    compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
-
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.1'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad
+    compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '4.0.1'
+    // https://mvnrepository.com/artifact/cc.kebei/onion-expands-template
+    compile group: 'cc.kebei', name: 'onion-expands-template', version: '3.0.5'
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
     testCompile "com.jayway.jsonpath:json-path"
     testCompile ("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'com.vaadin.external.google', module: 'android-json'

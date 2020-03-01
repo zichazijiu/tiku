@@ -72,10 +72,16 @@ public class TikuApp {
         if (env.getProperty("server.ssl.key-store") != null) {
             protocol = "https";
         }
+        String cfsmsHome = env.getProperty("user.home")+"/"+".cfsms";
+        if (env.getProperty("cfsms.home") != null) {
+            cfsmsHome = env.getProperty("cfsms.home");
+        }
+        TikuConstants.CFSMS_HOME = cfsmsHome;
         log.info("\n----------------------------------------------------------\n\t" +
                 "Application '{}' is running! Access URLs:\n\t" +
                 "Local: \t\t{}://localhost:{}\n\t" +
                 "External: \t{}://{}:{}\n\t" +
+                "Home: \t{}\n\t" +
                 "Profile(s): \t{}\n----------------------------------------------------------",
             env.getProperty("spring.application.name"),
             protocol,
@@ -83,6 +89,8 @@ public class TikuApp {
             protocol,
             InetAddress.getLocalHost().getHostAddress(),
             env.getProperty("server.port"),
+            TikuConstants.CFSMS_HOME,
             env.getActiveProfiles());
+
     }
 }
