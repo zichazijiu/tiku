@@ -1,0 +1,28 @@
+### 用户认证
+POST http://localhost:8080/cfsms/api/authenticate
+Content-Type: application/json
+
+{
+    "username": "user11@localhost",
+    "password": "user11"
+}
+
+> {% client.global.set("auth_token", response.body.id_token); %}
+
+### 导出报告
+GET http://localhost:8080/api/exportReport?reportId=1
+Authorization: Bearer {{auth_token}}
+
+<> /Users/kebei/Desktop/自查自纠/自查自评结果2.doc
+### 导入报告
+POST http://localhost:8080/cfsms/api/importReport
+Authorization: Bearer {{auth_token}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="自查自评结果.doc"
+
+< /Users/kebei/Desktop/自查自纠/自查自评结果.doc
+--WebAppBoundary--
+
+###

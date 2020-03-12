@@ -36,7 +36,7 @@ public class DomainUserDetailsService implements UserDetailsService {
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         Optional<User> userByEmailFromDatabase = userRepository.findOneWithAuthoritiesByEmail(lowercaseLogin);
         return userByEmailFromDatabase.map(user -> createSpringSecurityUser(lowercaseLogin, user)).orElseThrow(() ->
-            new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " + "database"));
+            new UsernameNotFoundException("用户 " + lowercaseLogin + " 不存在 "));
     }
 
 //    @Override
@@ -55,7 +55,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
         if (!user.getActivated()) {
-            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+            throw new UserNotActivatedException("用户 " + lowercaseLogin + " 需要审核通过才能登陆");
         }
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
             .map(authority -> new SimpleGrantedAuthority(authority.getName()))

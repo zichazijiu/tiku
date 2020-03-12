@@ -72,6 +72,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "cert_dn", length = 256)
     private String certDn;
 
+    @Size(max = 25)
+    @Column(name = "review_status", length = 25)
+    private String reviewStatus;
+
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
     @JsonIgnore
@@ -241,6 +245,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", certDn='" + certDn + '\'' +
+            ", reviewStatus='" + reviewStatus + '\'' +
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
@@ -253,5 +258,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(String reviewStatus) {
+        this.reviewStatus = reviewStatus;
     }
 }

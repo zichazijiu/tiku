@@ -1,9 +1,7 @@
 package com.songzi.service;
 
 import cc.kebei.expands.template.Template;
-import cc.kebei.expands.template.freemarker.FreemarkerTemplateRender;
 import com.alibaba.fastjson.JSONArray;
-import com.songzi.TikuConstants;
 import com.songzi.domain.*;
 import com.songzi.domain.enumeration.*;
 import com.songzi.repository.ExaminerRepository;
@@ -42,9 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -53,7 +49,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
@@ -623,13 +618,7 @@ public class ExportImportService {
             String result = Template.freemarker.compile(template).render(dataMap);
             bis = new ByteArrayInputStream(result.getBytes(UTF_8));
             // 编码文件名
-            String filename = "自查自评报告.doc";
-            String userAgent = request.getHeader("User-Agent");
-            if (userAgent.contains("MSIE") || userAgent.contains("Trident") || userAgent.contains("Edge")) {
-                filename = URLEncoder.encode(filename, "UTF-8");
-            } else {
-                filename = new String(filename.getBytes(UTF_8), "ISO8859-1");
-            }
+            String filename = Timestamp.from(reportDate.toInstant()).getTime() +".doc";
             // 设置Response信息
             response.reset();
             response.setCharacterEncoding("utf-8");

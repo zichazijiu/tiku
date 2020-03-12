@@ -19,6 +19,10 @@ public final class AuthoritiesConstants {
 
     public static final String TING_ADMIN = "ROLE_ADMIN_TING";
 
+    public static final String SECURITY = "ROLE_SECURITY";
+
+    public static final String AUDIT = "ROLE_AUDIT";
+
     private AuthoritiesConstants() {
     }
 }

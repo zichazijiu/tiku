@@ -193,7 +193,8 @@ public class UserResource {
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
-        userService.deleteUser(login);
+//        userService.deleteUser(login);
+        userService.deleteUserForReview(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
     }
 
@@ -203,7 +204,8 @@ public class UserResource {
     @ApiOperation("删除用户")
     public ResponseEntity<Void> deleteUser(@RequestParam Long id) {
         log.debug("REST request to delete User: {}", id);
-        userService.deleteUser(id);
+//        userService.deleteUser(id);
+        userService.deleteUserForReview(id);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", id + "")).build();
     }
 

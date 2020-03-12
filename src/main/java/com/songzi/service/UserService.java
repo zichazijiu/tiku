@@ -4,6 +4,8 @@ import com.songzi.config.Constants;
 import com.songzi.domain.Authority;
 import com.songzi.domain.Department;
 import com.songzi.domain.User;
+import com.songzi.domain.enumeration.ReviewAction;
+import com.songzi.domain.enumeration.ReviewStatus;
 import com.songzi.repository.AuthorityRepository;
 import com.songzi.repository.DepartmentRepository;
 import com.songzi.repository.UserRepository;
@@ -177,7 +179,8 @@ public class UserService {
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
-        user.setActivated(true);
+        user.setActivated(false); // 待审核
+        user.setReviewStatus(ReviewStatus.CREATE_REVIEW.name());
         // 添加部门
         if (userDTO.getDepartment().getId() != null) {
             user.setDepartment(departmentRepository.findOne(userDTO.getDepartment().getId()));
@@ -214,6 +217,22 @@ public class UserService {
     }
 
     /**
+     * 审核用户
+     * @param id
+     * @param reviewStatus
+     * @param isActivated
+     */
+    public void updateUser(Long id, ReviewStatus reviewStatus, boolean isActivated){
+        Optional.of(userRepository.findOne(id)).ifPresent(user -> {
+            user.setReviewStatus(reviewStatus.name());
+            user.setActivated(isActivated);
+            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            log.debug("Changed Information for User: {}", user);
+        });
+    }
+
+    /**
      * Update all information for a specific user, and return the modified user.
      *
      * @param userDTO user to update
@@ -231,6 +250,7 @@ public class UserService {
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
                 user.setCertDn(userDTO.getCertDn());
+                user.setReviewStatus(userDTO.getReviewStatus());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO.getAuthorities().stream()
@@ -255,7 +275,28 @@ public class UserService {
      */
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
+            // admin 和 system 不允许被删。
+            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+                throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
+            }
             userRepository.delete(user);
+            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            log.debug("Deleted User: {}", user);
+        });
+    }
+
+    /**
+     * 删除审核
+     * @param login
+     */
+    public void deleteUserForReview(String login) {
+        userRepository.findOneByLogin(login).ifPresent(user -> {
+            // admin 和 system 不允许被删。
+            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+                throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
+            }
+            user.setReviewStatus(ReviewStatus.DELETE_REVIEW.name());
             cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
             cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
             log.debug("Deleted User: {}", user);
@@ -268,8 +309,6 @@ public class UserService {
      * @param id
      */
     public void deleteUser(Long id) {
-        // 清除用户的报告
-        reportService.deleteReportByUser(id);
         User user = userRepository.findOne(id);
         if (user != null) {
             // admin 和 system 不允许被删。
@@ -277,6 +316,30 @@ public class UserService {
                 throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
             }
             this.deleteUser(user.getLogin());
+            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            log.debug("Deleted User: {}", user);
+        }
+        // 清除用户的报告
+        reportService.deleteReportByUser(id);
+        log.debug("Deleted User {}'s Report.", user);
+    }
+
+    /**
+     * 删除审核
+     * @param id
+     */
+    public void deleteUserForReview(Long id) {
+        User user = userRepository.findOne(id);
+        if (user != null) {
+            // admin 和 system 不允许被删。
+            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+                throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
+            }
+            user.setReviewStatus(ReviewStatus.DELETE_REVIEW.name());
+            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
+            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            log.debug("Deleted User: {}", user);
         }
     }
 
@@ -299,6 +362,35 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedAndReviewedUsers(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusIs(pageable, Constants.ANONYMOUS_USER,
+            ReviewStatus.NORMAL.name()).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedReviewUsersForReview(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusEndingWith(pageable, Constants.ANONYMOUS_USER,
+            "REVIEW").map(UserDTO::new);
+    }
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedRejectUsers(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusIs(pageable, Constants.ANONYMOUS_USER,
+            ReviewStatus.REJECT.name()).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedReviewUsersForCreateReview(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusIs(pageable, Constants.ANONYMOUS_USER,
+            ReviewStatus.CREATE_REVIEW.name()).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedReviewUsersForDeleteReview(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusIs(pageable, Constants.ANONYMOUS_USER,
+            ReviewStatus.DELETE_REVIEW.name()).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -405,7 +497,7 @@ public class UserService {
      * @return
      */
     public Page<UserDTO> findAllByCreatedBy(Pageable pageable, String login) {
-        return userRepository.findAllByCreatedBy(pageable, login).map(UserDTO::new);
+        return userRepository.findAllByCreatedByIsAndActivatedIs(pageable, login, true).map(UserDTO::new);
     }
 
     /**
@@ -433,5 +525,30 @@ public class UserService {
             throw new BadRequestAlertException("用户没有权限", this.getClass().getName(), "用户没有权限");
         }
         return userList;
+    }
+
+    /**
+     * 审核用户
+     * @param login 登陆用户
+     * @param action 动作
+     */
+    public void reviewUser(String login, ReviewAction action) {
+        User user = userRepository.findOneByLogin(login).get();
+        switch (action) {
+            case REJECT :
+                this.updateUser(user.getId(),ReviewStatus.REJECT,user.getActivated());
+            break;
+            case PASS:
+                // 创建审核
+                if (ReviewStatus.CREATE_REVIEW.name().equals(user.getReviewStatus())){
+                    this.updateUser(user.getId(),ReviewStatus.NORMAL,true);
+                }
+                // 删除审核
+                if (ReviewStatus.DELETE_REVIEW.name().equals(user.getReviewStatus())){
+                    this.updateUser(user.getId(),ReviewStatus.NORMAL,false);
+                }
+                break;
+            default:
+        }
     }
 }
