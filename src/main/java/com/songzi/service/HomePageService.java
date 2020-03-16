@@ -133,8 +133,10 @@ public class HomePageService {
             departmentList.addAll(deptLevel3);
         } else {
             StringBuilder paramCode = new StringBuilder(code);
-            paramCode.replace(code.length() - 3, code.length(), "___");
-            departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), paramCode.toString());
+            if (code.length()>3) {
+                paramCode.replace(code.length() - 3, code.length(), "___");
+                departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.toString(), paramCode.toString());
+            }
         }
         return departmentList;
     }
