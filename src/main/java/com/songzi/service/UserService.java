@@ -382,6 +382,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedUsersRecords(Pageable pageable) {
+        return userRepository.findAllByLoginNotAndReviewStatusIsIn(pageable, Constants.ANONYMOUS_USER,
+            ReviewStatus.REJECT.name(),ReviewStatus.NORMAL.name()).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedReviewUsersForCreateReview(Pageable pageable) {
         return userRepository.findAllByLoginNotAndReviewStatusIs(pageable, Constants.ANONYMOUS_USER,
             ReviewStatus.CREATE_REVIEW.name()).map(UserDTO::new);

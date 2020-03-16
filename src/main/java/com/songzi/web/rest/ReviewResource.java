@@ -8,6 +8,7 @@ import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.util.HeaderUtil;
 import com.songzi.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,16 @@ public class ReviewResource {
     public ResponseEntity<List<UserDTO>> getAllUsersReject(Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedRejectUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/review/reject/users");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/review/users/records")
+    @Timed
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.SECURITY})
+    @ApiOperation("获取所有的审核过的用户列表")
+    public ResponseEntity<List<UserDTO>> getAllUsersRejectOrNormal(Pageable pageable) {
+        final Page<UserDTO> page = userService.getAllManagedUsersRecords(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/review/users/records");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

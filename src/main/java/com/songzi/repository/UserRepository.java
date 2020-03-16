@@ -53,6 +53,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByLoginNotAndReviewStatusEndingWith(Pageable pageable, String login, String reviewStatus);
 
+    Page<User> findAllByLoginNotAndReviewStatusIsIn(Pageable pageable, String login, String... reviewStatus);
+
     /**
      * 根据某个创建者查出用户
      * @param pageable
