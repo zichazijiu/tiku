@@ -56,13 +56,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByLoginNotAndReviewStatusIsIn(Pageable pageable, String login, String... reviewStatus);
 
     /**
-     * 根据某个创建者查出用户
+     * 根据某个创建者查出已经激活的用户
      * @param pageable
      * @param login
      * @param isActivated
      * @return
      */
     Page<User> findAllByCreatedByIsAndActivatedIs(Pageable pageable, String login, boolean isActivated);
+
+    /**
+     * 根据某个创建者查出用户
+     * @param pageable
+     * @param login
+     * @return
+     */
+    Page<User> findAllByCreatedByIs(Pageable pageable, String login);
 
     /**
      * 根据部门查询用户列表

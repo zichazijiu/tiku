@@ -503,7 +503,7 @@ public class UserService {
      * @return
      */
     public Page<UserDTO> findAllByCreatedBy(Pageable pageable, String login) {
-        return userRepository.findAllByCreatedByIsAndActivatedIs(pageable, login, true).map(UserDTO::new);
+        return userRepository.findAllByCreatedByIs(pageable, login).map(UserDTO::new);
     }
 
     /**
