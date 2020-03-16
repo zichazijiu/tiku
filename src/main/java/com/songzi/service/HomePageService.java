@@ -76,7 +76,7 @@ public class HomePageService {
             }
 
             // 封装部门
-            List<Department> departmentList = null;
+            List<Department> departmentList = new ArrayList<>();
             if (roles.contains(AuthoritiesConstants.ADMIN) || roles.contains(AuthoritiesConstants.BU_ADMIN)) {
                 // 管理员、部级管理员展现一级部门
                 departmentList = departmentRepository.findChildDepartmentByDepartmentCode(DeleteFlag.NORMAL.name(), "8602__");
@@ -96,13 +96,15 @@ public class HomePageService {
             } else { // 普通用户
                 // FIXME：新的需求是只给最后两级别的树
                 Department department = user.getDepartment();
-                String deptCode = department.getCode();
-                String[] codes = department.getParentCodes().split(",");
-                String parentCode = deptCode;
-                if (codes.length > 2) {
-                    parentCode = codes[codes.length - 2];
+                if (department != null) {
+                    String deptCode = department.getCode();
+                    String[] codes = department.getParentCodes().split(",");
+                    String parentCode = deptCode;
+                    if (codes.length > 2) {
+                        parentCode = codes[codes.length - 2];
+                    }
+                    departmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
                 }
-                departmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
             }
 
             // 部门树
