@@ -607,11 +607,17 @@ public class ExportImportService {
             dataMap.put("year", reportDate.getYear() + "");
             dataMap.put("month", reportDate.getMonthValue() + "");
             dataMap.put("day", reportDate.getDayOfMonth() + "");
-            // 设置报告答案
             for (ReportItems item : report.getReportItems()) {
                 Long checkItemId = item.getCheckItem().getId();
                 String answer = item.getLevel();
                 dataMap.put("X" + checkItemId, answer.trim());
+            }
+            // 遍历60道check item报告答案,没有答案的item置空
+            for (int i = 0; i < 60; i++) {
+                String key = "X"+i;
+                if (!dataMap.containsKey(key)){
+                    dataMap.put(key,"");
+                }
             }
             // Freemarker
             String template = FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), UTF_8));
