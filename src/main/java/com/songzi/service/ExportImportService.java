@@ -526,8 +526,13 @@ public class ExportImportService {
                 int position = 1;
                 for (int i = 1; i < table.numRows(); i++) {
                     TableRow row = table.getRow(i);
-                    if (row.numCells() == 5) {
+                    if (row.numCells() == 2) {
+                        answerMap.put(position, row.getCell(1).text());
+                    }
+                    else if (row.numCells() == 5) {
                         answerMap.put(position, row.getCell(4).text());
+                    } else {
+                        // nothing to do
                     }
                     position++;
                 }
