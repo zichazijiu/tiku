@@ -22,7 +22,7 @@
             update examiner set email = 'admin@localhost' where id = '1';
             update examiner set email = 'user@localhost' where id = '2';
             update examiner set email = 'examiner@localhost' where id = '3';
-            update jhi_user u set u.first_name = (select e.name from examiner e where u.id = e.user_id),u.last_name = (select e.name from examiner e where u.id = e.user_id);
+<!--            update jhi_user u set u.first_name = (select e.name from examiner e where u.id = e.user_id),u.last_name = (select e.name from examiner e where u.id = e.user_id);-->
         </sql>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
