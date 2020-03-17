@@ -32,9 +32,9 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://192.168.48.128:3306/TIKU?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: tikudb
-        password: Q!w2e3r4
+        url: jdbc:mysql://127.0.0.1:3306/tiku?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: tiku
+        password: Q1w2@e3r4
         hikari:
             data-source-properties:
                 cachePrepStmts: true
@@ -146,12 +146,19 @@ jhipster:
 
 application:
 
-
 logbackup:
     needlogbakmethod:
         DepartmentSerivce:
             insert: 创建部门
             delete: 删除部门
-        ExaminerService:
-            insert: 创建考评员
-            delete: 删除考评员
+        UserService:
+            createUser: 创建考评员
+            deleteUser: 删除考评员
+            reviewUser: 审核考评员
+        ReportService:
+            getUserReport: 生成考评
+        ReleaseService:
+            save: 发布考评
+        ExportImportService:
+            importReport: 导入考评报告
+            exportReport: 导出考评报告

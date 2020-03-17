@@ -56,8 +56,7 @@ public class LogbackAspect {
             Map<String,String> methodList = needLogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
                 //获取输入输出参数
-                Object[] objects = joinPoint.getArgs();
-
+//                Object[] objects = joinPoint.getArgs();
                 LogBackup logBackup = new LogBackup();
                 logBackup.setCreatedTime(Instant.now());
                 logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
