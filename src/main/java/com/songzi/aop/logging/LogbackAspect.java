@@ -13,9 +13,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.*;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Aspect
@@ -88,11 +91,21 @@ public class LogbackAspect {
             Map<String,String> methodList = needLogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
 //                Object[] objects = joinPoint.getArgs();
-
+//                if(object == null){
+//                    primaryKey = objects[0] + "";
+//                }else{
+//                    Class clazz = object.getClass();
+//                    if (!clazz.isArray()){
+//                        PropertyDescriptor pd = new PropertyDescriptor("id",clazz);
+//                        Method getMethod = pd.getReadMethod();//获得get方法
+//                        Object o = getMethod.invoke(object);//执行get方法返回一个Object
+//                        primaryKey = o +"";
+//                    }
+//                }
                 LogBackup logBackup = new LogBackup();
                 logBackup.setCreatedTime(Instant.now());
                 logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-                logBackup.setDescription(methodList.get(methodName));
+                logBackup.setDescription(className+":"+methodList.get(methodName));
                 logBackup.setSize(0);
                 logBackup.setLevel(Level.INFO);
                 logBackup.setAuthority("ROLE_ADMIN");

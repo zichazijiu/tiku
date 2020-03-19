@@ -65,7 +65,6 @@ public class HomePageService {
                 String role = authorityIterator.next().getName();
                 roles.add(role);
                 menuList.addAll(menuService.getMenuListByAuthority(role));
-
             }
             if (menuList != null && menuList.size() > 0) {
                 Map<Long, Menu> menuMap = menuList.stream().collect(Collectors.toMap(Menu::getId, menu -> menu, (k1, k2) -> k1));
@@ -84,15 +83,24 @@ public class HomePageService {
                 // 厅
                 String code = user.getDepartment().getCode();
                 departmentList = getHomePageDepartmentListByCode(code, 6);
-
             } else if (roles.contains(AuthoritiesConstants.JU_ADMIN)) {
                 // 局
                 String code = user.getDepartment().getCode();
-                departmentList = getHomePageDepartmentListByCode(code, 10);
+                if (code.length() == 6) { // 直辖市的局级问题
+                    departmentList = getHomePageDepartmentListByCode(code, 6);
+                } else { // 用户在实际的部门
+                    departmentList = getHomePageDepartmentListByCode(code, 10);
+                }
             } else if (roles.contains(AuthoritiesConstants.CHU_ADMIN)) {
                 // 处
                 String code = user.getDepartment().getCode();
-                departmentList = getHomePageDepartmentListByCode(code, 14);
+                if (code.length() == 10) { // 直辖市/省市的处级问题
+                    departmentList = getHomePageDepartmentListByCode(code, 10);
+                    departmentList.add(user.getDepartment());
+                } else {
+                    departmentList = getHomePageDepartmentListByCode(code, 14);
+                }
+
             } else { // 普通用户
                 // FIXME：新的需求是只给最后两级别的树
                 Department department = user.getDepartment();
@@ -106,7 +114,6 @@ public class HomePageService {
                     departmentList = departmentSerivce.getDepartmentByCodes(deptCode, parentCode);
                 }
             }
-
             // 部门树
             homepageDTO.setDepartmentList(departmentList);
 

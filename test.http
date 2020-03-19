@@ -1,3 +1,8 @@
+### 主页
+http://localhost:8080/api/homepage?user=yichu
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+###
 ### 获取日志
 GET http://localhost:8080/api/reports/users?login=beijinguser1
 Authorization: Bearer {{auth_token}}
@@ -25,8 +30,8 @@ POST http://localhost:8080/api/authenticate
 Content-Type: application/json
 
 {
-    "username": "BeijingUser1@localhost",
-    "password": "BeijingUser1"
+    "username": "yichu@localhost",
+    "password": "yichu"
 }
 
 > {% client.global.set("auth_token", response.body.id_token); %}
