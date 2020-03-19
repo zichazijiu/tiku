@@ -1,8 +1,15 @@
 ### 获取日志
+GET http://localhost:8080/api/reports/users?login=beijinguser1
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+###
+
+### 获取日志
 GET http://localhost:8080/api/log-backups?createdStartDate=2020-01-01&createdStartTime=23:03:21&createdEndDate=2020-04-01&createdEndTime=23:03:21&level=INFO&page=0&size=10
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 ###
+
 ### 修改密码
 POST http://localhost:8080/api/account/change-password
 Authorization: Bearer {{auth_token}}
@@ -18,8 +25,8 @@ POST http://localhost:8080/api/authenticate
 Content-Type: application/json
 
 {
-    "username": "admin@localhost",
-    "password": "admin"
+    "username": "BeijingUser1@localhost",
+    "password": "BeijingUser1"
 }
 
 > {% client.global.set("auth_token", response.body.id_token); %}

@@ -87,26 +87,12 @@ public class LogbackAspect {
         if(needLogbakmethod != null && needLogbakmethod.containsKey(className)){
             Map<String,String> methodList = needLogbakmethod.get(className);
             if(methodList.containsKey(methodName)){
-                Object[] objects = joinPoint.getArgs();
-                String primaryKey = "";
-                if(object == null){
-                    primaryKey = objects[0] + "";
-                }else{
-                    Class clazz = object.getClass();
-//                    Field[] fields = object.getClass().getDeclaredFields();//获得属性
-//                    for (Field field : fields) {
-//                    }
-                    PropertyDescriptor pd = new PropertyDescriptor("id",
-                        clazz);
-                    Method getMethod = pd.getReadMethod();//获得get方法
-                    Object o = getMethod.invoke(object);//执行get方法返回一个Object
-                    primaryKey = o +"";
-                }
+//                Object[] objects = joinPoint.getArgs();
 
                 LogBackup logBackup = new LogBackup();
                 logBackup.setCreatedTime(Instant.now());
                 logBackup.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-                logBackup.setDescription(methodList.get(methodName)+":"+primaryKey);
+                logBackup.setDescription(methodList.get(methodName));
                 logBackup.setSize(0);
                 logBackup.setLevel(Level.INFO);
                 logBackup.setAuthority("ROLE_ADMIN");
