@@ -84,7 +84,7 @@ public class DBBackupService {
         dbBackupRepository.save(dbBackup);
     }
 
-    @Scheduled(cron = "0/180 * *  * * ? ")
+    @Scheduled(cron = "0 0 1 * * MON-FRI")
     public void backup(){
         LOG.warn("---------数据备份定时任务开始---------");
         DateTime date = DateTime.now();
