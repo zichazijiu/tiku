@@ -1,11 +1,15 @@
 package com.songzi.service;
 
+import com.songzi.domain.DBBackup;
 import com.songzi.domain.LogBackup;
 import com.songzi.domain.enumeration.BakType;
 import com.songzi.domain.enumeration.Level;
 import com.songzi.domain.enumeration.LogType;
+import com.songzi.repository.DBBackupRepository;
 import com.songzi.repository.LogBackupRepository;
+import com.songzi.service.dto.DBBackupDTO;
 import com.songzi.service.dto.LogBackupDTO;
+import com.songzi.service.mapper.DBBackupMapper;
 import com.songzi.service.mapper.LogBackupMapper;
 import com.songzi.web.rest.vm.DataBackupQueryVM;
 import com.songzi.web.rest.vm.LogBackupQueryVM;
@@ -33,6 +37,10 @@ public class LogBackupService {
 
     @Autowired
     private LogBackupRepository logBackupRepository;
+
+    @Autowired private DBBackupRepository dbBackupRepository;
+
+    @Autowired private DBBackupMapper dbBackupMapper;
 
     @Autowired
     private LogBackupMapper logBackupMapper;
@@ -93,27 +101,18 @@ public class LogBackupService {
         },pageable).map(logBackupMapper :: toDto);
     }
 
-    public Page<LogBackupDTO> getAllDatabaseBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {
-        return logBackupRepository.findAll(new Specification<LogBackup>() {
+    public Page<DBBackupDTO> getAllDatabaseBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {
+        return dbBackupRepository.findAll(new Specification<DBBackup>() {
             @Override
-            public Predicate toPredicate(Root<LogBackup> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<DBBackup> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 if(dataBackupQueryVM.getCreatedTime() != null){
                     list.add(cb.equal(root.get("createdTime").as(LocalDate.class), dataBackupQueryVM.getCreatedTime()));
                 }
-
-                if(dataBackupQueryVM.getBakType() != null){
-                    list.add(cb.equal(root.get("bakType").as(BakType.class), dataBackupQueryVM.getBakType()));
-                }
-
-                if(dataBackupQueryVM.getDescription() != null){
-                    list.add(cb.equal(root.get("description").as(String.class), dataBackupQueryVM.getDescription()));
-                }
-                list.add(cb.equal(root.get("logType").as(LogType.class), LogType.DATABASE));
                 Predicate[] p = new Predicate[list.size()];
                 return cb.and(list.toArray(p));
             }
-        },pageable).map(logBackupMapper :: toDto);
+        },pageable).map(dbBackupMapper :: toDto);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

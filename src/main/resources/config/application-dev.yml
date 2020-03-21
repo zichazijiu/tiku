@@ -32,9 +32,9 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://127.0.0.1:3306/tiku?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: tiku
-        password: Q1w2@e3r4
+        url: jdbc:mysql://47.92.84.122:3517/tiku?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: abc123
         hikari:
             data-source-properties:
                 cachePrepStmts: true

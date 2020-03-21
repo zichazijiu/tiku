@@ -37,4 +37,5 @@
     <include file="config/liquibase/changelog/20190429195730_modify_entity_Report.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191017151355_modify_entity_User.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/202003071415122_modify_entity_User.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200321103336_added_entity_DBBackup.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

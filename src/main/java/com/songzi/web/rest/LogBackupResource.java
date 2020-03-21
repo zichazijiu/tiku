@@ -2,8 +2,10 @@ package com.songzi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import com.songzi.domain.DBBackup;
 import com.songzi.repository.LogBackupRepository;
 import com.songzi.service.LogBackupService;
+import com.songzi.service.dto.DBBackupDTO;
 import com.songzi.service.dto.LogBackupDTO;
 import com.songzi.web.rest.util.PaginationUtil;
 import com.songzi.web.rest.vm.DataBackupQueryVM;
@@ -114,10 +116,10 @@ public class LogBackupResource {
     @GetMapping("/database-backups")
     @Timed
     @ApiOperation(value = "数据备份列表")
-    public ResponseEntity<List<LogBackupDTO>> getAllDatabaseBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {
+    public ResponseEntity<List<DBBackupDTO>> getAllDatabaseBackups(DataBackupQueryVM dataBackupQueryVM, Pageable pageable) {
         log.debug("数据备份列表");
-        Page<LogBackupDTO> page = logBackupService.getAllDatabaseBackups(dataBackupQueryVM,pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/log-backups");
+        Page<DBBackupDTO> page = logBackupService.getAllDatabaseBackups(dataBackupQueryVM,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/database-backups");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
