@@ -3,6 +3,13 @@ http://localhost:8080/api/homepage?user=yichu
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 ###
+
+### 获取数据备份
+GET http://localhost:8080/api/database-backups?page=0&size=10
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+###
+
 ### 获取日志
 GET http://localhost:8080/api/reports/users?login=beijinguser1
 Authorization: Bearer {{auth_token}}
