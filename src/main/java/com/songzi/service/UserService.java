@@ -281,7 +281,9 @@ public class UserService {
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             // admin 和 system 不允许被删。
-            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+            if ("admin".equals(user.getLogin())
+                || "system".equals(user.getLogin())
+                || "security".equals(user.getLogin())){
                 throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
             }
             userRepository.delete(user);
@@ -298,7 +300,9 @@ public class UserService {
     public void deleteUserForReview(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             // admin 和 system 不允许被删。
-            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+            if ("admin".equals(user.getLogin())
+                || "system".equals(user.getLogin())
+                || "security".equals(user.getLogin())){
                 throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
             }
             user.setReviewStatus(ReviewStatus.DELETE_REVIEW.name());
@@ -340,7 +344,9 @@ public class UserService {
         User user = userRepository.findOne(id);
         if (user != null) {
             // admin 和 system 不允许被删。
-            if ("admin".equals(user.getLogin()) || "system".equals(user.getLogin())){
+            if ("admin".equals(user.getLogin())
+                || "system".equals(user.getLogin())
+                || "security".equals(user.getLogin())){
                 throw new BadRequestAlertException(user.getLogin()+" 用户不能被删除",this.getClass().getName(),user.getLogin()+" 用户不能被删除");
             }
             user.setReviewStatus(ReviewStatus.DELETE_REVIEW.name());
