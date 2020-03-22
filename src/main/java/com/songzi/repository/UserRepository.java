@@ -55,6 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByLoginNotAndReviewStatusIsIn(Pageable pageable, String login, String... reviewStatus);
 
+    Optional<User> findByCertDnIs(String certDn);
     /**
      * 根据某个创建者查出已经激活的用户
      * @param pageable

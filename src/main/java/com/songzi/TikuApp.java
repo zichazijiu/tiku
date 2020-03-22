@@ -19,9 +19,6 @@ import org.springframework.core.env.Environment;
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -91,6 +88,5 @@ public class TikuApp {
             env.getProperty("server.port"),
             TikuConstants.CFSMS_HOME,
             env.getActiveProfiles());
-
     }
 }

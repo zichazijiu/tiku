@@ -156,6 +156,11 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setImageUrl(userDTO.getImageUrl());
         if (!StringUtils.isEmpty(userDTO.getCertDn())){
+            // 检查证书号是否重复
+            Optional<User> optionalUser= userRepository.findByCertDnIs(userDTO.getCertDn());
+            if (optionalUser.isPresent()){
+                throw new BadRequestAlertException("证书号以及存在，请换一个证书号", this.getClass().getName(), "不允许重复添加证书号");
+            }
             user.setCertDn(userDTO.getCertDn());
         }
         if (userDTO.getAuthorities() != null){
