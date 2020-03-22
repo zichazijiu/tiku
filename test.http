@@ -1,3 +1,11 @@
+POST http://localhost:8080/cfsms/api/users
+Content-Type: application/json
+
+{"id":6,"login":"beijinguser1","firstName":" ","lastName":"北京","email":"BeijingUser1@localhost","imageUrl":null,"certDn":"1111","reviewStatus":"NORMAL","activated":true,"langKey":"zh-cn","createdBy":"zongbu","createdDate":"2020-03-19T10:16:09Z","lastModifiedBy":"security","lastModifiedDate":"2020-03-19T10:16:23Z","authorities":["ROLE_ADMIN_JU"],"department":{"id":4},"departmentId":4}
+
+###
+
+
 ### 主页
 http://localhost:8080/api/homepage?user=yichu
 Authorization: Bearer {{auth_token}}
@@ -33,12 +41,12 @@ Content-Type: application/json
 }
 ###
 ### 用户认证
-POST http://localhost:8080/api/authenticate
+POST http://localhost:8080/cfsms/api/authenticate
 Content-Type: application/json
 
 {
-    "username": "yichu@localhost",
-    "password": "yichu"
+    "username": "BeijingUser1@localhost",
+    "password": "BeijingUser1"
 }
 
 > {% client.global.set("auth_token", response.body.id_token); %}

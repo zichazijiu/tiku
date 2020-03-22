@@ -12,6 +12,7 @@ import com.songzi.service.UserService;
 import com.songzi.service.dto.DepartmentDTO;
 import com.songzi.service.dto.UserDTO;
 import com.songzi.web.rest.errors.BadRequestAlertException;
+import com.songzi.web.rest.errors.CertDNAlreadyUsedException;
 import com.songzi.web.rest.errors.EmailAlreadyUsedException;
 import com.songzi.web.rest.errors.LoginAlreadyUsedException;
 import com.songzi.web.rest.util.HeaderUtil;
@@ -107,6 +108,8 @@ public class UserResource {
             throw new LoginAlreadyUsedException();
         } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
+        } else if (userRepository.findOneByCertDn(userDTO.getCertDn()).isPresent()) {
+            throw new CertDNAlreadyUsedException();
         } else {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
@@ -136,6 +139,10 @@ public class UserResource {
         existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new LoginAlreadyUsedException();
+        }
+        existingUser = userRepository.findOneByCertDn(userDTO.getCertDn());
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))){
+            throw new CertDNAlreadyUsedException();
         }
         Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
 
