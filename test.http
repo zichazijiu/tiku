@@ -19,13 +19,14 @@ Accept: application/json
 ###
 
 ### 获取日志
-GET http://localhost:8080/api/reports/users?login=beijinguser1
+GET http://localhost:8080/cfsms/api/reports/users?login=beijinguser1
+Cookie: KOAL_CERT_CN=11111
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 ###
 
 ### 获取日志
-GET http://localhost:8080/api/log-backups?createdStartDate=2020-01-01&createdStartTime=23:03:21&createdEndDate=2020-04-01&createdEndTime=23:03:21&level=INFO&page=0&size=10
+GET http://localhost:8080/cfsms/api/log-backups?createdStartDate=2020-01-01&createdStartTime=23:03:21&createdEndDate=2020-04-01&createdEndTime=23:03:21&level=INFO&page=0&size=10
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 ###
@@ -48,6 +49,14 @@ Content-Type: application/json
     "username": "BeijingUser1@localhost",
     "password": "BeijingUser1"
 }
+
+> {% client.global.set("auth_token", response.body.id_token); %}
+
+### 用户认证-证书
+POST http://localhost:8080/cfsms/api/authenticate/cert
+Content-Type: application/json
+Cookie: KOAL_CERT_CN=11112
+Cookie:
 
 > {% client.global.set("auth_token", response.body.id_token); %}
 
