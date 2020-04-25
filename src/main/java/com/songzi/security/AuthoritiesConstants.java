@@ -21,7 +21,7 @@ public final class AuthoritiesConstants {
 
     public static final String SECURITY = "ROLE_SECURITY";
 
-    public static final String AUDIT = "ROLE_AUDIT";
+    public static final String AUDITOR = "ROLE_AUDITOR";
 
     private AuthoritiesConstants() {
     }
